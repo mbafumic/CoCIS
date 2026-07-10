@@ -13,8 +13,12 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+cocisenv/
 node_modules/
 dist/
 build/
 .pytest_cache/
 .ruff_cache/
+
+# graphify - rigenerabile con `graphify cocisdb_vuoto.sql`
+graphify-out/

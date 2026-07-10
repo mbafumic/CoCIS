@@ -14,8 +14,14 @@ Convenzioni:
 <!-- - [ ] Titolo slice — branch: `feat/...` -->
 
 ## Backlog
-- [ ] Definire lo stack del progetto e documentarlo in `CLAUDE.md`
-- [ ] Prima slice verticale dell'MVP
+- [ ] Anagrafica Paziente + ContattoPz (base) + Ricovero (sottotipo) — prima slice MVP
+- [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)
+- [ ] Prericovero, Prenotazione Ambulatorio, Prestazione Ambulatoriale (altri sottotipi di ContattoPz)
+- [ ] Rilevazioni (parametri vitali, esami di laboratorio) collegate al Ricovero
+- [ ] Procedure previste / effettuate collegate al Ricovero
+- [ ] SDO / SDO10 (scheda dimissione ospedaliera)
 
 ## Fatto
+- [x] Definire lo stack del progetto (FastAPI + PostgreSQL) e documentarlo in `CLAUDE.md` — 2026-07-10
+- [x] Analisi del db legacy (`cocisdb_vuoto.sql`) con `/graphify` per informare il modello dati — 2026-07-10
 <!-- - [x] Titolo slice — 2026-06-01, PR #1 -->
