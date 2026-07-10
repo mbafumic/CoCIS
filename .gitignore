@@ -1,0 +1,20 @@
+# Ambiente / segreti
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Cache comuni (a prescindere dallo stack)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
