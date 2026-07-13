@@ -11,12 +11,18 @@ Convenzioni:
 - Non restare bloccato: se la tua PR è in review, prendi un item sbloccabile dal *Backlog*.
 
 ## In corso
-<!-- - [ ] Titolo slice — branch: `feat/...` -->
+- [ ] Anagrafica Paziente + ContattoPz (base) + Ricovero (sottotipo) — prima slice MVP —
+      branch: `feat/paziente-contatto-ricovero`. Codice, migration e test scritti; manca
+      la verifica end-to-end (nessun PostgreSQL raggiungibile in questa sessione — da
+      lanciare `uv run alembic upgrade head` + `uv run pytest` contro un'istanza reale
+      prima di chiudere la slice).
 
 ## Backlog
-- [ ] Anagrafica Paziente + ContattoPz (base) + Ricovero (sottotipo) — prima slice MVP
 - [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)
-- [ ] Prericovero, Prenotazione Ambulatorio, Prestazione Ambulatoriale (altri sottotipi di ContattoPz)
+- [ ] Prenotazione + Prericovero (percorso ricovero: entrambi opzionali, con link
+      incrociati a Prenotazione/Prericovero/Ricovero — vedi diagramma in CLAUDE.md)
+- [ ] Prenotazione Ambulatorio + Prestazione Ambulatoriale (percorso ambulatoriale, link
+      bidirezionale tra i due)
 - [ ] Rilevazioni (parametri vitali, esami di laboratorio) collegate al Ricovero
 - [ ] Procedure previste / effettuate collegate al Ricovero
 - [ ] SDO / SDO10 (scheda dimissione ospedaliera)
