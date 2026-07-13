@@ -1,0 +1,13 @@
+from fastapi import FastAPI
+
+from app.api.routers import pazienti, ricoveri
+
+app = FastAPI(title="CoCIS API")
+
+app.include_router(pazienti.router)
+app.include_router(ricoveri.router)
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "ok"}

@@ -26,15 +26,24 @@ FK del DB sia dai riferimenti di tipo nel codice C#):
 ```
 Paziente (anagrafica)
   └─ ContattoPz (contatto/interazione — radice polimorfica, chiave condivisa OID)
-        ├─ Ricovero ─┬─ N SchedaClinica (radice polimorfica Schederic→Schede, ~66 sottotipi:
-        │            │   cartella infermieristica, cartella CEC, referti, scale di
-        │            │   valutazione, consulenze...)
-        │            ├─ N Rilevazioni (parametri vitali, esami di laboratorio)
-        │            ├─ N ProcedurePreviste / ProcedureEffettuate
-        │            └─ 1 SDO + 1 SDO10 (scheda dimissione ospedaliera, doppia codifica)
-        ├─ Prericovero        (stessa struttura di Ricovero)
-        ├─ PrenotazioneAmbulatorio
-        └─ PrestazioneAmbulatoriale ─ 1 documento clinico (da Schede)
+        │
+        ├─ Percorso Ricovero (degenza):
+        │     Prenotazione (opzionale — solo se il caso NON è urgente)
+        │        └─→ Prericovero (opzionale — accesso per esami preliminari pre-ricovero)
+        │               └─→ Ricovero ─┬─ N SchedaClinica (radice polimorfica Schederic→
+        │                             │   Schede, ~66 sottotipi: cartella infermieristica,
+        │                             │   cartella CEC, referti, scale di valutazione,
+        │                             │   consulenze...)
+        │                             ├─ N Rilevazioni (parametri vitali, esami di laboratorio)
+        │                             ├─ N ProcedurePreviste / ProcedureEffettuate
+        │                             └─ 1 SDO + 1 SDO10 (scheda dimissione, doppia codifica)
+        │     Prenotazione, Prericovero e Ricovero si referenziano a vicenda (link opzionali
+        │     in entrambe le direzioni): un Ricovero può nascere direttamente da una
+        │     Prenotazione (urgenza) oppure passare da un Prericovero.
+        │
+        └─ Percorso Ambulatoriale:
+              PrenotazioneAmbulatorio ←→ PrestazioneAmbulatoriale (link bidirezionale;
+              la Prestazione ha 1 documento clinico da Schede)
 ```
 
 Decisioni di design per la riscrittura:

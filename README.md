@@ -1,3 +1,26 @@
+# CoCIS
+
+Reingegnerizzazione di un gestionale ospedaliero legacy. Backend FastAPI + PostgreSQL — vedi
+`CLAUDE.md` per stack, dominio e convenzioni.
+
+## Avvio locale
+
+Richiede un'istanza PostgreSQL raggiungibile (locale o remota) e [`uv`](https://docs.astral.sh/uv/).
+
+```bash
+uv sync                                  # installa le dipendenze (crea .venv)
+cp .env.example .env                     # poi modifica DATABASE_URL se necessario
+createdb cocis                           # database di sviluppo
+createdb cocis_test                      # database usato dai test (o esporta TEST_DATABASE_URL)
+uv run alembic upgrade head              # applica le migration
+uv run uvicorn app.main:app --reload     # avvia l'API su http://localhost:8000
+```
+
+Verifica: `uv run pytest` (test) e `uv run ruff check . && uv run ruff format --check .`
+(qualità).
+
+---
+
 # Coscience Template
 
 Template per progetti software **Claude AI-native** della startup Coscience. Ogni nuovo
