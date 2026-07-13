@@ -22,3 +22,5 @@ build/
 
 # graphify - rigenerabile con `graphify cocisdb_vuoto.sql`
 # graphify-out/
+
+oldsystem/

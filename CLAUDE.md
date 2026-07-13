@@ -10,11 +10,18 @@ test). Scelta confermata: CoCIS è la reingegnerizzazione di un gestionale osped
 
 ## Dominio & modello dati
 
-CoCIS sostituisce un vecchio gestionale ospedaliero (MySQL/MariaDB + DevExpress XAF/XPO,
-~750 tabelle) di cui esiste un dump vuoto (`cocisdb_vuoto.sql`) analizzato con `/graphify`
-(risultati in `graphify-out/`, non versionato — rigenerabile con `graphify cocisdb_vuoto.sql`).
+CoCIS sostituisce un vecchio gestionale ospedaliero (MySQL/MariaDB + DevExpress XAF/XPO
+19.2, ~750 tabelle). Due fonti analizzate con `/graphify` (risultati in `graphify-out/`,
+versionato — rigenerabile con `/graphify oldsystem`):
+- `cocisdb_vuoto.sql` — dump vuoto dello schema DB legacy (tracciato in repo, riferimento
+  storico).
+- `oldsystem/` — codice sorgente C# reale delle business object XPO (`AccettazioneModule`,
+  `GlobalModule`, `GlobalClinModule`, `GlobalFattModule`; **non tracciato in git**, vedi
+  `.gitignore`). È la fonte più affidabile: il grafo attuale in `graphify-out/` è ricostruito
+  da qui, scartando le tabelle SQL non referenziate da nessuna business object nel codice.
 
-Struttura di dominio emersa dall'analisi del grafo (confermata dal dev):
+Struttura di dominio emersa dall'analisi (confermata dal dev, doppiamente validata: sia dalle
+FK del DB sia dai riferimenti di tipo nel codice C#):
 
 ```
 Paziente (anagrafica)
@@ -42,6 +49,36 @@ Decisioni di design per la riscrittura:
 - `Ricovero` nel legacy è una "god table" da 84 colonne: nel nuovo modello va scomposto per
   bounded context (clinico, amministrativo/DRG, posti letto) sfruttando le ~49 tabelle figlie
   già esistenti come guida ai confini.
+
+### Mappa delle dipendenze tra moduli legacy (guida ai bounded context)
+
+Analisi dei riferimenti di tipo cross-modulo nel codice C# (`graphify path`/`query` su
+`graphify-out/`):
+
+```
+AccettazioneModule ──192 rif.──> GlobalModule       (anagrafica organizzativa: Dipendenti,
+                                                      Reparti, Medici, Letti, PresidiOsp)
+AccettazioneModule ──34 rif.───> GlobalClinModule    (codifica clinica: ICD9/ICD10, DRG,
+                                                      Procedure, Diagnosi)
+AccettazioneModule ──7 rif.────> GlobalFattModule    (fatturazione: CodiciIVA, DRG_DX_PX,
+                                                      ErroriGrouper)
+GlobalClinModule ───2 rif.────> GlobalFattModule    (DRG → RegioniDRG/TariffariDRG)
+```
+
+**Nessun riferimento nel senso opposto**: i tre moduli `Global*` non dipendono mai da
+`AccettazioneModule`. È un'architettura a livelli pulita nel legacy — i moduli `Global*` sono
+dati di riferimento/fondazione, `AccettazioneModule` è il layer applicativo/paziente che li
+consuma. Guida per i confini dei moduli nel nuovo backend:
+- Un modulo "anagrafica organizzativa" (staff, reparti, presidi — da `GlobalModule`).
+- Un modulo "codifiche cliniche" (ICD9/ICD10, DRG, procedure — da `GlobalClinModule`).
+- Un modulo "fatturazione" (IVA, DRG-fatturazione — da `GlobalFattModule`).
+- Il core clinico/paziente (da `AccettazioneModule`) dipende dai tre sopra, mai viceversa.
+
+God nodes reali del codice (esclusi tipi primitivi/enum/namespace): `Ricoveri`, `Dipendenti`,
+`Rulli` (lookup enumerativa condivisa), `SchedeRic` (= `schederic` nel DB, confermata base
+polimorfica anche nel codice), `ContattiPz`, `Reparti`, `Medici`, `ProcedureEffettuate`,
+`Prericoveri`, `Prenotazioni`, `Pazienti` — stesso set di entità centrali trovato dall'analisi
+del DB, doppia conferma del modello di dominio sopra.
 
 ## Convenzioni (codebase autodichiarativa)
 - Nomi espliciti; un modulo = una responsabilità con confini netti.
