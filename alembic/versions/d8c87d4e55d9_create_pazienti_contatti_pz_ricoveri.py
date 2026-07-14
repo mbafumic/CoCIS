@@ -21,6 +21,131 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     """Upgrade schema."""
+    # --- tabelle lookup senza dipendenze ---
+    op.create_table(
+        "regioni",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("regione", sa.String(length=25), nullable=False),
+        sa.Column("codice", sa.String(length=3), nullable=True),
+        sa.Column("ordine_stampa", sa.Integer(), nullable=True),
+    )
+
+    op.create_table(
+        "gruppi_sanguigni",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("gruppo", sa.String(length=10), nullable=False),
+    )
+
+    op.create_table(
+        "stati_civili",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("stato_civile", sa.String(length=20), nullable=False),
+    )
+
+    op.create_table(
+        "professioni",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("professione", sa.String(length=30), nullable=False),
+    )
+
+    op.create_table(
+        "posizioni_professionali",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("posizione", sa.String(length=30), nullable=False),
+    )
+
+    op.create_table(
+        "tipi_documento",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("tipo_documento", sa.String(length=20), nullable=False),
+    )
+
+    op.create_table(
+        "livelli_istruzione",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("livello_istruzione", sa.String(length=40), nullable=False),
+    )
+
+    op.create_table(
+        "categorie_paziente",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("categoria", sa.String(length=50), nullable=False),
+    )
+
+    op.create_table(
+        "stati",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("stato", sa.String(length=30), nullable=False),
+        sa.Column("codice_istat", sa.String(length=3), nullable=True),
+        sa.Column("nazionalita", sa.String(length=20), nullable=True),
+        sa.Column("codice_iso", sa.String(length=3), nullable=True),
+        sa.Column("comunitario", sa.Boolean(), nullable=True),
+    )
+
+    op.create_table(
+        "dipendenti",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("nome", sa.String(length=100), nullable=False),
+        sa.Column("cognome", sa.String(length=100), nullable=False),
+    )
+
+    # --- tabelle lookup con dipendenze semplici ---
+    op.create_table(
+        "comuni",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("comune", sa.String(length=35), nullable=False),
+        sa.Column("istat", sa.String(length=6), nullable=True),
+        sa.Column("provincia", sa.String(length=2), nullable=True),
+        sa.Column("regione_id", sa.Integer(), sa.ForeignKey("regioni.id"), nullable=True),
+        sa.Column("prefisso", sa.String(length=5), nullable=True),
+        sa.Column("cap", sa.String(length=5), nullable=True),
+        sa.Column("cod_fisco", sa.String(length=4), nullable=True),
+        sa.Column("abitanti", sa.Integer(), nullable=True),
+    )
+
+    op.create_table(
+        "asp",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("azienda", sa.String(length=3), nullable=True),
+        sa.Column("denominazione", sa.String(length=50), nullable=True),
+        sa.Column("indirizzo", sa.String(length=50), nullable=True),
+        sa.Column("cap", sa.String(length=6), nullable=True),
+        sa.Column("citta_id", sa.Integer(), sa.ForeignKey("comuni.id"), nullable=True),
+        sa.Column("regione_id", sa.Integer(), sa.ForeignKey("regioni.id"), nullable=True),
+        sa.Column("anno", sa.Integer(), nullable=True),
+        sa.Column("partita_iva", sa.String(length=11), nullable=True),
+    )
+
+    op.create_table(
+        "medici_esterni",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("cognome", sa.String(length=30), nullable=True),
+        sa.Column("nome", sa.String(length=30), nullable=True),
+        sa.Column("indirizzo", sa.String(length=80), nullable=True),
+        sa.Column("telefono", sa.String(length=30), nullable=True),
+        sa.Column("cellulare", sa.String(length=20), nullable=True),
+        sa.Column("citta_id", sa.Integer(), sa.ForeignKey("comuni.id"), nullable=True),
+        sa.Column("codice_regionale", sa.String(length=16), nullable=True),
+        sa.Column("n_empam", sa.String(length=10), nullable=True),
+        sa.Column("asp_id", sa.Integer(), sa.ForeignKey("asp.id"), nullable=True),
+        sa.Column("specializzazione", sa.String(length=50), nullable=True),
+        sa.Column("codice_fiscale", sa.String(length=16), nullable=True),
+    )
+
+    op.create_table(
+        "presidi_osp",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("presidio", sa.String(length=100), nullable=True),
+        sa.Column("comune_id", sa.Integer(), sa.ForeignKey("comuni.id"), nullable=True),
+        sa.Column("indirizzo", sa.String(length=100), nullable=True),
+        sa.Column("cap", sa.String(length=6), nullable=True),
+        sa.Column("prov", sa.String(length=2), nullable=True),
+        sa.Column("tel", sa.String(length=30), nullable=True),
+        sa.Column("fax", sa.String(length=30), nullable=True),
+        sa.Column("email", sa.String(length=80), nullable=True),
+    )
+
+    # --- anagrafica principale ---
     op.create_table(
         "pazienti",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -28,6 +153,23 @@ def upgrade() -> None:
         sa.Column("cognome", sa.String(length=100), nullable=False),
         sa.Column("data_nascita", sa.Date(), nullable=False),
         sa.Column("codice_fiscale", sa.String(length=16), nullable=False),
+        sa.Column("sesso", sa.String(length=1), nullable=True),
+        sa.Column("eta", sa.String(length=9), nullable=True),
+        sa.Column("luogo_nascita_id", sa.Integer(), sa.ForeignKey("comuni.id"), nullable=True),
+        sa.Column(
+            "gruppo_sanguigno_id",
+            sa.Integer(),
+            sa.ForeignKey("gruppi_sanguigni.id"),
+            nullable=True,
+        ),
+        sa.Column("deceduto", sa.Boolean(), nullable=True),
+        sa.Column("testimone_di_geova", sa.Boolean(), nullable=True),
+        sa.Column("telefoni_paziente", sa.String(length=200), nullable=True),
+        sa.Column("telefoni_parenti", sa.String(length=200), nullable=True),
+        sa.Column("consenso_tratt_pers", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("consenso_dossier", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("download_referti", sa.String(length=20), nullable=True),
+        sa.Column("codice_esterno", sa.Integer(), nullable=True),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),
@@ -49,6 +191,65 @@ def upgrade() -> None:
             server_default=sa.func.now(),
             nullable=False,
         ),
+        sa.Column("indirizzo", sa.String(length=50), nullable=True),
+        sa.Column("cap", sa.String(length=6), nullable=True),
+        sa.Column("comune_residenza_id", sa.Integer(), sa.ForeignKey("comuni.id"), nullable=True),
+        sa.Column("stato_residenza_id", sa.Integer(), sa.ForeignKey("stati.id"), nullable=True),
+        sa.Column("cittadinanza_id", sa.Integer(), sa.ForeignKey("stati.id"), nullable=True),
+        sa.Column("stato_civile_id", sa.Integer(), sa.ForeignKey("stati_civili.id"), nullable=True),
+        sa.Column("professione_id", sa.Integer(), sa.ForeignKey("professioni.id"), nullable=True),
+        sa.Column(
+            "posizione_professionale_id",
+            sa.Integer(),
+            sa.ForeignKey("posizioni_professionali.id"),
+            nullable=True,
+        ),
+        sa.Column(
+            "livello_istruzione_id",
+            sa.Integer(),
+            sa.ForeignKey("livelli_istruzione.id"),
+            nullable=True,
+        ),
+        sa.Column(
+            "categoria_paziente_id",
+            sa.Integer(),
+            sa.ForeignKey("categorie_paziente.id"),
+            nullable=True,
+        ),
+        sa.Column(
+            "tipo_documento_id", sa.Integer(), sa.ForeignKey("tipi_documento.id"), nullable=True
+        ),
+        sa.Column("documento", sa.String(length=20), nullable=True),
+        sa.Column("data_rilascio", sa.Date(), nullable=True),
+        sa.Column("ente_rilascio", sa.String(length=40), nullable=True),
+        sa.Column(
+            "medico_curante_id", sa.Integer(), sa.ForeignKey("medici_esterni.id"), nullable=True
+        ),
+        sa.Column("asp_residenza_id", sa.Integer(), sa.ForeignKey("asp.id"), nullable=True),
+        sa.Column("presidio_id", sa.Integer(), sa.ForeignKey("presidi_osp.id"), nullable=True),
+        sa.Column("operatore_id", sa.Integer(), sa.ForeignKey("dipendenti.id"), nullable=True),
+        sa.Column("tessera_team", sa.String(length=30), nullable=True),
+        sa.Column("peso", sa.Float(), nullable=True),
+        sa.Column("altezza", sa.Integer(), nullable=True),
+        sa.Column("num_ist_team", sa.String(length=50), nullable=True),
+        sa.Column("ente_rilascio_eni_stp", sa.String(length=50), nullable=True),
+        sa.Column("data_rilascio_eni_stp", sa.Date(), nullable=True),
+        sa.Column("data_scadenza_team_eni_stp", sa.Date(), nullable=True),
+        sa.Column("diniego_fse", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column(
+            "nega_presenza_allergie", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
+        sa.Column(
+            "nega_presenza_patologie", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
+        sa.Column(
+            "nega_presenza_patologie_infettive",
+            sa.Boolean(),
+            nullable=False,
+            server_default=sa.false(),
+        ),
+        sa.Column("last_update", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("pc_last_update", sa.String(length=40), nullable=True),
     )
     op.create_index("ix_contatti_pz_paziente_id", "contatti_pz", ["paziente_id"])
 
@@ -69,3 +270,17 @@ def downgrade() -> None:
     op.drop_table("contatti_pz")
     op.drop_index("ix_pazienti_codice_fiscale", table_name="pazienti")
     op.drop_table("pazienti")
+    op.drop_table("presidi_osp")
+    op.drop_table("medici_esterni")
+    op.drop_table("asp")
+    op.drop_table("comuni")
+    op.drop_table("dipendenti")
+    op.drop_table("stati")
+    op.drop_table("categorie_paziente")
+    op.drop_table("livelli_istruzione")
+    op.drop_table("tipi_documento")
+    op.drop_table("posizioni_professionali")
+    op.drop_table("professioni")
+    op.drop_table("stati_civili")
+    op.drop_table("gruppi_sanguigni")
+    op.drop_table("regioni")

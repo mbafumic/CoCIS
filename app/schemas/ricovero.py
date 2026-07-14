@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.contatto_pz import ContattoPzBase, ContattoPzReadMixin
+
 
 class RicoveroBase(BaseModel):
     reparto: str
@@ -11,11 +13,11 @@ class RicoveroBase(BaseModel):
     stato: Literal["aperto", "dimesso"] = "aperto"
 
 
-class RicoveroCreate(RicoveroBase):
+class RicoveroCreate(ContattoPzBase, RicoveroBase):
     pass
 
 
-class RicoveroRead(RicoveroBase):
+class RicoveroRead(ContattoPzReadMixin, RicoveroBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

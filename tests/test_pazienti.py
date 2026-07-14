@@ -17,6 +17,31 @@ def test_crea_paziente(client: TestClient) -> None:
     assert body["nome"] == "Mario"
     assert body["codice_fiscale"] == "RSSMRA80A01H501U"
     assert "id" in body
+    # campi opzionali non passati: valori di default
+    assert body["sesso"] is None
+    assert body["consenso_tratt_pers"] is False
+    assert body["consenso_dossier"] is False
+
+
+def test_crea_paziente_campi_opzionali(client: TestClient) -> None:
+    payload = _payload("VRDLGU85C41F205Z") | {
+        "sesso": "F",
+        "eta": "45",
+        "deceduto": False,
+        "testimone_di_geova": False,
+        "telefoni_paziente": "3331234567",
+        "consenso_tratt_pers": True,
+        "consenso_dossier": True,
+        "codice_esterno": 42,
+    }
+    response = client.post("/pazienti", json=payload)
+    assert response.status_code == 201
+    body = response.json()
+    assert body["sesso"] == "F"
+    assert body["eta"] == "45"
+    assert body["telefoni_paziente"] == "3331234567"
+    assert body["consenso_tratt_pers"] is True
+    assert body["codice_esterno"] == 42
 
 
 def test_crea_paziente_codice_fiscale_duplicato(client: TestClient) -> None:
