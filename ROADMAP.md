@@ -68,4 +68,4 @@ Convenzioni:
       `DisdettaPrenotazione`), router + 20 test verdi (prima esecuzione reale della suite,
       su SQLite). Scoperta: i 5 "sottotipi" legacy di Prenotazioni (Ord/DH/DayService/
       PreRic/PreRicDH) **non hanno tabella** (`MapInheritance.ParentTable`) → sono il campo
-      `regime_ricovero`, non entità — 2026-07-16, branch `feat/prenotazione-prericovero`
+      `regime_ricovero`, non entità — 2026-07-16, PR #3
