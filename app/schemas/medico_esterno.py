@@ -16,6 +16,7 @@ class MedicoEsternoRead(BaseModel):
     asp_id: int | None = None
     specializzazione: str | None = None
     codice_fiscale: str | None = None
+    codice_altro_sistema: int | None = None
 
     @computed_field
     @property

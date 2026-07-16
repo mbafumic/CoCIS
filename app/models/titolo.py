@@ -4,8 +4,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db import Base
 
 
-class CategoriaPaziente(Base):
-    __tablename__ = "categorie_paziente"
+class Titolo(Base):
+    """Titolo del dipendente (es. Dott., Prof.)."""
+
+    __tablename__ = "titoli"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    categoria: Mapped[str] = mapped_column(String(100))
+    titolo: Mapped[str] = mapped_column(String(10))

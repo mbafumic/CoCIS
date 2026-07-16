@@ -11,11 +11,14 @@ from app.models.paziente import Paziente
 from app.models.posizione_professionale import PosizioneProfessionale
 from app.models.presidio_osp import PresidioOsp
 from app.models.professione import Professione
+from app.models.rapporto_dipendenza import RapportoDipendenza
 from app.models.regione import Regione
 from app.models.ricovero import Ricovero
 from app.models.stato import Stato
 from app.models.stato_civile import StatoCivile
+from app.models.tipo_dipendente import TipoDipendente
 from app.models.tipo_documento import TipoDocumento
+from app.models.titolo import Titolo
 
 __all__ = [
     "Base",
@@ -31,9 +34,12 @@ __all__ = [
     "PosizioneProfessionale",
     "PresidioOsp",
     "Professione",
+    "RapportoDipendenza",
     "Regione",
     "Ricovero",
     "Stato",
     "StatoCivile",
+    "TipoDipendente",
     "TipoDocumento",
+    "Titolo",
 ]

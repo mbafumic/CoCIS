@@ -11,6 +11,17 @@ Convenzioni:
 - Non restare bloccato: se la tua PR è in review, prendi un item sbloccabile dal *Backlog*.
 
 ## In corso
+- [ ] Completamento campi legacy XPO sulle tabelle anagrafiche — branch:
+      `feat/campi-mancanti-anagrafica`. Tutte le lookup ora hanno i campi persistenti
+      del rispettivo oggetto XPO: `Dipendente` e `PresidioOsp` completati (non più
+      minimi), aggiunte `Titolo`/`TipoDipendente`/`RapportoDipendenza`, colmati piccoli
+      gap (`transcodifica`, `codice_altro_sistema`, ecc.) e campi calcolati (Nominativo).
+      Fonte autoritativa = oggetto XPO C# (colonne solo-SQL come `SiglaRegione`, o
+      pseudo-proprietà come `Prov`, non portate). `Reparti` e `Medici`, referenziati da
+      `Dipendente`/`PresidioOsp`, sono FK-placeholder (Integer nullable) — vedi Backlog.
+      Codici Gestclid (`Codpaz`/`Cod_dpaz`/`Codric`) restano esclusi come da decisione.
+      Migration allineata (verificata vs metadati), ruff pulito, test verdi in collezione;
+      manca la verifica end-to-end contro un Postgres reale.
 - [ ] Anagrafica Paziente + ContattoPz (base, campi completi) + Ricovero (sottotipo) —
       prima slice MVP — branch: `feat/paziente-contatto-ricovero`. Paziente e ContattoPz
       ora includono tutti i campi scalari persistenti del legacy (con relative tabelle
@@ -44,9 +55,13 @@ Convenzioni:
 - [ ] Diagnostica per immagini / DICOM (EsamiDICOM da ContattoPz; EsamiDICOMEsterni e
       RefertiAmbMdw da Paziente)
 - [ ] Microbiologia (EsamiMicrobiologici e Tamponi — uno-a-molti da Paziente)
-- [ ] Anagrafica organizzativa completa (Dipendenti, PresidiOsp — oggi versioni minime,
-      da espandere quando serve la gestione staff/reparti/presidi, vedi mappa moduli in
-      CLAUDE.md)
+- [ ] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` è una tabella grande
+      (~30 campi, letti/magazzino/terapia), `Medici` è un sottotipo di `Dipendente`
+      (chiave condivisa). Oggi sono referenziati come FK-placeholder Integer da
+      `Dipendente.reparto_predefinito_id` e `PresidioOsp.direttore_sanitario_id`/
+      `responsabile_dipartimento_id`: modellandoli, quei placeholder diventano FK vere e
+      si aggiungono le relazioni inverse (Dipendente↔Reparti, ecc.). Vedi mappa moduli in
+      CLAUDE.md.
 
 ## Fatto
 - [x] Definire lo stack del progetto (FastAPI + PostgreSQL) e documentarlo in `CLAUDE.md` — 2026-07-10
