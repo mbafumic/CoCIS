@@ -37,9 +37,12 @@ Paziente (anagrafica)
         │                             ├─ N Rilevazioni (parametri vitali, esami di laboratorio)
         │                             ├─ N ProcedurePreviste / ProcedureEffettuate
         │                             └─ 1 SDO + 1 SDO10 (scheda dimissione, doppia codifica)
-        │     Prenotazione, Prericovero e Ricovero si referenziano a vicenda (link opzionali
-        │     in entrambe le direzioni): un Ricovero può nascere direttamente da una
-        │     Prenotazione (urgenza) oppure passare da un Prericovero.
+        │     Un Ricovero può nascere direttamente da una Prenotazione (urgenza) oppure
+        │     passare da un Prericovero. Le FK reali stanno sui figli e sono tutte
+        │     opzionali: Ricovero→Prenotazione, Ricovero→Prericovero, Prericovero→
+        │     Prenotazione. I link inversi (Prenotazione.Ricovero/.Prericovero) nel legacy
+        │     erano proprietà `[NonPersistent]` calcolate: nel nuovo modello sono
+        │     relationship, non colonne.
         │
         └─ Percorso Ambulatoriale:
               PrenotazioneAmbulatorio ←→ PrestazioneAmbulatoriale (link bidirezionale;
@@ -58,6 +61,16 @@ Decisioni di design per la riscrittura:
 - `Ricovero` nel legacy è una "god table" da 84 colonne: nel nuovo modello va scomposto per
   bounded context (clinico, amministrativo/DRG, posti letto) sfruttando le ~49 tabelle figlie
   già esistenti come guida ai confini.
+- **Attenzione ai falsi sottotipi XPO.** Una classe con
+  `[MapInheritance(MapInheritanceType.ParentTable)]` **non ha una tabella propria**: è mappata
+  sulla tabella padre e si distingue solo per il valore di un campo. Caso reale: le 5 classi
+  `PrenotazioniOrd/DH/DayService/PreRic/PreRicDH` sono soltanto i valori di
+  `regime_ricovero` su `Prenotazione`, non entità. Prima di modellare un "sottotipo",
+  verificare che esista la tabella nel dump SQL.
+- **Verificare sempre la persistenza prima di creare una colonna.** Le proprietà
+  `[NonPersistent]` (spesso reverse-lookup via query, o stringhe concatenate per la UI) non
+  sono colonne: diventano `relationship` o property calcolate. Idem per i `PersistentAlias`
+  (campi calcolati) → `@property` + `computed_field` Pydantic, mai colonne DB.
 
 ### Mappa delle dipendenze tra moduli legacy (guida ai bounded context)
 

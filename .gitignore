@@ -20,6 +20,10 @@ build/
 .pytest_cache/
 .ruff_cache/
 
+# DB SQLite usa-e-getta per i test (vedi README)
+*.sqlite3
+test_tmp.db
+
 # graphify - rigenerabile con `graphify cocisdb_vuoto.sql`
 # graphify-out/
 
