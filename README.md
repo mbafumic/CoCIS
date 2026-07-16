@@ -16,8 +16,23 @@ uv run alembic upgrade head              # applica le migration
 uv run uvicorn app.main:app --reload     # avvia l'API su http://localhost:8000
 ```
 
-Verifica: `uv run pytest` (test) e `uv run ruff check . && uv run ruff format --check .`
-(qualità).
+## Test e qualità
+
+```bash
+uv run pytest                                     # test (usa il DB cocis_test)
+uv run ruff check . && uv run ruff format --check .   # qualità
+```
+
+I test leggono `TEST_DATABASE_URL` (default: `.../cocis_test`). **Senza un PostgreSQL a
+disposizione** si possono comunque eseguire su uno SQLite usa-e-getta:
+
+```bash
+TEST_DATABASE_URL="sqlite:///./test_tmp.db" uv run pytest
+```
+
+È un ripiego utile in sviluppo — le fixture creano lo schema da `Base.metadata`, quindi non
+passa da Alembic e non copre le differenze specifiche di PostgreSQL (tipi, vincoli, JSONB
+futuro). **Prima di considerare chiusa una slice, i test vanno eseguiti su PostgreSQL reale.**
 
 ---
 

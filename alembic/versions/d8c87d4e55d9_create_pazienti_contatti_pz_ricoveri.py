@@ -56,6 +56,35 @@ def upgrade() -> None:
     )
 
     op.create_table(
+        "gradi_urgenza",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("grado_urgenza", sa.String(length=30), nullable=False),
+        sa.Column("colore", sa.Integer(), nullable=True),
+    )
+
+    op.create_table(
+        "modalita_accesso",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("modalita", sa.String(length=50), nullable=False),
+    )
+
+    op.create_table(
+        "provenienze",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("provenienza", sa.String(length=70), nullable=False),
+        sa.Column("anno_inizio_validita", sa.Integer(), nullable=True),
+        sa.Column("anno_fine_validita", sa.Integer(), nullable=True),
+    )
+
+    op.create_table(
+        "diagnosi",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("descrizione", sa.String(length=60), nullable=True),
+        sa.Column("abbreviazione", sa.String(length=15), nullable=True),
+        sa.Column("icd9_cm_id", sa.Integer(), nullable=True),
+    )
+
+    op.create_table(
         "stati_civili",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("stato_civile", sa.String(length=20), nullable=False),
@@ -229,6 +258,21 @@ def upgrade() -> None:
         sa.Column("avviso", sa.Text(), nullable=True),
     )
 
+    # discipline dipende da dipendenti (responsabile)
+    op.create_table(
+        "discipline",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("codice", sa.String(length=2), nullable=True),
+        sa.Column("disciplina", sa.String(length=50), nullable=True),
+        sa.Column("attiva", sa.Boolean(), nullable=True),
+        sa.Column("trasferimento_interno", sa.Boolean(), nullable=True),
+        sa.Column("standard_procedure", sa.String(length=100), nullable=True),
+        sa.Column("gg_terapia_fino_sosp", sa.Integer(), nullable=True),
+        sa.Column("allegati_cc", sa.Boolean(), nullable=True),
+        sa.Column("responsabile_id", sa.Integer(), sa.ForeignKey("dipendenti.id"), nullable=True),
+        sa.Column("reparto_degenza_id", sa.Integer(), nullable=True),
+    )
+
     # --- anagrafica principale ---
     op.create_table(
         "pazienti",
@@ -337,6 +381,85 @@ def upgrade() -> None:
     )
     op.create_index("ix_contatti_pz_paziente_id", "contatti_pz", ["paziente_id"])
 
+    # --- sottotipi di contatti_pz: percorso ricovero ---
+    op.create_table(
+        "prenotazioni",
+        sa.Column("id", sa.Integer(), sa.ForeignKey("contatti_pz.id"), primary_key=True),
+        sa.Column("data", sa.Date(), nullable=True),
+        sa.Column("regime_ricovero", sa.String(length=20), nullable=True),
+        sa.Column("data_prevista_ricovero", sa.Date(), nullable=True),
+        sa.Column("ora_ricovero", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("data_prev_pre_ric", sa.Date(), nullable=True),
+        sa.Column("data_tampone", sa.Date(), nullable=True),
+        sa.Column(
+            "grado_urgenza_id", sa.Integer(), sa.ForeignKey("gradi_urgenza.id"), nullable=True
+        ),
+        sa.Column(
+            "unita_funzionale_id", sa.Integer(), sa.ForeignKey("discipline.id"), nullable=True
+        ),
+        sa.Column(
+            "diagnosi_ingresso_id", sa.Integer(), sa.ForeignKey("diagnosi.id"), nullable=True
+        ),
+        sa.Column(
+            "modalita_accesso_id", sa.Integer(), sa.ForeignKey("modalita_accesso.id"), nullable=True
+        ),
+        sa.Column(
+            "medico_inviante_id", sa.Integer(), sa.ForeignKey("medici_esterni.id"), nullable=True
+        ),
+        sa.Column("specialista_medico_id", sa.Integer(), nullable=True),
+        sa.Column("specialista_chirurgo_id", sa.Integer(), nullable=True),
+        sa.Column("tutor_id", sa.Integer(), nullable=True),
+        sa.Column("note_amministrative", sa.String(length=250), nullable=True),
+        sa.Column("note_cliniche", sa.String(length=255), nullable=True),
+        sa.Column("classe_priorita", sa.String(length=1), nullable=True),
+        sa.Column("motivo_dh", sa.String(length=20), nullable=True),
+        sa.Column("stato", sa.String(length=20), nullable=True),
+        sa.Column("bloccato", sa.Boolean(), nullable=True),
+        sa.Column("data_blocco", sa.Date(), nullable=True),
+        sa.Column("email", sa.String(length=60), nullable=True),
+        sa.Column("camera_singola", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("data_avviso", sa.Date(), nullable=True),
+        sa.Column("avvisato", sa.Boolean(), nullable=False, server_default=sa.false()),
+    )
+
+    op.create_table(
+        "prericoveri",
+        sa.Column("id", sa.Integer(), sa.ForeignKey("contatti_pz.id"), primary_key=True),
+        sa.Column("regime_ricovero", sa.String(length=20), nullable=True),
+        sa.Column(
+            "disciplina_ricovero_id", sa.Integer(), sa.ForeignKey("discipline.id"), nullable=True
+        ),
+        sa.Column("data_inizio", sa.Date(), nullable=True),
+        sa.Column("data_fine", sa.Date(), nullable=True),
+        sa.Column("cartella_clinica", sa.Integer(), nullable=True),
+        sa.Column(
+            "modalita_accesso_id", sa.Integer(), sa.ForeignKey("modalita_accesso.id"), nullable=True
+        ),
+        sa.Column("scheda_e", sa.Boolean(), nullable=True),
+        sa.Column("codice_impegnativa", sa.String(length=7), nullable=True),
+        sa.Column("numero_impegnativa", sa.String(length=11), nullable=True),
+        sa.Column("data_impegnativa", sa.Date(), nullable=True),
+        sa.Column("provenienza_id", sa.Integer(), sa.ForeignKey("provenienze.id"), nullable=True),
+        sa.Column(
+            "diagnosi_ingresso_id", sa.Integer(), sa.ForeignKey("diagnosi.id"), nullable=True
+        ),
+        sa.Column(
+            "medico_inviante_id", sa.Integer(), sa.ForeignKey("medici_esterni.id"), nullable=True
+        ),
+        sa.Column("prenotazione_id", sa.Integer(), sa.ForeignKey("prenotazioni.id"), nullable=True),
+        sa.Column("locked_user_id", sa.Integer(), sa.ForeignKey("dipendenti.id"), nullable=True),
+        sa.Column("specialista_medico_id", sa.Integer(), nullable=True),
+        sa.Column("specialista_chirurgo_id", sa.Integer(), nullable=True),
+        sa.Column("tutor_id", sa.Integer(), nullable=True),
+        sa.Column("parente_id", sa.Integer(), nullable=True),
+        sa.Column("note_amministrative", sa.String(length=250), nullable=True),
+        sa.Column("note_cliniche", sa.String(length=250), nullable=True),
+        sa.Column("computer", sa.String(length=50), nullable=True),
+        sa.Column("anno_prericovero", sa.Integer(), nullable=True),
+        sa.Column("mese_prericovero", sa.String(length=10), nullable=True),
+    )
+    op.create_index("ix_prericoveri_cartella_clinica", "prericoveri", ["cartella_clinica"])
+
     op.create_table(
         "ricoveri",
         sa.Column("id", sa.Integer(), sa.ForeignKey("contatti_pz.id"), primary_key=True),
@@ -344,21 +467,45 @@ def upgrade() -> None:
         sa.Column("data_ricovero", sa.Date(), nullable=False),
         sa.Column("data_dimissione", sa.Date(), nullable=True),
         sa.Column("stato", sa.String(length=20), nullable=False, server_default="aperto"),
+        sa.Column("prenotazione_id", sa.Integer(), sa.ForeignKey("prenotazioni.id"), nullable=True),
+        sa.Column("prericovero_id", sa.Integer(), sa.ForeignKey("prericoveri.id"), nullable=True),
+    )
+
+    op.create_table(
+        "disdetta_prenotazione",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("motivo", sa.String(length=200), nullable=True),
+        sa.Column(
+            "prenotazione_id",
+            sa.Integer(),
+            sa.ForeignKey("prenotazioni.id"),
+            nullable=True,
+            unique=True,
+        ),
     )
 
 
 def downgrade() -> None:
     """Downgrade schema."""
+    op.drop_table("disdetta_prenotazione")
     op.drop_table("ricoveri")
+    op.drop_index("ix_prericoveri_cartella_clinica", table_name="prericoveri")
+    op.drop_table("prericoveri")
+    op.drop_table("prenotazioni")
     op.drop_index("ix_contatti_pz_paziente_id", table_name="contatti_pz")
     op.drop_table("contatti_pz")
     op.drop_index("ix_pazienti_codice_fiscale", table_name="pazienti")
     op.drop_table("pazienti")
+    op.drop_table("discipline")
     op.drop_table("dipendenti")
     op.drop_table("presidi_osp")
     op.drop_table("medici_esterni")
     op.drop_table("asp")
     op.drop_table("comuni")
+    op.drop_table("diagnosi")
+    op.drop_table("provenienze")
+    op.drop_table("modalita_accesso")
+    op.drop_table("gradi_urgenza")
     op.drop_table("rapporti_dipendenza")
     op.drop_table("tipi_dipendente")
     op.drop_table("titoli")

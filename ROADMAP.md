@@ -11,41 +11,29 @@ Convenzioni:
 - Non restare bloccato: se la tua PR è in review, prendi un item sbloccabile dal *Backlog*.
 
 ## In corso
-- [ ] Completamento campi legacy XPO sulle tabelle anagrafiche — branch:
-      `feat/campi-mancanti-anagrafica`. Tutte le lookup ora hanno i campi persistenti
-      del rispettivo oggetto XPO: `Dipendente` e `PresidioOsp` completati (non più
-      minimi), aggiunte `Titolo`/`TipoDipendente`/`RapportoDipendenza`, colmati piccoli
-      gap (`transcodifica`, `codice_altro_sistema`, ecc.) e campi calcolati (Nominativo).
-      Fonte autoritativa = oggetto XPO C# (colonne solo-SQL come `SiglaRegione`, o
-      pseudo-proprietà come `Prov`, non portate). `Reparti` e `Medici`, referenziati da
-      `Dipendente`/`PresidioOsp`, sono FK-placeholder (Integer nullable) — vedi Backlog.
-      Codici Gestclid (`Codpaz`/`Cod_dpaz`/`Codric`) restano esclusi come da decisione.
-      Migration allineata (verificata vs metadati), ruff pulito, test verdi in collezione;
-      manca la verifica end-to-end contro un Postgres reale.
-- [ ] Anagrafica Paziente + ContattoPz (base, campi completi) + Ricovero (sottotipo) —
-      prima slice MVP — branch: `feat/paziente-contatto-ricovero`. Paziente e ContattoPz
-      ora includono tutti i campi scalari persistenti del legacy (con relative tabelle
-      lookup: Comune, Regione, GruppoSanguigno, StatoCivile, Professione,
-      PosizioneProfessionale, TipoDocumento, LivelloIstruzione, CategoriaPaziente, Stato,
-      Asp, MedicoEsterno, PresidioOsp, Dipendente — questi ultimi due in versione minima,
-      l'anagrafica organizzativa completa è nel Backlog) e i campi calcolati (Nominativo,
-      Iniziali, IMC, Superficie Corporea, Comune_Provincia, ecc., come property Python /
-      `computed_field` Pydantic, mai colonne DB). Le relazioni uno-a-molti verso altri
-      domini (Telefoni, Parenti, Anamnesi, Fatture, Imaging, Microbiologia) sono state
-      **rimandate a slice dedicate per dominio**, vedi Backlog. Codice, migration e test
-      scritti; manca la verifica end-to-end (nessun PostgreSQL raggiungibile in questa
-      sessione — da lanciare `uv run alembic upgrade head` + `uv run pytest` contro
-      un'istanza reale prima di chiudere la slice).
+<!-- - [ ] Titolo slice — branch: `feat/...` -->
+
+## Debito aperto (da chiudere appena c'è un Postgres raggiungibile)
+- [ ] **Verifica su PostgreSQL reale mai eseguita.** Nessun PostgreSQL è stato raggiungibile
+      nelle sessioni di sviluppo: `alembic upgrade head` non ha **mai** girato contro un DB
+      reale. Mitigazioni in essere (non sostitutive): la coerenza migration↔modelli è
+      verificata applicando la migration a uno SQLite usa-e-getta e diffandola con i
+      metadati SQLAlchemy; la suite `pytest` **gira ed è verde su SQLite**
+      (`TEST_DATABASE_URL="sqlite:///./test_tmp.db" uv run pytest`, vedi README). Restano
+      scoperte le differenze specifiche di PostgreSQL (tipi, vincoli, JSONB futuro) e il
+      percorso Alembic. Da fare prima di considerare davvero chiuse le slice mergiate.
 
 ## Backlog
 - [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)
-- [ ] Prenotazione + Prericovero (percorso ricovero: entrambi opzionali, con link
-      incrociati a Prenotazione/Prericovero/Ricovero — vedi diagramma in CLAUDE.md)
 - [ ] Prenotazione Ambulatorio + Prestazione Ambulatoriale (percorso ambulatoriale, link
       bidirezionale tra i due)
 - [ ] Rilevazioni (parametri vitali, esami di laboratorio) collegate al Ricovero
-- [ ] Procedure previste / effettuate collegate al Ricovero
+- [ ] Procedure previste / effettuate collegate al Ricovero (incl. la collection
+      `ProcedurePreviste` su Prenotazione)
 - [ ] SDO / SDO10 (scheda dimissione ospedaliera)
+- [ ] Rinvii + MotiviRinvio (uno-a-molti da Prenotazione)
+- [ ] Codifiche cliniche ICD9/ICD10 (GlobalClinModule): oggi `Diagnosi.icd9_cm_id` è un
+      FK-placeholder Integer
 - [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)
 - [ ] Parenti del paziente (uno-a-molti da Paziente)
 - [ ] Anamnesi clinica (FattoriRischio, Patologie, AllergieIntolleranze,
@@ -67,4 +55,17 @@ Convenzioni:
 - [x] Definire lo stack del progetto (FastAPI + PostgreSQL) e documentarlo in `CLAUDE.md` — 2026-07-10
 - [x] Analisi del db legacy (`cocisdb_vuoto.sql`) con `/graphify` per informare il modello dati — 2026-07-10
 - [x] Ricostruzione del grafo da codice sorgente legacy (`oldsystem/`, business object XPO) e mappa delle dipendenze tra moduli — 2026-07-13
-<!-- - [x] Titolo slice — 2026-06-01, PR #1 -->
+- [x] Anagrafica Paziente + ContattoPz (base polimorfica) + Ricovero (sottotipo) — prima slice
+      MVP: scaffolding FastAPI/SQLAlchemy/Alembic, joined-table inheritance, campi legacy
+      completi e campi calcolati come property/`computed_field` — 2026-07-13, PR #1
+- [x] Completamento campi legacy XPO sulle tabelle anagrafiche: `Dipendente` e `PresidioOsp`
+      completi, nuove lookup `Titolo`/`TipoDipendente`/`RapportoDipendenza`, gap minori
+      colmati. `Reparti`/`Medici` restano FK-placeholder (vedi Backlog) — 2026-07-16, PR #2
+- [x] Prenotazione + Prericovero (percorso ricovero): due nuovi sottotipi di `ContattoPz`,
+      link reali `Ricovero→{Prenotazione,Prericovero}` e `Prericovero→Prenotazione` (i
+      reverse erano `[NonPersistent]` nel legacy → relationship), 6 lookup nuove
+      (`GradoUrgenza`, `ModalitaAccesso`, `Provenienza`, `Disciplina`, `Diagnosi`,
+      `DisdettaPrenotazione`), router + 20 test verdi (prima esecuzione reale della suite,
+      su SQLite). Scoperta: i 5 "sottotipi" legacy di Prenotazioni (Ord/DH/DayService/
+      PreRic/PreRicDH) **non hanno tabella** (`MapInheritance.ParentTable`) → sono il campo
+      `regime_ricovero`, non entità — 2026-07-16, PR #3

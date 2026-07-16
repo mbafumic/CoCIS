@@ -11,6 +11,9 @@ class RicoveroBase(BaseModel):
     data_ricovero: date
     data_dimissione: date | None = None
     stato: Literal["aperto", "dimesso"] = "aperto"
+    # percorso ricovero: entrambi opzionali (un ricovero urgente non ha prericovero)
+    prenotazione_id: int | None = None
+    prericovero_id: int | None = None
 
 
 class RicoveroCreate(ContattoPzBase, RicoveroBase):
