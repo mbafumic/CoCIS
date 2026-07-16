@@ -35,7 +35,9 @@ Convenzioni:
 - [ ] Codifiche cliniche ICD9/ICD10 (GlobalClinModule): oggi `Diagnosi.icd9_cm_id` è un
       FK-placeholder Integer
 - [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)
-- [ ] Parenti del paziente (uno-a-molti da Paziente)
+- [ ] Parenti del paziente (uno-a-molti da Paziente); oggi `Prericovero.parente_id` è un
+      FK-placeholder Integer
+- [ ] Gestione posti letto (Letti/Camere — uno-a-molti da Reparto)
 - [ ] Anamnesi clinica (FattoriRischio, Patologie, AllergieIntolleranze,
       InterventiPregressi, EsamiDiagEsterni da ContattoPz; PresidiPaziente da Paziente —
       dominio coeso, una slice)
@@ -43,13 +45,7 @@ Convenzioni:
 - [ ] Diagnostica per immagini / DICOM (EsamiDICOM da ContattoPz; EsamiDICOMEsterni e
       RefertiAmbMdw da Paziente)
 - [ ] Microbiologia (EsamiMicrobiologici e Tamponi — uno-a-molti da Paziente)
-- [ ] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` è una tabella grande
-      (~30 campi, letti/magazzino/terapia), `Medici` è un sottotipo di `Dipendente`
-      (chiave condivisa). Oggi sono referenziati come FK-placeholder Integer da
-      `Dipendente.reparto_predefinito_id` e `PresidioOsp.direttore_sanitario_id`/
-      `responsabile_dipartimento_id`: modellandoli, quei placeholder diventano FK vere e
-      si aggiungono le relazioni inverse (Dipendente↔Reparti, ecc.). Vedi mappa moduli in
-      CLAUDE.md.
+- [ ] Specializzazioni (M:M con Dipendente, legata a `TipoDipendente`)
 
 ## Fatto
 - [x] Definire lo stack del progetto (FastAPI + PostgreSQL) e documentarlo in `CLAUDE.md` — 2026-07-10
@@ -69,3 +65,11 @@ Convenzioni:
       su SQLite). Scoperta: i 5 "sottotipi" legacy di Prenotazioni (Ord/DH/DayService/
       PreRic/PreRicDH) **non hanno tabella** (`MapInheritance.ParentTable`) → sono il campo
       `regime_ricovero`, non entità — 2026-07-16, PR #3
+- [x] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` (~30 campi, M:M con
+      Dipendente, self-ref magazzino) e `Medico` come **sottotipo di `Dipendente`**
+      (seconda gerarchia polimorfica del progetto, discriminatore `tipo_personale`).
+      **Sciolti 8 dei 10 FK-placeholder** accumulati nelle slice precedenti; i 2 su
+      `PresidioOsp` restano senza FK a DB di proposito (ciclo `presidi_osp→medici→
+      dipendenti→presidi_osp`, come nel legacy) ma sono navigabili via relationship.
+      Scoperta: `repartireparti_medicimedici` è una tabella morta (nessun oggetto XPO la
+      dichiara) → non modellata — 2026-07-16, branch `feat/reparti-medici`

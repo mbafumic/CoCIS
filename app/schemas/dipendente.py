@@ -57,6 +57,7 @@ class DipendenteRead(DipendenteBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    tipo_personale: str
 
     @computed_field
     @property

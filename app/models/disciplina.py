@@ -7,14 +7,11 @@ from app.db import Base
 
 if TYPE_CHECKING:
     from app.models.dipendente import Dipendente
+    from app.models.reparto import Reparto
 
 
 class Disciplina(Base):
-    """Disciplina/unità funzionale (codifica ministeriale del reparto di degenza).
-
-    `reparto_degenza_id` referenzia `Reparti`, non ancora modellato (dominio
-    anagrafica organizzativa — vedi Backlog): è un FK-placeholder Integer nullable.
-    """
+    """Disciplina/unità funzionale (codifica ministeriale del reparto di degenza)."""
 
     __tablename__ = "discipline"
 
@@ -27,6 +24,7 @@ class Disciplina(Base):
     gg_terapia_fino_sosp: Mapped[int | None] = mapped_column(Integer, default=None)
     allegati_cc: Mapped[bool | None] = mapped_column(Boolean, default=None)
     responsabile_id: Mapped[int | None] = mapped_column(ForeignKey("dipendenti.id"), default=None)
-    reparto_degenza_id: Mapped[int | None] = mapped_column(Integer, default=None)
+    reparto_degenza_id: Mapped[int | None] = mapped_column(ForeignKey("reparti.id"), default=None)
 
     responsabile: Mapped["Dipendente | None"] = relationship()
+    reparto_degenza: Mapped["Reparto | None"] = relationship()
