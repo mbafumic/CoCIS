@@ -13,15 +13,25 @@ Convenzioni:
 ## In corso
 <!-- - [ ] Titolo slice — branch: `feat/...` -->
 
-## Debito aperto (da chiudere appena c'è un Postgres raggiungibile)
-- [ ] **Verifica su PostgreSQL reale mai eseguita.** Nessun PostgreSQL è stato raggiungibile
-      nelle sessioni di sviluppo: `alembic upgrade head` non ha **mai** girato contro un DB
-      reale. Mitigazioni in essere (non sostitutive): la coerenza migration↔modelli è
-      verificata applicando la migration a uno SQLite usa-e-getta e diffandola con i
-      metadati SQLAlchemy; la suite `pytest` **gira ed è verde su SQLite**
-      (`TEST_DATABASE_URL="sqlite:///./test_tmp.db" uv run pytest`, vedi README). Restano
-      scoperte le differenze specifiche di PostgreSQL (tipi, vincoli, JSONB futuro) e il
-      percorso Alembic. Da fare prima di considerare davvero chiuse le slice mergiate.
+## Debito aperto
+<!-- - [ ] Titolo — descrizione -->
+
+## Debito chiuso
+- [x] **Verifica su PostgreSQL reale** — 2026-07-17. `alembic upgrade head` eseguito con
+      successo contro un'istanza reale (le 32 tabelle attese, nessuna in più/mancante,
+      confrontate con `Base.metadata`). Verificati anche a mano: i 63 vincoli FK (incl. le
+      self-FK `reparti.reparto_mag_id`/`medici.tutor_spec_id` e la corretta **assenza** di FK
+      su `presidi_osp.direttore_sanitario_id`/`responsabile_dipartimento_id` — il ciclo va
+      rotto lì, come nel legacy); un giro end-to-end via HTTP del percorso
+      Paziente→Prenotazione→Prericovero→Ricovero; il polimorfismo `Dipendente`→`Medico` e la
+      M:M `reparti_dipendenti` via SQLAlchemy diretto. Dati di verifica ripuliti a fine sessione
+      (schema intatto, tabelle vuote). Nota operativa: il DB `cocisdb` su questo server condiviso
+      apparteneva a un altro ruolo (`s_coscience`) — schema `public` senza `CREATE` per `cocis`
+      finché non se n'è cambiata la proprietà (comportamento di default da PostgreSQL 15+).
+      Bloccava **tutte** le slice precedenti (PR #1-#4): ora è sciolto per tutte in un colpo.
+      Resta da eseguire `pytest` contro Postgres (oggi verificato solo su SQLite, vedi README) —
+      richiede un `cocisdb_test` separato per non far collidere il `drop_all` di fine sessione
+      con lo schema appena migrato.
 
 ## Backlog
 - [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)
