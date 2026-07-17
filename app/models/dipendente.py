@@ -10,26 +10,28 @@ if TYPE_CHECKING:
     from app.models.comune import Comune
     from app.models.presidio_osp import PresidioOsp
     from app.models.rapporto_dipendenza import RapportoDipendenza
+    from app.models.reparto import Reparto
     from app.models.tipo_dipendente import TipoDipendente
     from app.models.titolo import Titolo
 
 
 class Dipendente(Base):
-    """Personale della struttura.
+    """Personale della struttura. Base polimorfica: `Medico` ne è un sottotipo.
 
     Nel legacy estende `PermissionPolicyUser` (base sicurezza DevExpress): quella
     infrastruttura (username/password/ruoli/audit XPO) non viene migrata, si
     reimplementa nativamente. Qui restano i soli campi di dominio.
 
-    `reparto_predefinito_id` referenzia `Reparti`, tabella grande di dominio proprio
-    (anagrafica organizzativa) non ancora modellata: è un FK-placeholder (Integer
-    nullable) finché `reparti` non sarà modellata. La relazione uno-a-molti inversa
-    con Reparti (un dipendente afferisce a più reparti) segue nella stessa slice.
+    Il discriminatore è `tipo_personale` (nel legacy era `ObjectType` sulla radice
+    `PermissionPolicyUser`). Da non confondere con `tipo_dipendente_id`, che è la FK
+    alla lookup `tipi_dipendente`: quello è un dato di riferimento editabile, questo
+    è il tipo ORM della riga.
     """
 
     __tablename__ = "dipendenti"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    tipo_personale: Mapped[str] = mapped_column(String(30), default="dipendente")
 
     # Anagrafica
     cognome: Mapped[str] = mapped_column(String(30))
@@ -57,7 +59,9 @@ class Dipendente(Base):
         ForeignKey("tipi_dipendente.id"), default=None
     )
     presidio_id: Mapped[int | None] = mapped_column(ForeignKey("presidi_osp.id"), default=None)
-    reparto_predefinito_id: Mapped[int | None] = mapped_column(Integer, default=None)
+    reparto_predefinito_id: Mapped[int | None] = mapped_column(
+        ForeignKey("reparti.id"), default=None
+    )
 
     # Email / posta
     email: Mapped[str | None] = mapped_column(String(60), default=None)
@@ -103,7 +107,20 @@ class Dipendente(Base):
     rapporto_dipendenza: Mapped["RapportoDipendenza | None"] = relationship()
     titolo: Mapped["Titolo | None"] = relationship()
     tipo_dipendente: Mapped["TipoDipendente | None"] = relationship()
-    presidio: Mapped["PresidioOsp | None"] = relationship(back_populates="dipendenti")
+    presidio: Mapped["PresidioOsp | None"] = relationship(
+        back_populates="dipendenti", foreign_keys=[presidio_id]
+    )
+    reparto_predefinito: Mapped["Reparto | None"] = relationship(
+        foreign_keys=[reparto_predefinito_id]
+    )
+    reparti: Mapped[list["Reparto"]] = relationship(
+        secondary="reparti_dipendenti", back_populates="dipendenti"
+    )
+
+    __mapper_args__ = {
+        "polymorphic_on": "tipo_personale",
+        "polymorphic_identity": "dipendente",
+    }
 
     @property
     def nominativo(self) -> str:

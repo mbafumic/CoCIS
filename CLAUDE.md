@@ -55,6 +55,15 @@ Decisioni di design per la riscrittura:
   Preferire un'unica entità con discriminatore di tipo (`tipo_scheda`, `tipo_contatto`) e un
   campo `JSONB` per gli attributi specifici del sottotipo, salvo che servano validazioni forti
   per-tipo (in quel caso, joined-table inheritance via SQLAlchemy).
+- **Gerarchie polimorfiche implementate** (joined-table inheritance, PK condivisa):
+  `ContattoPz` → `Prenotazione`/`Prericovero`/`Ricovero` (discriminatore `tipo_contatto`) e
+  `Dipendente` → `Medico` (discriminatore `tipo_personale`). Attenzione: nel legacy il
+  discriminatore XPO (`ObjectType`) sta sulla **radice** della gerarchia — per `Dipendenti`
+  è `PermissionPolicyUser`, infrastruttura di sicurezza che non migriamo, quindi il
+  discriminatore va introdotto ex novo.
+- **I sottotipi condividono la PK con la base**: se un modello ha altre FK verso una tabella
+  della stessa gerarchia, SQLAlchemy trova percorsi ambigui → servono `foreign_keys` /
+  `inherit_condition` espliciti (vedi `app/models/prenotazione.py`).
 - Le tabelle di sistema DevExpress (audit, permessi, metadata XPO — riconoscibili dai prefissi
   `devexpress_*`, `persistent*`, `xpo*`, `security*`) sono infrastruttura ORM legacy: **non
   vanno migrate**. Permessi e audit si reimplementano nativamente sullo stack scelto.
@@ -71,6 +80,17 @@ Decisioni di design per la riscrittura:
   `[NonPersistent]` (spesso reverse-lookup via query, o stringhe concatenate per la UI) non
   sono colonne: diventano `relationship` o property calcolate. Idem per i `PersistentAlias`
   (campi calcolati) → `@property` + `computed_field` Pydantic, mai colonne DB.
+- **Il dump SQL contiene tabelle e colonne morte.** L'oggetto XPO è la fonte autoritativa: se
+  nessuna business object dichiara una tabella/colonna, è un residuo e non va modellato (casi
+  reali: la M:M `repartireparti_medicimedici`, la colonna `comuni.SiglaRegione`,
+  `presidiosp.Prov`).
+- **FK-placeholder**: quando un campo referenzia una tabella di un dominio non ancora
+  modellato, si usa una colonna `Integer` nullable documentata, e la si promuove a FK vera
+  nella slice che modella quel dominio (vedi lo scioglimento fatto in `feat/reparti-medici`).
+- **Cicli di FK**: `presidi_osp → medici → dipendenti → presidi_osp` è un ciclo reale. Il
+  legacy lo rompe con `[NoForeignKey]` su `PresidiOsp.DirettoreSanitario`; facciamo lo stesso
+  (colonna senza FK + `relationship` con `primaryjoin`). Una FK vera richiederebbe
+  `use_alter` (ALTER ADD CONSTRAINT), che SQLite non supporta e romperebbe test e verifica.
 
 ### Mappa delle dipendenze tra moduli legacy (guida ai bounded context)
 

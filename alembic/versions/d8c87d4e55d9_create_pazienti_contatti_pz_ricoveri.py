@@ -197,10 +197,52 @@ def upgrade() -> None:
         sa.Column("responsabile_dipartimento_id", sa.Integer(), nullable=True),
     )
 
-    # dipendenti dipende da comuni, presidi_osp, titoli, tipi_dipendente, rapporti_dipendenza
+    # reparti dipende da presidi_osp (+ self-FK magazzino)
+    op.create_table(
+        "reparti",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("reparto", sa.String(length=50), nullable=True),
+        sa.Column("sigla", sa.String(length=11), nullable=True),
+        sa.Column("tipo", sa.String(length=20), nullable=True),
+        sa.Column("presidio_id", sa.Integer(), sa.ForeignKey("presidi_osp.id"), nullable=True),
+        sa.Column("letti_accreditati", sa.Integer(), nullable=True),
+        sa.Column("letti_non_accreditati", sa.Integer(), nullable=True),
+        sa.Column(
+            "no_check_letto_occupato", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
+        sa.Column("tipo_magazzino", sa.String(length=20), nullable=True),
+        sa.Column("reparto_mag_id", sa.Integer(), sa.ForeignKey("reparti.id"), nullable=True),
+        sa.Column("reparto_trasf_mag_id", sa.Integer(), sa.ForeignKey("reparti.id"), nullable=True),
+        sa.Column("accetta_trasferimenti", sa.Boolean(), nullable=True),
+        sa.Column("effettua_procedure", sa.Boolean(), nullable=True),
+        sa.Column("gestione_notizie_cliniche", sa.Boolean(), nullable=True),
+        sa.Column("gestione_terapia", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("data_avvio_terapia", sa.Date(), nullable=True),
+        sa.Column("ora_validazione_terapia", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("max_anticipo_somministrazione", sa.Integer(), nullable=True),
+        sa.Column("max_posticipo_somministrazione", sa.Integer(), nullable=True),
+        sa.Column("ora_insulina_colazione", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("ora_insulina_pranzo", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("ora_insulina_cena", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("ora_insulina_sera", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("codice_lis", sa.String(length=10), nullable=True),
+        sa.Column("diario_fkt", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("consegne_lavagna", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("print_order", sa.Integer(), nullable=True),
+        sa.Column("standard_procedure_giorno", sa.String(length=100), nullable=True),
+        sa.Column("standard_procedure_cipi_giorno", sa.String(length=150), nullable=True),
+        sa.Column("personale_docwin", sa.String(length=40), nullable=True),
+        sa.Column("shutdown_time", sa.Integer(), nullable=True),
+    )
+
+    # dipendenti dipende da comuni, presidi_osp, reparti, titoli, tipi_dipendente,
+    # rapporti_dipendenza
     op.create_table(
         "dipendenti",
         sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column(
+            "tipo_personale", sa.String(length=30), nullable=False, server_default="dipendente"
+        ),
         sa.Column("cognome", sa.String(length=30), nullable=False),
         sa.Column("nome", sa.String(length=30), nullable=False),
         sa.Column("data_nascita", sa.Date(), nullable=True),
@@ -227,7 +269,9 @@ def upgrade() -> None:
             "tipo_dipendente_id", sa.Integer(), sa.ForeignKey("tipi_dipendente.id"), nullable=True
         ),
         sa.Column("presidio_id", sa.Integer(), sa.ForeignKey("presidi_osp.id"), nullable=True),
-        sa.Column("reparto_predefinito_id", sa.Integer(), nullable=True),
+        sa.Column(
+            "reparto_predefinito_id", sa.Integer(), sa.ForeignKey("reparti.id"), nullable=True
+        ),
         sa.Column("email", sa.String(length=60), nullable=True),
         sa.Column("utente_email", sa.String(length=60), nullable=True),
         sa.Column("password_email", sa.String(length=30), nullable=True),
@@ -258,7 +302,37 @@ def upgrade() -> None:
         sa.Column("avviso", sa.Text(), nullable=True),
     )
 
-    # discipline dipende da dipendenti (responsabile)
+    # medici: sottotipo di dipendenti (PK condivisa) + self-FK tutor
+    op.create_table(
+        "medici",
+        sa.Column("id", sa.Integer(), sa.ForeignKey("dipendenti.id"), primary_key=True),
+        sa.Column("n_empam", sa.String(length=10), nullable=True),
+        sa.Column("codice_regionale", sa.String(length=16), nullable=True),
+        sa.Column("codice_lis", sa.String(length=10), nullable=True),
+        sa.Column("chirurgo", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("revisore_cc", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column(
+            "no_validazione_rilascio", sa.Boolean(), nullable=False, server_default=sa.false()
+        ),
+        sa.Column("font_referti", sa.String(length=100), nullable=True),
+        sa.Column("sigla_prog_op", sa.String(length=3), nullable=True),
+        sa.Column("percentuale_ambulatorio", sa.Numeric(28, 8), nullable=True),
+        sa.Column("percentuale_ambulatorio_prec", sa.Numeric(28, 8), nullable=True),
+        sa.Column("data_variazione_percentuale", sa.Date(), nullable=True),
+        sa.Column("tipo_compenso", sa.String(length=20), nullable=True),
+        sa.Column("specializzando", sa.Boolean(), nullable=False, server_default=sa.false()),
+        sa.Column("tutor_spec_id", sa.Integer(), sa.ForeignKey("medici.id"), nullable=True),
+        sa.Column("anno_corso", sa.String(length=100), nullable=True),
+    )
+
+    # M:M reparti <-> dipendenti
+    op.create_table(
+        "reparti_dipendenti",
+        sa.Column("reparto_id", sa.Integer(), sa.ForeignKey("reparti.id"), primary_key=True),
+        sa.Column("dipendente_id", sa.Integer(), sa.ForeignKey("dipendenti.id"), primary_key=True),
+    )
+
+    # discipline dipende da dipendenti (responsabile) e reparti (reparto_degenza)
     op.create_table(
         "discipline",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -270,7 +344,7 @@ def upgrade() -> None:
         sa.Column("gg_terapia_fino_sosp", sa.Integer(), nullable=True),
         sa.Column("allegati_cc", sa.Boolean(), nullable=True),
         sa.Column("responsabile_id", sa.Integer(), sa.ForeignKey("dipendenti.id"), nullable=True),
-        sa.Column("reparto_degenza_id", sa.Integer(), nullable=True),
+        sa.Column("reparto_degenza_id", sa.Integer(), sa.ForeignKey("reparti.id"), nullable=True),
     )
 
     # --- anagrafica principale ---
@@ -406,9 +480,11 @@ def upgrade() -> None:
         sa.Column(
             "medico_inviante_id", sa.Integer(), sa.ForeignKey("medici_esterni.id"), nullable=True
         ),
-        sa.Column("specialista_medico_id", sa.Integer(), nullable=True),
-        sa.Column("specialista_chirurgo_id", sa.Integer(), nullable=True),
-        sa.Column("tutor_id", sa.Integer(), nullable=True),
+        sa.Column("specialista_medico_id", sa.Integer(), sa.ForeignKey("medici.id"), nullable=True),
+        sa.Column(
+            "specialista_chirurgo_id", sa.Integer(), sa.ForeignKey("medici.id"), nullable=True
+        ),
+        sa.Column("tutor_id", sa.Integer(), sa.ForeignKey("medici.id"), nullable=True),
         sa.Column("note_amministrative", sa.String(length=250), nullable=True),
         sa.Column("note_cliniche", sa.String(length=255), nullable=True),
         sa.Column("classe_priorita", sa.String(length=1), nullable=True),
@@ -448,9 +524,11 @@ def upgrade() -> None:
         ),
         sa.Column("prenotazione_id", sa.Integer(), sa.ForeignKey("prenotazioni.id"), nullable=True),
         sa.Column("locked_user_id", sa.Integer(), sa.ForeignKey("dipendenti.id"), nullable=True),
-        sa.Column("specialista_medico_id", sa.Integer(), nullable=True),
-        sa.Column("specialista_chirurgo_id", sa.Integer(), nullable=True),
-        sa.Column("tutor_id", sa.Integer(), nullable=True),
+        sa.Column("specialista_medico_id", sa.Integer(), sa.ForeignKey("medici.id"), nullable=True),
+        sa.Column(
+            "specialista_chirurgo_id", sa.Integer(), sa.ForeignKey("medici.id"), nullable=True
+        ),
+        sa.Column("tutor_id", sa.Integer(), sa.ForeignKey("medici.id"), nullable=True),
         sa.Column("parente_id", sa.Integer(), nullable=True),
         sa.Column("note_amministrative", sa.String(length=250), nullable=True),
         sa.Column("note_cliniche", sa.String(length=250), nullable=True),
@@ -497,7 +575,10 @@ def downgrade() -> None:
     op.drop_index("ix_pazienti_codice_fiscale", table_name="pazienti")
     op.drop_table("pazienti")
     op.drop_table("discipline")
+    op.drop_table("reparti_dipendenti")
+    op.drop_table("medici")
     op.drop_table("dipendenti")
+    op.drop_table("reparti")
     op.drop_table("presidi_osp")
     op.drop_table("medici_esterni")
     op.drop_table("asp")

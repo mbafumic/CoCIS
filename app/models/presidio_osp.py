@@ -9,15 +9,18 @@ if TYPE_CHECKING:
     from app.models.asp import Asp
     from app.models.comune import Comune
     from app.models.dipendente import Dipendente
+    from app.models.medico import Medico
+    from app.models.reparto import Reparto
 
 
 class PresidioOsp(Base):
     """Presidio ospedaliero (sede fisica della struttura).
 
-    `direttore_sanitario_id` e `responsabile_dipartimento_id` referenziano
-    `Medici` nel legacy: `Medici` non è ancora modellato (è un sottotipo di
-    `Dipendente`, dominio staff medico — vedi Backlog), quindi qui sono FK-placeholder
-    (Integer nullable, diventeranno FK vere quando la tabella medici sarà modellata).
+    `direttore_sanitario_id` e `responsabile_dipartimento_id` referenziano `Medico`
+    ma **non hanno una FK a DB**, di proposito: creerebbero un ciclo
+    `presidi_osp → medici → dipendenti → presidi_osp`. Il legacy risolve allo stesso
+    modo (`[NoForeignKey]`: nel dump SQL l'unico constraint di `presidiosp` è
+    `Comune`). Le relationship qui sotto le rendono comunque navigabili dall'ORM.
     """
 
     __tablename__ = "presidi_osp"
@@ -45,10 +48,21 @@ class PresidioOsp(Base):
 
     home_page: Mapped[bytes | None] = mapped_column(LargeBinary, default=None)
 
-    # FK-placeholder verso Medici (non ancora modellato) - vedi docstring
+    # Riferimenti a Medico senza FK a DB (ciclo) - vedi docstring
     direttore_sanitario_id: Mapped[int | None] = mapped_column(Integer, default=None)
     responsabile_dipartimento_id: Mapped[int | None] = mapped_column(Integer, default=None)
 
     comune: Mapped["Comune | None"] = relationship()
     asp: Mapped["Asp | None"] = relationship()
-    dipendenti: Mapped[list["Dipendente"]] = relationship(back_populates="presidio")
+    dipendenti: Mapped[list["Dipendente"]] = relationship(
+        back_populates="presidio", foreign_keys="Dipendente.presidio_id"
+    )
+    reparti: Mapped[list["Reparto"]] = relationship(back_populates="presidio")
+    direttore_sanitario: Mapped["Medico | None"] = relationship(
+        primaryjoin="foreign(PresidioOsp.direttore_sanitario_id) == Medico.id",
+        viewonly=True,
+    )
+    responsabile_dipartimento: Mapped["Medico | None"] = relationship(
+        primaryjoin="foreign(PresidioOsp.responsabile_dipartimento_id) == Medico.id",
+        viewonly=True,
+    )

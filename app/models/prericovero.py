@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from app.models.diagnosi import Diagnosi
     from app.models.dipendente import Dipendente
     from app.models.disciplina import Disciplina
+    from app.models.medico import Medico
     from app.models.medico_esterno import MedicoEsterno
     from app.models.modalita_accesso import ModalitaAccesso
     from app.models.prenotazione import Prenotazione
@@ -27,9 +28,8 @@ class Prericovero(ContattoPz):
     resta la PK condivisa con contatti_pz e `cartella_clinica` è una colonna
     normale indicizzata.
 
-    `specialista_medico_id`/`specialista_chirurgo_id`/`tutor_id` (→Medici) e
-    `parente_id` (→Parenti) sono FK-placeholder Integer: quelle tabelle non sono
-    ancora modellate (vedi Backlog).
+    `parente_id` (→Parenti) è un FK-placeholder Integer: quella tabella non è
+    ancora modellata (vedi Backlog).
     """
 
     __tablename__ = "prericoveri"
@@ -64,10 +64,12 @@ class Prericovero(ContattoPz):
     prenotazione_id: Mapped[int | None] = mapped_column(ForeignKey("prenotazioni.id"), default=None)
     locked_user_id: Mapped[int | None] = mapped_column(ForeignKey("dipendenti.id"), default=None)
 
-    # FK-placeholder verso Medici / Parenti (non ancora modellati)
-    specialista_medico_id: Mapped[int | None] = mapped_column(Integer, default=None)
-    specialista_chirurgo_id: Mapped[int | None] = mapped_column(Integer, default=None)
-    tutor_id: Mapped[int | None] = mapped_column(Integer, default=None)
+    specialista_medico_id: Mapped[int | None] = mapped_column(ForeignKey("medici.id"), default=None)
+    specialista_chirurgo_id: Mapped[int | None] = mapped_column(
+        ForeignKey("medici.id"), default=None
+    )
+    tutor_id: Mapped[int | None] = mapped_column(ForeignKey("medici.id"), default=None)
+    # FK-placeholder verso Parenti (non ancora modellato - vedi Backlog)
     parente_id: Mapped[int | None] = mapped_column(Integer, default=None)
 
     note_amministrative: Mapped[str | None] = mapped_column(String(250), default=None)
@@ -97,7 +99,12 @@ class Prericovero(ContattoPz):
     provenienza: Mapped["Provenienza | None"] = relationship()
     diagnosi_ingresso: Mapped["Diagnosi | None"] = relationship()
     medico_inviante: Mapped["MedicoEsterno | None"] = relationship()
-    locked_user: Mapped["Dipendente | None"] = relationship()
+    locked_user: Mapped["Dipendente | None"] = relationship(foreign_keys=[locked_user_id])
+    specialista_medico: Mapped["Medico | None"] = relationship(foreign_keys=[specialista_medico_id])
+    specialista_chirurgo: Mapped["Medico | None"] = relationship(
+        foreign_keys=[specialista_chirurgo_id]
+    )
+    tutor: Mapped["Medico | None"] = relationship(foreign_keys=[tutor_id])
     prenotazione: Mapped["Prenotazione | None"] = relationship(
         back_populates="prericovero", foreign_keys=[prenotazione_id]
     )

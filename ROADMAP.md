@@ -13,15 +13,28 @@ Convenzioni:
 ## In corso
 <!-- - [ ] Titolo slice — branch: `feat/...` -->
 
-## Debito aperto (da chiudere appena c'è un Postgres raggiungibile)
-- [ ] **Verifica su PostgreSQL reale mai eseguita.** Nessun PostgreSQL è stato raggiungibile
-      nelle sessioni di sviluppo: `alembic upgrade head` non ha **mai** girato contro un DB
-      reale. Mitigazioni in essere (non sostitutive): la coerenza migration↔modelli è
-      verificata applicando la migration a uno SQLite usa-e-getta e diffandola con i
-      metadati SQLAlchemy; la suite `pytest` **gira ed è verde su SQLite**
-      (`TEST_DATABASE_URL="sqlite:///./test_tmp.db" uv run pytest`, vedi README). Restano
-      scoperte le differenze specifiche di PostgreSQL (tipi, vincoli, JSONB futuro) e il
-      percorso Alembic. Da fare prima di considerare davvero chiuse le slice mergiate.
+## Debito aperto
+<!-- - [ ] Titolo — descrizione -->
+
+## Debito chiuso
+- [x] **Verifica su PostgreSQL reale** — 2026-07-17. `alembic upgrade head` eseguito con
+      successo contro un'istanza reale (le 32 tabelle attese, nessuna in più/mancante,
+      confrontate con `Base.metadata`). Verificati anche a mano: i 63 vincoli FK (incl. le
+      self-FK `reparti.reparto_mag_id`/`medici.tutor_spec_id` e la corretta **assenza** di FK
+      su `presidi_osp.direttore_sanitario_id`/`responsabile_dipartimento_id` — il ciclo va
+      rotto lì, come nel legacy); un giro end-to-end via HTTP del percorso
+      Paziente→Prenotazione→Prericovero→Ricovero; il polimorfismo `Dipendente`→`Medico` e la
+      M:M `reparti_dipendenti` via SQLAlchemy diretto. Dati di verifica ripuliti a fine sessione
+      (schema intatto, tabelle vuote). Nota operativa: il DB `cocisdb` su questo server condiviso
+      apparteneva a un altro ruolo (`s_coscience`) — schema `public` senza `CREATE` per `cocis`
+      finché non se n'è cambiata la proprietà (comportamento di default da PostgreSQL 15+).
+      Bloccava **tutte** le slice precedenti (PR #1-#4): ora è sciolto per tutte in un colpo.
+- [x] **`pytest` contro PostgreSQL reale** — 2026-07-17. Creato `cocisdb_test` (database
+      separato da `cocisdb`, proprietà di `cocis` fin dalla creazione — nessun problema di
+      permessi sullo schema `public`). **28/28 test verdi** contro l'istanza reale; il
+      `drop_all` di fine sessione ripulisce correttamente `cocisdb_test` senza toccare lo
+      schema migrato in `cocisdb`. La Definition of Done ("test verdi") è ora soddisfatta su
+      Postgres, non solo su SQLite, per tutte le slice mergiate (PR #1-#4).
 
 ## Backlog
 - [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)
@@ -35,7 +48,9 @@ Convenzioni:
 - [ ] Codifiche cliniche ICD9/ICD10 (GlobalClinModule): oggi `Diagnosi.icd9_cm_id` è un
       FK-placeholder Integer
 - [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)
-- [ ] Parenti del paziente (uno-a-molti da Paziente)
+- [ ] Parenti del paziente (uno-a-molti da Paziente); oggi `Prericovero.parente_id` è un
+      FK-placeholder Integer
+- [ ] Gestione posti letto (Letti/Camere — uno-a-molti da Reparto)
 - [ ] Anamnesi clinica (FattoriRischio, Patologie, AllergieIntolleranze,
       InterventiPregressi, EsamiDiagEsterni da ContattoPz; PresidiPaziente da Paziente —
       dominio coeso, una slice)
@@ -43,13 +58,7 @@ Convenzioni:
 - [ ] Diagnostica per immagini / DICOM (EsamiDICOM da ContattoPz; EsamiDICOMEsterni e
       RefertiAmbMdw da Paziente)
 - [ ] Microbiologia (EsamiMicrobiologici e Tamponi — uno-a-molti da Paziente)
-- [ ] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` è una tabella grande
-      (~30 campi, letti/magazzino/terapia), `Medici` è un sottotipo di `Dipendente`
-      (chiave condivisa). Oggi sono referenziati come FK-placeholder Integer da
-      `Dipendente.reparto_predefinito_id` e `PresidioOsp.direttore_sanitario_id`/
-      `responsabile_dipartimento_id`: modellandoli, quei placeholder diventano FK vere e
-      si aggiungono le relazioni inverse (Dipendente↔Reparti, ecc.). Vedi mappa moduli in
-      CLAUDE.md.
+- [ ] Specializzazioni (M:M con Dipendente, legata a `TipoDipendente`)
 
 ## Fatto
 - [x] Definire lo stack del progetto (FastAPI + PostgreSQL) e documentarlo in `CLAUDE.md` — 2026-07-10
@@ -69,3 +78,11 @@ Convenzioni:
       su SQLite). Scoperta: i 5 "sottotipi" legacy di Prenotazioni (Ord/DH/DayService/
       PreRic/PreRicDH) **non hanno tabella** (`MapInheritance.ParentTable`) → sono il campo
       `regime_ricovero`, non entità — 2026-07-16, PR #3
+- [x] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` (~30 campi, M:M con
+      Dipendente, self-ref magazzino) e `Medico` come **sottotipo di `Dipendente`**
+      (seconda gerarchia polimorfica del progetto, discriminatore `tipo_personale`).
+      **Sciolti 8 dei 10 FK-placeholder** accumulati nelle slice precedenti; i 2 su
+      `PresidioOsp` restano senza FK a DB di proposito (ciclo `presidi_osp→medici→
+      dipendenti→presidi_osp`, come nel legacy) ma sono navigabili via relationship.
+      Scoperta: `repartireparti_medicimedici` è una tabella morta (nessun oggetto XPO la
+      dichiara) → non modellata — 2026-07-16, branch `feat/reparti-medici`

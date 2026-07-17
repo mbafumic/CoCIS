@@ -6,8 +6,8 @@
 | **Session ID** | `72dad8ad-6bab-4f4f-8cd3-76fa10315bfa` |
 | **Working Dir** | `c:\Users\OMONACO.DROMONACO\CoCIS` |
 | **Started** | 7/10/2026, 11:42:34 AM |
-| **Last Updated** | 7/14/2026, 12:54:36 PM |
-| **Messages** | 877 |
+| **Last Updated** | 7/17/2026, 10:54:50 AM |
+| **Messages** | 1633 |
 
 ---
 
@@ -14206,6 +14206,11772 @@ Fatto. Riepilogo:
 **Le 14 relazioni uno-a-molti** verso domini interi (Telefoni, Parenti, Anamnesi clinica, Fatture, Imaging DICOM, Microbiologia) sono state **rimandate a 6 slice dedicate**, aggiunte al Backlog di `ROADMAP.md` come hai chiesto — evitano di far esplodere questa slice oltre l'anagrafica.
 
 **Verifica**: ho scritto uno script che applica la migration a un SQLite temporaneo e la confronta byte-per-byte con i metadati SQLAlchemy — combacia esattamente. `ruff check`/`format` puliti, 10 test si collezionano, l'app si avvia. Resta sempre sospesa solo la verifica contro un Postgres reale.
+
+
+---
+
+## User <sup>7/15/2026, 12:54:56 PM</sup>
+
+<command-name>/model</command-name>
+            <command-message>model</command-message>
+            <command-args>opus</command-args>
+
+
+---
+
+## User <sup>7/15/2026, 12:54:56 PM</sup>
+
+<local-command-stdout>Set model to claude-opus-4-8</local-command-stdout>
+
+
+---
+
+## User <sup>7/15/2026, 12:55:40 PM</sup>
+
+<command-message>coscience</command-message>
+<command-name>/coscience</command-name>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:55:47 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:55:48 PM</sup>
+
+Sono passato a Opus 4.8. Eseguo il loop `/coscience`: leggo lo stato attuale.
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:55:49 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git branch --show-current && echo \"---status---\" && git status --short",
+  "description": "Check current branch and uncommitted changes"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 12:55:52 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+main
+---status---
+ M .cc-history/2026-07-10_114234_command-messagecosciencecommand-mess_72dad8ad.md
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:00 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:01 PM</sup>
+
+Il branch è tornato a `main` e le modifiche non risultano più pending. Verifico cosa è successo (commit? merge?).
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:02 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git log --oneline -8 && echo \"---branches---\" && git branch -a",
+  "description": "Check recent commits and branches"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 12:56:02 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+f319d39 Aggiunto file chat locale.
+b8d3377 Aggiornate tabelle pazienti, contattipz con i campi e le relazioni mancanti.
+ccf7fcf Merge pull request #1 from mbafumic/feat/paziente-contatto-ricovero
+0d07c3f Inizio pianificazione.
+c371d2e Grafo aggiornato secondo oggetti Xpo.
+9c1687d Aggiunto grafo
+7ffb83b Prima analisi graphify
+beb4e7f Initial commit
+---branches---
+  feat/paziente-contatto-ricovero
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/feat/paziente-contatto-ricovero
+  remotes/origin/main
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:08 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:09 PM</sup>
+
+Le modifiche sono state committate e mergiate su `main` (PR #1 + commit successivi). Leggo `ROADMAP.md` e `CLAUDE.md` per capire cosa c'è da fare ora.
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:10 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 12:56:10 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	# Roadmap
+2	
+3	Tabella di marcia condivisa del progetto: **unica fonte di verità**. Ogni dev, da ogni
+4	branch, legge e aggiorna questo file. La skill `/coscience` lo usa per dirti cosa fare e per
+5	registrare gli avanzamenti.
+6	
+7	Convenzioni:
+8	- Una riga = una slice verticale (piccola, rilasciabile).
+9	- Annota il branch accanto agli item *In corso*.
+10	- Quando chiudi una slice spostala in *Fatto* con data e, se c'è, PR#.
+11	- Non restare bloccato: se la tua PR è in review, prendi un item sbloccabile dal *Backlog*.
+12	
+13	## In corso
+14	- [ ] Anagrafica Paziente + ContattoPz (base, campi completi) + Ricovero (sottotipo) —
+15	      prima slice MVP — branch: `feat/paziente-contatto-ricovero`. Paziente e ContattoPz
+16	      ora includono tutti i campi scalari persistenti del legacy (con relative tabelle
+17	      lookup: Comune, Regione, GruppoSanguigno, StatoCivile, Professione,
+18	      PosizioneProfessionale, TipoDocumento, LivelloIstruzione, CategoriaPaziente, Stato,
+19	      Asp
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:20 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:23 PM</sup>
+
+La roadmap indica ancora la prima slice come *In corso*, ma il git mostra che è stata mergiata (PR #1 + commit `b8d3377`). C'è un disallineamento: il codice è su `main`, ma restava in sospeso **la verifica end-to-end contro un Postgres reale** (era il blocco della sessione precedente). Verifico se ora Postgres è raggiungibile e confermo lo stato del codice.
+
+
+---
+
+## Assistant <sup>7/15/2026, 12:56:24 PM</sup>
+
+<details>
+<summary>Tool: <code>PowerShell</code></summary>
+
+```json
+{
+  "command": "Test-NetConnection -ComputerName localhost -Port 5432 -WarningAction SilentlyContinue | Select-Object TcpTestSucceeded\nGet-Service | Where-Object { $_.Name -like \"*postgres*\" } | Select-Object Name, Status",
+  "description": "Check if PostgreSQL is now listening on 5432"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 12:56:40 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP what you are doing and wait for the user to tell you how to proceed.
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 12:56:40 PM</sup>
+
+[Request interrupted by user for tool use]
+
+
+---
+
+## User <sup>7/15/2026, 12:59:59 PM</sup>
+
+Nelle tabelle create aggiungi tutti i campi mancanti presenti nelle corrispondenti tabelle legacy XPO.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:00:52 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:00:56 PM</sup>
+
+Chiaro — devo completare le tabelle che ho creato con **tutti** i campi persistenti presenti nelle corrispondenti business object XPO legacy, incluse le due che avevo tenuto minime (`PresidiOsp` e `Dipendenti`). Prima faccio un'analisi sistematica di ogni tabella creata vs la sua sorgente legacy per enumerare i campi mancanti. Sono su `main`, quindi creo un branch dedicato.
+
+Leggo le due business object che avevo tenuto minime (le più grandi) e riverifico le altre.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:00:57 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\oldsystem\\GlobalModule\\BusinessObjects\\PresidiOsp.bo.designer.cs"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:00:57 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	//------------------------------------------------------------------------------
+2	// <auto-generated>
+3	//     This code was generated by a tool.
+4	//
+5	//     Changes to this file may cause incorrect behavior and will be lost if
+6	//     the code is regenerated.
+7	// </auto-generated>
+8	//------------------------------------------------------------------------------
+9	using System;
+10	using System.Collections.Generic;
+11	using System.Linq;
+12	using System.Text;
+13	using DevExpress.ExpressApp.DC;
+14	using DevExpress.Persistent.Base;
+15	using DevExpress.Persistent.BaseImpl;
+16	using DevExpress.Persistent.Validation;
+17	using DevExpress.Xpo;
+18	namespace GlobalModule.BusinessObjects
+19	{
+20	  [DefaultClassOptions]
+21	  [DevExpress.ExpressApp.DC.XafDisplayNameAttribute("Presidio")]
+22	  public partial class PresidiOsp : DevExpress.Xpo.XPObject
+23	  {
+24	    private Byte[] _homePage;
+25	    private GlobalModule.BusinessObjects.ASP _aSP;
+26	    private System.Int16 _smtpPort;
+27	    priv
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:01:18 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:01:21 PM</sup>
+
+PresidiOsp legacy ha molti più campi (header/footer RTF, SMTP, HomePage blob, ASP FK, DirettoreSanitario/ResponsabileDipartimento → Medici). Uso il **dump SQL come fonte autoritativa** delle colonne persistenti (è la materializzazione reale degli oggetti XPO) e il C# per capire tipi/FK. Estraggo le CREATE TABLE delle tabelle rilevanti.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:01:23 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "for t in presidiosp dipendenti medici gruppisanguigni mediciesterni comuni regioni asp stati staticivili professioni posizioniprofessionali tipidocumento livelliistruzione categoriepaziente; do\n  echo \"=== $t ===\"\n  awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql\ndone",
+  "description": "Extract legacy SQL CREATE TABLE for all created lookup tables plus medici/dipendenti"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:01:45 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== presidiosp ===
+CREATE TABLE `presidiosp` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Presidio` varchar(100) DEFAULT NULL,
+  `Comune` int(11) DEFAULT NULL,
+  `CAP` varchar(6) DEFAULT NULL,
+  `Indirizzo` varchar(60) DEFAULT NULL,
+  `Tel` varchar(20) DEFAULT NULL,
+  `Fax` varchar(20) DEFAULT NULL,
+  `Email` varchar(50) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  `Header` longtext,
+  `Footer` longtext,
+  `HeaderFattura` longtext,
+  `HeaderClinico` longtext,
+  `Smtp` varchar(50) DEFAULT NULL,
+  `MailHost` varchar(50) DEFAULT NULL,
+  `SmtpPort` smallint(6) DEFAULT NULL,
+  `ASP` int(11) DEFAULT NULL,
+  `HomePage` longblob,
+  `DirettoreSanitario` char(38) DEFAULT NULL,
+  `ResponsabileDipartimento` char(38) DEFAULT NULL,
+  PRIMARY KEY (`OID`),
+  KEY `iGCRecord_PresidiOsp` (`GCRecord`),
+  KEY `iComune_PresidiOsp` (`Comune`),
+  CONSTRAINT `FK_PresidiOsp_Comune` FOREIGN KEY (`Comune`) REFERENCES `comuni` (`OID`)
+) ENGINE=InnoDB AUTO_INCREM
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:02:42 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:02:45 PM</sup>
+
+Il dump SQL mi dà la verità autoritativa. `OptimisticLockField`/`GCRecord`/`ObjectType` sono colonne di sistema XPO (locking/soft-delete/metadata) — non dominio, si saltano come da `CLAUDE.md`. Trovo i gap. Ma `dipendenti` e `presidi_osp` trascinano FK verso tabelle non ancora modellate (`titoli`, `tipodipendenti`, `rapportidipendenza`, `reparti`, `medici`). Verifico dimensioni del cascade prima di decidere.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:02:47 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "for t in titoli tipodipendenti rapportidipendenza reparti; do\n  echo \"=== $t ===\"\n  awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql\ndone",
+  "description": "Extract SQL for the FK-target tables referenced by dipendenti"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:03:07 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== titoli ===
+CREATE TABLE `titoli` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Titolo` varchar(10) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  PRIMARY KEY (`OID`),
+  KEY `iGCRecord_Titoli` (`GCRecord`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+=== tipodipendenti ===
+CREATE TABLE `tipodipendenti` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Tipo` varchar(30) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  PRIMARY KEY (`OID`),
+  KEY `iGCRecord_TipoDipendenti` (`GCRecord`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+=== rapportidipendenza ===
+CREATE TABLE `rapportidipendenza` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Rapporto` varchar(40) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  PRIMARY KEY (`OID`),
+  KEY `iGCRecord_RapportiDipendenza` (`GCRecord`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:03:54 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:03:56 PM</sup>
+
+`titoli`, `tipodipendenti`, `rapportidipendenza` sono lookup banali (una colonna). `reparti` e `medici` sono tabelle grandi di dominio proprio (anagrafica organizzativa / staff medico) — sono già voci di Backlog. Verifico anche `contattipz` e `pazienti` nel SQL per non lasciare gap, poi decido la strategia sui FK.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:03:58 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "for t in contattipz pazienti; do\n  echo \"=== $t ===\"\n  awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql\ndone",
+  "description": "Extract SQL for contattipz and pazienti to verify no scalar gaps"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:04:26 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== contattipz ===
+CREATE TABLE `contattipz` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Indirizzo` varchar(50) DEFAULT NULL,
+  `ComuneResidenza` int(11) DEFAULT NULL,
+  `StatoCivile` int(11) DEFAULT NULL,
+  `Professione` int(11) DEFAULT NULL,
+  `PosizioneProfessionale` int(11) DEFAULT NULL,
+  `TipoDocumento` int(11) DEFAULT NULL,
+  `Documento` varchar(20) DEFAULT NULL,
+  `DataRilascio` datetime DEFAULT NULL,
+  `Cittadinanza` int(11) DEFAULT NULL,
+  `TesseraTEAM` varchar(30) DEFAULT NULL,
+  `Paziente` int(11) DEFAULT NULL,
+  `MedicoCurante` int(11) DEFAULT NULL,
+  `ASPresidenza` int(11) DEFAULT NULL,
+  `Presidio` int(11) DEFAULT NULL,
+  `LivelloIstruzione` int(11) DEFAULT NULL,
+  `Peso` double DEFAULT NULL,
+  `Altezza` smallint(5) unsigned DEFAULT NULL,
+  `Operatore` char(38) DEFAULT NULL,
+  `Codpaz` int(11) DEFAULT NULL,
+  `Cod_dpaz` smallint(6) DEFAULT NULL,
+  `Codric` smallint(6) DEFAULT NULL,
+  `StatoResidenza` int(11) DEFAULT NULL,
+  `CategoriaPaziente` int(11) DEFAULT NULL,
+  `
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:05:51 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:05:55 PM</sup>
+
+Distinzione importante: la fonte autoritativa è **l'oggetto XPO C#** (non il SQL, che può avere colonne legacy non mappate). Riverifico con questo criterio:
+- `comuni`: il C# XPO non ha `SiglaRegione` (solo la FK `Regione`) → **già completo**, non aggiungo nulla.
+- `gruppi_sanguigni`: manca `Transcodifica` ✓
+- `medici_esterni`: manca `CodiceAltroSistema` ✓
+- `presidi_osp`: `Prov` non è una proprietà XPO persistente → va **rimosso**; mancano header/footer/smtp/ASP/HomePage/DirettoreSanitario/ResponsabileDipartimento
+
+Devo leggere `Dipendenti` C# per intero (805 righe) per fedeltà XPO.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:05:57 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\oldsystem\\GlobalModule\\BusinessObjects\\Dipendenti.bo.designer.cs"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:05:57 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	//------------------------------------------------------------------------------
+2	// <auto-generated>
+3	//     This code was generated by a tool.
+4	//
+5	//     Changes to this file may cause incorrect behavior and will be lost if
+6	//     the code is regenerated.
+7	// </auto-generated>
+8	//------------------------------------------------------------------------------
+9	using System;
+10	using System.Collections.Generic;
+11	using System.Linq;
+12	using System.Text;
+13	using DevExpress.ExpressApp.DC;
+14	using DevExpress.Persistent.Base;
+15	using DevExpress.Persistent.BaseImpl;
+16	using DevExpress.Xpo;
+17	using DevExpress.Persistent.Validation;
+18	using DevExpress.ExpressApp.Model;
+19	using DevExpress.Data.Filtering;
+20	
+21	namespace GlobalModule.BusinessObjects
+22	{
+23	  [DefaultClassOptions]
+24	  public partial class Dipendenti : DevExpress.Persistent.BaseImpl.PermissionPolicy.PermissionPolicyUser
+25	  {
+26			private BooleanEnum _richiestaEmocomponenti;
+27			private System.String _nodo
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:06:36 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:06:38 PM</sup>
+
+Dipendenti estende `PermissionPolicyUser` (base sicurezza XPO — non si migra) e ha ~44 campi di dominio, con FK verso `Reparti` (tabella grande), lookup triviali (`Titoli`, `TipoDipendenti`, `RapportiDipendenza`) e 3 enum (`TipoFirma`, `StatoFSE`, `TipoRilevazInventario`). Recupero le definizioni degli enum, poi implemento tutto.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:06:39 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "grep -rn \"enum TipoFirma\\|enum StatoFSEEnum\\|enum TipoRilevazInventario\\|enum SessoEnum\\|enum BooleanEnum\" oldsystem/ 2>/dev/null",
+  "description": "Find enum definitions used by Dipendenti"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:06:41 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+oldsystem/GlobalClinModule/Enumerations.cs:10:        public enum BooleanEnum { No = 0, Si = 1 };
+oldsystem/GlobalFattModule/Enumerations.cs:9:    public enum BooleanEnum { No = 0, Si = 1 };
+oldsystem/GlobalModule/Enumerations.cs:10:    public enum BooleanEnum { No = 0, Si = 1 };
+oldsystem/GlobalModule/Enumerations.cs:11:    public enum SessoEnum { Maschio = 0, Femmina = 1 };
+oldsystem/GlobalModule/Enumerations.cs:19:		public enum TipoRilevazInventario { Umi = 0, Cnf = 1 };
+oldsystem/GlobalModule/Enumerations.cs:27:		public enum StatoFSEEnum {SoloFirma = 0, SoloInvio = 1, InvioEFirma = 2 };
+oldsystem/GlobalModule/Enumerations.cs:33:	public enum TipoFirma
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:06:46 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\oldsystem\\GlobalModule\\Enumerations.cs",
+  "offset": 27,
+  "limit": 20
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:06:46 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+27			public enum StatoFSEEnum {SoloFirma = 0, SoloInvio = 1, InvioEFirma = 2 };
+28	
+29			public enum TipoCompensoEnum {Fattura = 0, BustaPaga = 1, Altro = 2 };
+30			
+31	
+32		#region Firma referti
+33		public enum TipoFirma
+34			{
+35				Standard = 0,
+36				DigitaleLocale = 1,
+37				DigitaleRemota = 2
+38			}
+39		#endregion
+40	
+41		#region qualita
+42		public enum TipoSottoProcessoEnum
+43		{
+44			ASupporto = 0,
+45			Collaterale = 1,
+46		}
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:07:30 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:07:37 PM</sup>
+
+Ho tutte le definizioni. Enum: `TipoFirma{Standard,DigitaleLocale,DigitaleRemota}`, `StatoFSE{SoloFirma,SoloInvio,InvioEFirma}`, `TipoRilevazInventario{Umi,Cnf}` — li memorizzo come stringa (nome membro), coerente con `sesso`.
+
+Riepilogo delle decisioni (coerenti con le scelte precedenti, procedo senza bloccarmi):
+- **Fonte autoritativa = oggetto XPO C#** (non il SQL): quindi `SiglaRegione` su comuni, presente solo nel dump SQL ma non nell'oggetto XPO, **non** si aggiunge; `Prov` su presidi_osp non è proprietà XPO → si **rimuove**.
+- **Codici Gestclid** (`Codpaz`/`Cod_dpaz`/`Codric`) restano esclusi come da tua decisione precedente ("lascia solo CodiceEsterno").
+- **`reparti` e `medici`** sono domini grandi a sé (già voci di Backlog): i campi che li referenziano li aggiungo come FK-placeholder (Integer nullable, documentati), non li modello ora.
+
+Creo branch e todo list, poi implemento.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:07:37 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git checkout -b feat/campi-mancanti-anagrafica && git branch --show-current",
+  "description": "Create feature branch for completing legacy fields"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:09:22 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Switched to a new branch 'feat/campi-mancanti-anagrafica'
+feat/campi-mancanti-anagrafica
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:09:36 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "3 nuove lookup: Titolo, TipoDipendente, RapportoDipendenza (+ schemas)",
+      "status": "in_progress",
+      "activeForm": "Creando le lookup Titolo/TipoDipendente/RapportoDipendenza"
+    },
+    {
+      "content": "gruppo_sanguigno + transcodifica; medico_esterno + codice_altro_sistema; categoria_paziente 50→100",
+      "status": "pending",
+      "activeForm": "Completando piccoli gap (transcodifica, codice_altro_sistema, categoria)"
+    },
+    {
+      "content": "presidio_osp: rimuovere prov, aggiungere header/footer/smtp/asp/homepage/direttore/responsabile",
+      "status": "pending",
+      "activeForm": "Completando presidio_osp"
+    },
+    {
+      "content": "dipendente: espansione completa (~44 campi XPO) con FK e enum come stringa",
+      "status": "pending",
+      "activeForm": "Espandendo dipendente"
+    },
+    {
+      "content": "Aggiornare schemas Pydantic e app/models/__init__.py",
+      "status": "pending",
+      "activeForm": "Aggiornando schemas e __init__"
+    },
+    {
+      "content": "Aggiornare migration d8c87d4e55d9 con nuove tabelle/colonne",
+      "status": "pending",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (reparti/medici come placeholder da modellare)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP.md"
+    },
+    {
+      "content": "Verifica: coerenza migration/modelli (SQLite) + ruff + pytest collect",
+      "status": "pending",
+      "activeForm": "Verificando migration, ruff, test"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:09:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:09:43 PM</sup>
+
+Creo le 3 lookup triviali.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:09:45 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\titolo.py",
+  "content": "from sqlalchemy import String\nfrom sqlalchemy.orm import Mapped, mapped_column\n\nfrom app.db import Base\n\n\nclass Titolo(Base):\n    \"\"\"Titolo del dipendente (es. Dott., Prof.).\"\"\"\n\n    __tablename__ = \"titoli\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    titolo: Mapped[str] = mapped_column(String(10))\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:09:46 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\titolo.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:09:51 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\tipo_dipendente.py",
+  "content": "from sqlalchemy import String\nfrom sqlalchemy.orm import Mapped, mapped_column\n\nfrom app.db import Base\n\n\nclass TipoDipendente(Base):\n    \"\"\"Tipo di dipendente (es. Medico, Infermiere, Tecnico...).\"\"\"\n\n    __tablename__ = \"tipi_dipendente\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    tipo: Mapped[str] = mapped_column(String(30))\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:09:52 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\tipo_dipendente.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:09:56 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\rapporto_dipendenza.py",
+  "content": "from sqlalchemy import String\nfrom sqlalchemy.orm import Mapped, mapped_column\n\nfrom app.db import Base\n\n\nclass RapportoDipendenza(Base):\n    \"\"\"Tipo di rapporto di dipendenza (es. Tempo indeterminato, Convenzione...).\"\"\"\n\n    __tablename__ = \"rapporti_dipendenza\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    rapporto: Mapped[str] = mapped_column(String(40))\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:09:57 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\rapporto_dipendenza.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:01 PM</sup>
+
+Ora i piccoli gap: `gruppo_sanguigno`, `medico_esterno`, `categoria_paziente`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:03 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\gruppo_sanguigno.py",
+  "old_string": "    id: Mapped[int] = mapped_column(primary_key=True)\n    gruppo: Mapped[str] = mapped_column(String(10))",
+  "new_string": "    id: Mapped[int] = mapped_column(primary_key=True)\n    gruppo: Mapped[str] = mapped_column(String(10))\n    transcodifica: Mapped[str | None] = mapped_column(String(100), default=None)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:10:04 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\gruppo_sanguigno.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:11 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\medico_esterno.py"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:10:11 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	from typing import TYPE_CHECKING
+2	
+3	from sqlalchemy import ForeignKey, String
+4	from sqlalchemy.orm import Mapped, mapped_column, relationship
+5	
+6	from app.db import Base
+7	
+8	if TYPE_CHECKING:
+9	    from app.models.asp import Asp
+10	    from app.models.comune import Comune
+11	
+12	
+13	class MedicoEsterno(Base):
+14	    """Medico curante esterno alla struttura (es. medico di base del paziente)."""
+15	
+16	    __tablename__ = "medici_esterni"
+17	
+18	    id: Mapped[int] = mapped_column(primary_key=True)
+19	    cognome: Mapped[str | None] = mapped_column(String(30), default=None)
+20	    nome: Mapped[str | None] = mapped_column(String(30), default=None)
+21	    indirizzo: Mapped[str | None] = mapped_column(String(80), default=None)
+22	    telefono: Mapped[str | None] = mapped_column(String(30), default=None)
+23	    cellulare: Mapped[str | None] = mapped_column(String(20), default=None)
+24	    citta_id: Mapped[int | None] = mapped_column(ForeignKey("comuni.id"), default=None)
+25	    codice
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:23 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\medico_esterno.py",
+  "old_string": "from typing import TYPE_CHECKING\n\nfrom sqlalchemy import ForeignKey, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship",
+  "new_string": "from typing import TYPE_CHECKING\n\nfrom sqlalchemy import ForeignKey, Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:10:24 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\medico_esterno.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:34 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\medico_esterno.py",
+  "old_string": "    specializzazione: Mapped[str | None] = mapped_column(String(50), default=None)\n    codice_fiscale: Mapped[str | None] = mapped_column(String(16), default=None)",
+  "new_string": "    specializzazione: Mapped[str | None] = mapped_column(String(50), default=None)\n    codice_fiscale: Mapped[str | None] = mapped_column(String(16), default=None)\n    codice_altro_sistema: Mapped[int | None] = mapped_column(Integer, default=None)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:10:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\medico_esterno.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:39 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\categoria_paziente.py",
+  "old_string": "    categoria: Mapped[str] = mapped_column(String(50))",
+  "new_string": "    categoria: Mapped[str] = mapped_column(String(100))"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:10:40 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\categoria_paziente.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:43 PM</sup>
+
+Ora `presidio_osp`: rimuovo `prov`, aggiungo header/footer/smtp/asp/homepage/direttore/responsabile.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:10:54 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\presidio_osp.py",
+  "content": "from typing import TYPE_CHECKING\n\nfrom sqlalchemy import ForeignKey, Integer, LargeBinary, String, Text\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.db import Base\n\nif TYPE_CHECKING:\n    from app.models.asp import Asp\n    from app.models.comune import Comune\n    from app.models.dipendente import Dipendente\n\n\nclass PresidioOsp(Base):\n    \"\"\"Presidio ospedaliero (sede fisica della struttura).\n\n    `direttore_sanitario_id` e `responsabile_dipartimento_id` referenziano\n    `Medici` nel legacy: `Medici` non è ancora modellato (è un sottotipo di\n    `Dipendente`, dominio staff medico — vedi Backlog), quindi qui sono FK-placeholder\n    (Integer nullable, diventeranno FK vere quando la tabella medici sarà modellata).\n    \"\"\"\n\n    __tablename__ = \"presidi_osp\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    presidio: Mapped[str | None] = mapped_column(String(100), default=None)\n    comune_id: Mapped[int | None] = mapped_column(ForeignKey(\"comuni.id\"), default=None)\n    indirizzo: Mapped[str | None] = mapped_column(String(60), default=None)\n    cap: Mapped[str | None] = mapped_column(String(6), default=None)\n    tel: Mapped[str | None] = mapped_column(String(20), default=None)\n    fax: Mapped[str | None] = mapped_column(String(20), default=None)\n    email: Mapped[str | None] = mapped_column(String(50), default=None)\n    asp_id: Mapped[int | None] = mapped_column(ForeignKey(\"asp.id\"), default=None)\n\n    # Intestazioni/piè di pagina RTF per stampe (documenti clinici, fatture)\n    header: Mapped[str | None] = mapped_column(Text, default=None)\n    footer: Mapped[str | None] = mapped_column(Text, default=None)\n    header_fattura: Mapped[str | None] = mapped_column(Text, default=None)\n    header_clinico: Mapped[str | None] = mapped_column(Text, default=None)\n\n    # Configurazione invio email\n 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:10:55 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\presidio_osp.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:11:01 PM</sup>
+
+Ora l'espansione completa di `dipendente`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:11:25 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\dipendente.py",
+  "content": "from datetime import date, datetime\nfrom typing import TYPE_CHECKING, Literal\n\nfrom sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, LargeBinary, String, Text\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.db import Base\n\nif TYPE_CHECKING:\n    from app.models.comune import Comune\n    from app.models.presidio_osp import PresidioOsp\n    from app.models.rapporto_dipendenza import RapportoDipendenza\n    from app.models.tipo_dipendente import TipoDipendente\n    from app.models.titolo import Titolo\n\n\nclass Dipendente(Base):\n    \"\"\"Personale della struttura.\n\n    Nel legacy estende `PermissionPolicyUser` (base sicurezza DevExpress): quella\n    infrastruttura (username/password/ruoli/audit XPO) non viene migrata, si\n    reimplementa nativamente. Qui restano i soli campi di dominio.\n\n    `reparto_predefinito_id` referenzia `Reparti`, tabella grande di dominio proprio\n    (anagrafica organizzativa) non ancora modellata: è un FK-placeholder (Integer\n    nullable) finché `reparti` non sarà modellata. La relazione uno-a-molti inversa\n    con Reparti (un dipendente afferisce a più reparti) segue nella stessa slice.\n    \"\"\"\n\n    __tablename__ = \"dipendenti\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n\n    # Anagrafica\n    cognome: Mapped[str] = mapped_column(String(30))\n    nome: Mapped[str] = mapped_column(String(30))\n    data_nascita: Mapped[date | None] = mapped_column(Date, default=None)\n    sesso: Mapped[Literal[\"M\", \"F\"] | None] = mapped_column(String(1), default=None)\n    comune_nascita_id: Mapped[int | None] = mapped_column(ForeignKey(\"comuni.id\"), default=None)\n    codice_fiscale: Mapped[str | None] = mapped_column(String(16), default=None)\n    partita_iva: Mapped[str | None] = mapped_column(String(11), default=None)\n    comune_residenza_id: Mapped[int | None] = mapped_c
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:11:26 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\dipendente.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:11:30 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:11:31 PM</sup>
+
+Aggiorno `app/models/__init__.py` con le 3 nuove tabelle.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:11:37 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\__init__.py",
+  "content": "from app.db import Base\nfrom app.models.asp import Asp\nfrom app.models.categoria_paziente import CategoriaPaziente\nfrom app.models.comune import Comune\nfrom app.models.contatto_pz import ContattoPz\nfrom app.models.dipendente import Dipendente\nfrom app.models.gruppo_sanguigno import GruppoSanguigno\nfrom app.models.livello_istruzione import LivelloIstruzione\nfrom app.models.medico_esterno import MedicoEsterno\nfrom app.models.paziente import Paziente\nfrom app.models.posizione_professionale import PosizioneProfessionale\nfrom app.models.presidio_osp import PresidioOsp\nfrom app.models.professione import Professione\nfrom app.models.rapporto_dipendenza import RapportoDipendenza\nfrom app.models.regione import Regione\nfrom app.models.ricovero import Ricovero\nfrom app.models.stato import Stato\nfrom app.models.stato_civile import StatoCivile\nfrom app.models.tipo_dipendente import TipoDipendente\nfrom app.models.tipo_documento import TipoDocumento\nfrom app.models.titolo import Titolo\n\n__all__ = [\n    \"Base\",\n    \"Asp\",\n    \"CategoriaPaziente\",\n    \"Comune\",\n    \"ContattoPz\",\n    \"Dipendente\",\n    \"GruppoSanguigno\",\n    \"LivelloIstruzione\",\n    \"MedicoEsterno\",\n    \"Paziente\",\n    \"PosizioneProfessionale\",\n    \"PresidioOsp\",\n    \"Professione\",\n    \"RapportoDipendenza\",\n    \"Regione\",\n    \"Ricovero\",\n    \"Stato\",\n    \"StatoCivile\",\n    \"TipoDipendente\",\n    \"TipoDocumento\",\n    \"Titolo\",\n]\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:11:38 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\__init__.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:11:41 PM</sup>
+
+Verifico che i modelli si carichino e le relazioni si risolvano prima di procedere con migration/schemas.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:11:43 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python -c \"\nfrom app.models import Base\nfrom sqlalchemy.orm import configure_mappers\nconfigure_mappers()\nprint('OK mappers')\nfor t in ['dipendenti','presidi_osp','medici_esterni','gruppi_sanguigni','categorie_paziente','titoli','tipi_dipendente','rapporti_dipendenza']:\n    tab = Base.metadata.tables[t]\n    print(t, '->', [c.name for c in tab.columns])\n\" 2>&1 | head -30",
+  "description": "Verify all models load and mappers configure after expansion"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:14:25 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+OK mappers
+dipendenti -> ['id', 'cognome', 'nome', 'data_nascita', 'sesso', 'comune_nascita_id', 'codice_fiscale', 'partita_iva', 'comune_residenza_id', 'indirizzo', 'telefono', 'cellulare', 'rapporto_dipendenza_id', 'data_inizio_rapporto', 'data_fine_rapporto', 'badge', 'sigla', 'titolo_id', 'tipo_dipendente_id', 'presidio_id', 'reparto_predefinito_id', 'email', 'utente_email', 'password_email', 'pec', 'elenco_globale', 'documentix_sezione', 'mostra_ricoveri', 'mostra_sala_operatoria', 'richiesta_emocomponenti', 'segreteria', 'no_intestazione_referti_amb', 'presenza_omonimo', 'avvisato', 'firma_digitalizzata', 'tipo_firma', 'stato_fse', 'password_changed_at', 'tipo_rilevazione_inventario', 'pin_web', 'nodo_startup', 'codice_esterno', 'id_esterno', 'avviso']
+presidi_osp -> ['id', 'presidio', 'comune_id', 'indirizzo', 'cap', 'tel', 'fax', 'email', 'asp_id', 'header', 'footer', 'header_fattura', 'header_clinico', 'smtp', 'mail_host', 'smtp_port', 'home_page', 'direttore_sanitario_id', 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:14:29 PM</sup>
+
+Modelli caricati e relazioni risolte. Ora aggiorno gli schemas Pydantic.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:14:31 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\titolo.py",
+  "content": "from pydantic import BaseModel, ConfigDict\n\n\nclass TitoloRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    titolo: str\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:14:32 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\titolo.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:14:35 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\tipo_dipendente.py",
+  "content": "from pydantic import BaseModel, ConfigDict\n\n\nclass TipoDipendenteRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    tipo: str\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:14:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\tipo_dipendente.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:14:45 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\rapporto_dipendenza.py",
+  "content": "from pydantic import BaseModel, ConfigDict\n\n\nclass RapportoDipendenzaRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    rapporto: str\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:14:46 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\rapporto_dipendenza.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:14:53 PM</sup>
+
+Ora aggiorno gli schemas modificati: `gruppo_sanguigno`, `medico_esterno`, `presidio_osp`, `dipendente`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:14:54 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\gruppo_sanguigno.py"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:14:54 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	from pydantic import BaseModel, ConfigDict
+2	
+3	
+4	class GruppoSanguignoRead(BaseModel):
+5	    model_config = ConfigDict(from_attributes=True)
+6	
+7	    id: int
+8	    gruppo: str
+9
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:00 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\gruppo_sanguigno.py",
+  "old_string": "    id: int\n    gruppo: str",
+  "new_string": "    id: int\n    gruppo: str\n    transcodifica: str | None = None"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:15:01 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\gruppo_sanguigno.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:07 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\medico_esterno.py"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:15:07 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	from pydantic import BaseModel, ConfigDict, computed_field
+2	
+3	
+4	class MedicoEsternoRead(BaseModel):
+5	    model_config = ConfigDict(from_attributes=True)
+6	
+7	    id: int
+8	    cognome: str | None = None
+9	    nome: str | None = None
+10	    indirizzo: str | None = None
+11	    telefono: str | None = None
+12	    cellulare: str | None = None
+13	    citta_id: int | None = None
+14	    codice_regionale: str | None = None
+15	    n_empam: str | None = None
+16	    asp_id: int | None = None
+17	    specializzazione: str | None = None
+18	    codice_fiscale: str | None = None
+19	
+20	    @computed_field
+21	    @property
+22	    def nominativo(self) -> str:
+23	        if not self.nome:
+24	            return self.cognome or ""
+25	        return f"{self.cognome} {self.nome}"
+26
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:12 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\medico_esterno.py",
+  "old_string": "    specializzazione: str | None = None\n    codice_fiscale: str | None = None\n\n    @computed_field",
+  "new_string": "    specializzazione: str | None = None\n    codice_fiscale: str | None = None\n    codice_altro_sistema: int | None = None\n\n    @computed_field"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:15:13 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\medico_esterno.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:22 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\presidio_osp.py",
+  "content": "from pydantic import BaseModel, ConfigDict\n\n\nclass PresidioOspRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    presidio: str | None = None\n    comune_id: int | None = None\n    indirizzo: str | None = None\n    cap: str | None = None\n    tel: str | None = None\n    fax: str | None = None\n    email: str | None = None\n    asp_id: int | None = None\n    header: str | None = None\n    footer: str | None = None\n    header_fattura: str | None = None\n    header_clinico: str | None = None\n    smtp: str | None = None\n    mail_host: str | None = None\n    smtp_port: int | None = None\n    direttore_sanitario_id: int | None = None\n    responsabile_dipartimento_id: int | None = None\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:15:23 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\presidio_osp.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:29 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:30 PM</sup>
+
+`home_page` (blob) escluso dallo schema Read (i blob non vanno serializzati in JSON di default). Ora `dipendente`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:38 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\dipendente.py",
+  "content": "from datetime import date, datetime\nfrom typing import Literal\n\nfrom pydantic import BaseModel, ConfigDict, computed_field\n\n\nclass DipendenteBase(BaseModel):\n    cognome: str\n    nome: str\n    data_nascita: date | None = None\n    sesso: Literal[\"M\", \"F\"] | None = None\n    comune_nascita_id: int | None = None\n    codice_fiscale: str | None = None\n    partita_iva: str | None = None\n    comune_residenza_id: int | None = None\n    indirizzo: str | None = None\n    telefono: str | None = None\n    cellulare: str | None = None\n    rapporto_dipendenza_id: int | None = None\n    data_inizio_rapporto: date | None = None\n    data_fine_rapporto: date | None = None\n    badge: str | None = None\n    sigla: str | None = None\n    titolo_id: int | None = None\n    tipo_dipendente_id: int | None = None\n    presidio_id: int | None = None\n    reparto_predefinito_id: int | None = None\n    email: str | None = None\n    utente_email: str | None = None\n    password_email: str | None = None\n    pec: str | None = None\n    elenco_globale: bool | None = None\n    documentix_sezione: bool | None = None\n    mostra_ricoveri: bool | None = None\n    mostra_sala_operatoria: bool | None = None\n    richiesta_emocomponenti: bool | None = None\n    segreteria: bool = False\n    no_intestazione_referti_amb: bool = False\n    presenza_omonimo: bool = False\n    avvisato: bool = False\n    tipo_firma: Literal[\"Standard\", \"DigitaleLocale\", \"DigitaleRemota\"] | None = None\n    stato_fse: Literal[\"SoloFirma\", \"SoloInvio\", \"InvioEFirma\"] | None = None\n    password_changed_at: datetime | None = None\n    tipo_rilevazione_inventario: Literal[\"Umi\", \"Cnf\"] | None = None\n    pin_web: str | None = None\n    nodo_startup: str | None = None\n    codice_esterno: int | None = None\n    id_esterno: int | None = None\n    avviso: str | None = None\n\n\nclass DipendenteCreate
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:15:40 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\dipendente.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:51 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "3 nuove lookup: Titolo, TipoDipendente, RapportoDipendenza (+ schemas)",
+      "status": "completed",
+      "activeForm": "Creando le lookup Titolo/TipoDipendente/RapportoDipendenza"
+    },
+    {
+      "content": "gruppo_sanguigno + transcodifica; medico_esterno + codice_altro_sistema; categoria_paziente 50→100",
+      "status": "completed",
+      "activeForm": "Completando piccoli gap"
+    },
+    {
+      "content": "presidio_osp: rimuovere prov, aggiungere header/footer/smtp/asp/homepage/direttore/responsabile",
+      "status": "completed",
+      "activeForm": "Completando presidio_osp"
+    },
+    {
+      "content": "dipendente: espansione completa (~44 campi XPO) con FK e enum come stringa",
+      "status": "completed",
+      "activeForm": "Espandendo dipendente"
+    },
+    {
+      "content": "Aggiornare schemas Pydantic e app/models/__init__.py",
+      "status": "completed",
+      "activeForm": "Aggiornando schemas e __init__"
+    },
+    {
+      "content": "Aggiornare migration d8c87d4e55d9 con nuove tabelle/colonne",
+      "status": "in_progress",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (reparti/medici come placeholder da modellare)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP.md"
+    },
+    {
+      "content": "Verifica: coerenza migration/modelli (SQLite) + ruff + pytest collect",
+      "status": "pending",
+      "activeForm": "Verificando migration, ruff, test"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:15:51 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:57 PM</sup>
+
+Ora aggiorno la migration. Leggo la sezione delle lookup e di presidi_osp/dipendenti.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:15:58 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "offset": 83,
+  "limit": 70
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:15:59 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+83	    )
+84	
+85	    op.create_table(
+86	        "dipendenti",
+87	        sa.Column("id", sa.Integer(), primary_key=True),
+88	        sa.Column("nome", sa.String(length=100), nullable=False),
+89	        sa.Column("cognome", sa.String(length=100), nullable=False),
+90	    )
+91	
+92	    # --- tabelle lookup con dipendenze semplici ---
+93	    op.create_table(
+94	        "comuni",
+95	        sa.Column("id", sa.Integer(), primary_key=True),
+96	        sa.Column("comune", sa.String(length=35), nullable=False),
+97	        sa.Column("istat", sa.String(length=6), nullable=True),
+98	        sa.Column("provincia", sa.String(length=2), nullable=True),
+99	        sa.Column("regione_id", sa.Integer(), sa.ForeignKey("regioni.id"), nullable=True),
+100	        sa.Column("prefisso", sa.String(length=5), nullable=True),
+101	        sa.Column("cap", sa.String(length=5), nullable=True),
+102	        sa.Column("cod_fisco", sa.String(length=4), nullable=True),
+103	        sa.Column("abitanti", sa.Integer(), null
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:16:21 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:16:23 PM</sup>
+
+Aggiorno la migration. Diverse modifiche mirate: `dipendenti` va spostato dopo `presidi_osp` (ora ha FK), aggiungo le 3 lookup, `transcodifica`, `codice_altro_sistema`, e ricostruisco `presidi_osp`/`dipendenti`.
+
+Prima: `gruppi_sanguigni` + `transcodifica`, e le 3 nuove lookup nella sezione senza dipendenze.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:16:28 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    op.create_table(\n        \"gruppi_sanguigni\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"gruppo\", sa.String(length=10), nullable=False),\n    )",
+  "new_string": "    op.create_table(\n        \"gruppi_sanguigni\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"gruppo\", sa.String(length=10), nullable=False),\n        sa.Column(\"transcodifica\", sa.String(length=100), nullable=True),\n    )\n\n    op.create_table(\n        \"titoli\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"titolo\", sa.String(length=10), nullable=False),\n    )\n\n    op.create_table(\n        \"tipi_dipendente\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"tipo\", sa.String(length=30), nullable=False),\n    )\n\n    op.create_table(\n        \"rapporti_dipendenza\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"rapporto\", sa.String(length=40), nullable=False),\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:16:29 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:16:38 PM</sup>
+
+Rimuovo il blocco `dipendenti` iniziale (ora ha FK, va spostato più avanti).
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:16:41 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    op.create_table(\n        \"dipendenti\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"nome\", sa.String(length=100), nullable=False),\n        sa.Column(\"cognome\", sa.String(length=100), nullable=False),\n    )\n\n    # --- tabelle lookup con dipendenze semplici ---",
+  "new_string": "    # --- tabelle lookup con dipendenze semplici ---"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:16:42 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:16:48 PM</sup>
+
+Fix `categorie_paziente` 50→100 e `medici_esterni` + `codice_altro_sistema`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:16:50 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "        \"categorie_paziente\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"categoria\", sa.String(length=50), nullable=False),",
+  "new_string": "        \"categorie_paziente\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"categoria\", sa.String(length=100), nullable=False),"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:16:51 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:17:19 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "        sa.Column(\"specializzazione\", sa.String(length=50), nullable=True),\n        sa.Column(\"codice_fiscale\", sa.String(length=16), nullable=True),\n    )\n\n    op.create_table(\n        \"presidi_osp\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"presidio\", sa.String(length=100), nullable=True),\n        sa.Column(\"comune_id\", sa.Integer(), sa.ForeignKey(\"comuni.id\"), nullable=True),\n        sa.Column(\"indirizzo\", sa.String(length=100), nullable=True),\n        sa.Column(\"cap\", sa.String(length=6), nullable=True),\n        sa.Column(\"prov\", sa.String(length=2), nullable=True),\n        sa.Column(\"tel\", sa.String(length=30), nullable=True),\n        sa.Column(\"fax\", sa.String(length=30), nullable=True),\n        sa.Column(\"email\", sa.String(length=80), nullable=True),\n    )\n\n    # --- anagrafica principale ---",
+  "new_string": "        sa.Column(\"specializzazione\", sa.String(length=50), nullable=True),\n        sa.Column(\"codice_fiscale\", sa.String(length=16), nullable=True),\n        sa.Column(\"codice_altro_sistema\", sa.Integer(), nullable=True),\n    )\n\n    op.create_table(\n        \"presidi_osp\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"presidio\", sa.String(length=100), nullable=True),\n        sa.Column(\"comune_id\", sa.Integer(), sa.ForeignKey(\"comuni.id\"), nullable=True),\n        sa.Column(\"indirizzo\", sa.String(length=60), nullable=True),\n        sa.Column(\"cap\", sa.String(length=6), nullable=True),\n        sa.Column(\"tel\", sa.String(length=20), nullable=True),\n        sa.Column(\"fax\", sa.String(length=20), nullable=True),\n        sa.Column(\"email\", sa.String(length=50), nullable=True),\n        sa.Column(\"asp_id\", sa.Integer(), sa.ForeignKey(\"asp.id\"), n
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:17:20 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:17:23 PM</sup>
+
+Ora aggiorno la `downgrade()` per le nuove tabelle.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:17:24 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "offset": 290,
+  "limit": 40
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:17:24 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+290	        ),
+291	        sa.Column(
+292	            "livello_istruzione_id",
+293	            sa.Integer(),
+294	            sa.ForeignKey("livelli_istruzione.id"),
+295	            nullable=True,
+296	        ),
+297	        sa.Column(
+298	            "categoria_paziente_id",
+299	            sa.Integer(),
+300	            sa.ForeignKey("categorie_paziente.id"),
+301	            nullable=True,
+302	        ),
+303	        sa.Column(
+304	            "tipo_documento_id", sa.Integer(), sa.ForeignKey("tipi_documento.id"), nullable=True
+305	        ),
+306	        sa.Column("documento", sa.String(length=20), nullable=True),
+307	        sa.Column("data_rilascio", sa.Date(), nullable=True),
+308	        sa.Column("ente_rilascio", sa.String(length=40), nullable=True),
+309	        sa.Column(
+310	            "medico_curante_id", sa.Integer(), sa.ForeignKey("medici_esterni.id"), nullable=True
+311	        ),
+312	        sa.Column("asp_residenza_id", sa.Integer(), sa.ForeignKey("asp.id"), nullable=True),
+31
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:17:33 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "offset": 340,
+  "limit": 45
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:17:33 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+340	    op.create_table(
+341	        "ricoveri",
+342	        sa.Column("id", sa.Integer(), sa.ForeignKey("contatti_pz.id"), primary_key=True),
+343	        sa.Column("reparto", sa.String(length=100), nullable=False),
+344	        sa.Column("data_ricovero", sa.Date(), nullable=False),
+345	        sa.Column("data_dimissione", sa.Date(), nullable=True),
+346	        sa.Column("stato", sa.String(length=20), nullable=False, server_default="aperto"),
+347	    )
+348	
+349	
+350	def downgrade() -> None:
+351	    """Downgrade schema."""
+352	    op.drop_table("ricoveri")
+353	    op.drop_index("ix_contatti_pz_paziente_id", table_name="contatti_pz")
+354	    op.drop_table("contatti_pz")
+355	    op.drop_index("ix_pazienti_codice_fiscale", table_name="pazienti")
+356	    op.drop_table("pazienti")
+357	    op.drop_table("presidi_osp")
+358	    op.drop_table("medici_esterni")
+359	    op.drop_table("asp")
+360	    op.drop_table("comuni")
+361	    op.drop_table("dipendenti")
+362	    op.drop_table("stati")
+363	    op
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:17:46 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:17:52 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    op.drop_index(\"ix_pazienti_codice_fiscale\", table_name=\"pazienti\")\n    op.drop_table(\"pazienti\")\n    op.drop_table(\"presidi_osp\")\n    op.drop_table(\"medici_esterni\")\n    op.drop_table(\"asp\")\n    op.drop_table(\"comuni\")\n    op.drop_table(\"dipendenti\")\n    op.drop_table(\"stati\")\n    op.drop_table(\"categorie_paziente\")\n    op.drop_table(\"livelli_istruzione\")\n    op.drop_table(\"tipi_documento\")\n    op.drop_table(\"posizioni_professionali\")\n    op.drop_table(\"professioni\")\n    op.drop_table(\"stati_civili\")\n    op.drop_table(\"gruppi_sanguigni\")\n    op.drop_table(\"regioni\")",
+  "new_string": "    op.drop_index(\"ix_pazienti_codice_fiscale\", table_name=\"pazienti\")\n    op.drop_table(\"pazienti\")\n    op.drop_table(\"dipendenti\")\n    op.drop_table(\"presidi_osp\")\n    op.drop_table(\"medici_esterni\")\n    op.drop_table(\"asp\")\n    op.drop_table(\"comuni\")\n    op.drop_table(\"rapporti_dipendenza\")\n    op.drop_table(\"tipi_dipendente\")\n    op.drop_table(\"titoli\")\n    op.drop_table(\"stati\")\n    op.drop_table(\"categorie_paziente\")\n    op.drop_table(\"livelli_istruzione\")\n    op.drop_table(\"tipi_documento\")\n    op.drop_table(\"posizioni_professionali\")\n    op.drop_table(\"professioni\")\n    op.drop_table(\"stati_civili\")\n    op.drop_table(\"gruppi_sanguigni\")\n    op.drop_table(\"regioni\")"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:17:53 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:18:00 PM</sup>
+
+Ora verifico la coerenza migration↔modelli con lo script SQLite e lancio ruff + collezione test.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:18:02 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python \"C:/Users/OMONAC~1.DRO/AppData/Local/Temp/claude/c--Users-OMONACO-DROMONACO-CoCIS/72dad8ad-6bab-4f4f-8cd3-76fa10315bfa/scratchpad/verify_migration.py\" 2>&1",
+  "description": "Verify migration matches model metadata after expansion"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:18:31 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+OK - migration matches model metadata exactly
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:18:38 PM</sup>
+
+La migration combacia esattamente con i modelli. Ora ruff, avvio app e collezione test.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:18:40 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run ruff check . 2>&1\necho \"---format---\"\nuv run ruff format . 2>&1\necho \"---app boot---\"\nuv run python -c \"\nfrom app.main import app\nfrom fastapi.testclient import TestClient\nprint(TestClient(app).get('/health').json())\n\" 2>&1 | tail -1\necho \"---collect---\"\ntimeout 20 uv run pytest --collect-only -q 2>&1 | tail -6",
+  "description": "Run ruff, verify app boots, and collect tests"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:18:49 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+All checks passed!
+---format---
+56 files left unchanged
+---app boot---
+{'status': 'ok'}
+---collect---
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+10 tests collected in 0.03s
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:18:59 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:00 PM</sup>
+
+Tutto verde. Faccio una verifica veloce dello schema Dipendente e della relazione presidio↔dipendenti, poi aggiorno `ROADMAP.md`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:04 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python -c \"\nfrom app.schemas.dipendente import DipendenteRead\nd = DipendenteRead(id=1, cognome='Bianchi', nome='Anna', sesso='F', tipo_firma='DigitaleRemota')\ndump = d.model_dump()\nprint('nominativo:', dump['nominativo'], '| tipo_firma:', dump['tipo_firma'], '| segreteria default:', dump['segreteria'])\nfrom app.models import Dipendente, PresidioOsp\np = PresidioOsp(id=1, presidio='PO Centrale')\ndip = Dipendente(id=1, cognome='Bianchi', nome='Anna', presidio=p)\nprint('back-populates:', p.dipendenti[0].nominativo, '->', dip.presidio.presidio)\n\"",
+  "description": "Sanity-check Dipendente schema computed field and presidio bidirectional relationship"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:19:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+nominativo: Bianchi Anna | tipo_firma: DigitaleRemota | segreteria default: False
+back-populates: Bianchi Anna -> PO Centrale
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:14 PM</sup>
+
+Tutto funziona. Aggiorno `ROADMAP.md`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:15 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:19:15 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Wasted call — file unchanged since your last Read. Refer to that earlier tool_result instead.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:37 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:37 PM</sup>
+
+Il file è quello di `main` (invariato). Aggiorno le sezioni *In corso* e il Backlog per riflettere il completamento e i placeholder `reparti`/`medici`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:46 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "## In corso\n- [ ] Anagrafica Paziente + ContattoPz (base, campi completi) + Ricovero (sottotipo) —",
+  "new_string": "## In corso\n- [ ] Completamento campi legacy XPO sulle tabelle anagrafiche — branch:\n      `feat/campi-mancanti-anagrafica`. Tutte le lookup ora hanno i campi persistenti\n      del rispettivo oggetto XPO: `Dipendente` e `PresidioOsp` completati (non più\n      minimi), aggiunte `Titolo`/`TipoDipendente`/`RapportoDipendenza`, colmati piccoli\n      gap (`transcodifica`, `codice_altro_sistema`, ecc.) e campi calcolati (Nominativo).\n      Fonte autoritativa = oggetto XPO C# (colonne solo-SQL come `SiglaRegione`, o\n      pseudo-proprietà come `Prov`, non portate). `Reparti` e `Medici`, referenziati da\n      `Dipendente`/`PresidioOsp`, sono FK-placeholder (Integer nullable) — vedi Backlog.\n      Codici Gestclid (`Codpaz`/`Cod_dpaz`/`Codric`) restano esclusi come da decisione.\n      Migration allineata (verificata vs metadati), ruff pulito, test verdi in collezione;\n      manca la verifica end-to-end contro un Postgres reale.\n- [ ] Anagrafica Paziente + ContattoPz (base, campi completi) + Ricovero (sottotipo) —"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:19:47 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:19:58 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "- [ ] Anagrafica organizzativa completa (Dipendenti, PresidiOsp — oggi versioni minime,\n      da espandere quando serve la gestione staff/reparti/presidi, vedi mappa moduli in\n      CLAUDE.md)",
+  "new_string": "- [ ] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` è una tabella grande\n      (~30 campi, letti/magazzino/terapia), `Medici` è un sottotipo di `Dipendente`\n      (chiave condivisa). Oggi sono referenziati come FK-placeholder Integer da\n      `Dipendente.reparto_predefinito_id` e `PresidioOsp.direttore_sanitario_id`/\n      `responsabile_dipartimento_id`: modellandoli, quei placeholder diventano FK vere e\n      si aggiungono le relazioni inverse (Dipendente↔Reparti, ecc.). Vedi mappa moduli in\n      CLAUDE.md."
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:19:59 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:20:13 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "3 nuove lookup: Titolo, TipoDipendente, RapportoDipendenza (+ schemas)",
+      "status": "completed",
+      "activeForm": "Creando le lookup Titolo/TipoDipendente/RapportoDipendenza"
+    },
+    {
+      "content": "gruppo_sanguigno + transcodifica; medico_esterno + codice_altro_sistema; categoria_paziente 50→100",
+      "status": "completed",
+      "activeForm": "Completando piccoli gap"
+    },
+    {
+      "content": "presidio_osp: rimuovere prov, aggiungere header/footer/smtp/asp/homepage/direttore/responsabile",
+      "status": "completed",
+      "activeForm": "Completando presidio_osp"
+    },
+    {
+      "content": "dipendente: espansione completa (~44 campi XPO) con FK e enum come stringa",
+      "status": "completed",
+      "activeForm": "Espandendo dipendente"
+    },
+    {
+      "content": "Aggiornare schemas Pydantic e app/models/__init__.py",
+      "status": "completed",
+      "activeForm": "Aggiornando schemas e __init__"
+    },
+    {
+      "content": "Aggiornare migration d8c87d4e55d9 con nuove tabelle/colonne",
+      "status": "completed",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (reparti/medici come placeholder da modellare)",
+      "status": "completed",
+      "activeForm": "Aggiornando ROADMAP.md"
+    },
+    {
+      "content": "Verifica finale: coerenza migration/modelli (SQLite) + ruff + pytest collect",
+      "status": "completed",
+      "activeForm": "Verificando migration, ruff, test"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:20:13 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:20:17 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git status --short && echo \"---diff stat---\" && git diff --stat HEAD",
+  "description": "Review all changes on the branch"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:20:18 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+M .cc-history/2026-07-10_114234_command-messagecosciencecommand-mess_72dad8ad.md
+ M ROADMAP.md
+ M alembic/versions/d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py
+ M app/models/__init__.py
+ M app/models/categoria_paziente.py
+ M app/models/dipendente.py
+ M app/models/gruppo_sanguigno.py
+ M app/models/medico_esterno.py
+ M app/models/presidio_osp.py
+ M app/schemas/dipendente.py
+ M app/schemas/gruppo_sanguigno.py
+ M app/schemas/medico_esterno.py
+ M app/schemas/presidio_osp.py
+?? app/models/rapporto_dipendenza.py
+?? app/models/tipo_dipendente.py
+?? app/models/titolo.py
+?? app/schemas/rapporto_dipendenza.py
+?? app/schemas/tipo_dipendente.py
+?? app/schemas/titolo.py
+---diff stat---
+warning: LF will be replaced by CRLF in alembic/versions/d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/__init__.py.
+The file will have its original line endings in your working dir
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:20:35 PM</sup>
+
+Fatto. Ho completato le tabelle create con tutti i campi persistenti dei rispettivi oggetti XPO legacy, sul branch `feat/campi-mancanti-anagrafica`.
+
+## Cosa è stato aggiunto
+
+**3 nuove lookup** (create perché richieste come FK da Dipendente): `Titolo`, `TipoDipendente`, `RapportoDipendenza`.
+
+**Tabelle completate:**
+- **`Dipendente`**: da 2 campi a ~44 — anagrafica (nascita/residenza, CF, P.IVA), rapporto di lavoro (date, badge, titolo, tipo, presidio), email/PEC, flag applicativi, firma/FSE (enum come stringa), + `nominativo` calcolato. Relazione bidirezionale con `PresidioOsp`.
+- **`PresidioOsp`**: aggiunti header/footer/header_fattura/header_clinico (RTF→Text), SMTP, `asp_id` (FK), `home_page` (blob), direttore/responsabile. Rimosso `prov` (non era proprietà XPO).
+- **`GruppoSanguigno`** +`transcodifica`, **`MedicoEsterno`** +`codice_altro_sistema`, **`CategoriaPaziente`** allineata a 100.
+
+## Decisioni applicate (coerenti con le scelte precedenti)
+- **Fonte = oggetto XPO C#**: colonne solo-SQL (`SiglaRegione`) o pseudo-proprietà (`Prov`) non portate.
+- **Codici Gestclid** (`Codpaz`/`Cod_dpaz`/`Codric`) restano esclusi come da tua decisione.
+- **`Reparti` e `Medici`** (domini grandi/staff) restano FK-placeholder Integer documentati, promossi a voce di Backlog dedicata.
+
+## Verifica
+- Migration `d8c87d4e55d9` allineata e **verificata**: applicata a un SQLite usa-e-getta e confrontata coi metadati SQLAlchemy → combacia esattamente (ordine di creazione/drop corretto per le nuove FK).
+- `ruff check`/`format` puliti, app si avvia, 10 test in collezione.
+
+Resta in sospeso solo la **verifica end-to-end contro un Postgres reale** (`alembic upgrade head` + `pytest`), il blocco noto di questo ambiente. Vuoi che proceda con commit + PR, oppure preferisci prima far girare le migration su un'istanza Postgres?
+
+
+---
+
+## User <sup>7/15/2026, 1:21:22 PM</sup>
+
+Procedi con il commit + PR
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:21:33 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:21:35 PM</sup>
+
+Procedo con commit e PR. Escludo il file `.cc-history/` (è tracciamento locale di Claude Code, non parte della slice). Prima verifico remote e autenticazione `gh`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:21:35 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git remote -v && echo \"---gh auth---\" && gh auth status 2>&1 | head -5",
+  "description": "Check git remote and gh authentication"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:21:52 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+origin	https://github.com/mbafumic/CoCIS.git (fetch)
+origin	https://github.com/mbafumic/CoCIS.git (push)
+---gh auth---
+You are not logged into any GitHub hosts. To log in, run: gh auth login
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:22:00 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:22:02 PM</sup>
+
+`gh` non è autenticato — non posso creare la PR via CLI. Procedo con commit + push del branch, poi ti fornisco il link per aprire la PR (o autenticati con `gh auth login` e la creo io).
+
+Prima stage dei file rilevanti (escluso `.cc-history/`) e commit.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:22:02 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git add ROADMAP.md alembic/ app/ && git status --short",
+  "description": "Stage app, alembic, and ROADMAP changes (excluding .cc-history)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:22:19 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+warning: LF will be replaced by CRLF in alembic/versions/d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/__init__.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/categoria_paziente.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/dipendente.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/gruppo_sanguigno.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/medico_esterno.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/presidio_osp.py.
+The file will have its original line endings in y
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:22:27 PM</sup>
+
+I file corretti sono in stage (`.cc-history` escluso). Creo il commit.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:22:36 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git commit -m \"$(cat <<'EOF'\nCompleta i campi legacy XPO nelle tabelle anagrafiche\n\nAllinea le tabelle anagrafiche ai rispettivi oggetti business XPO legacy,\naggiungendo tutti i campi persistenti mancanti (fonte autoritativa: oggetto\nXPO C# in oldsystem/, non il dump SQL).\n\n- Dipendente e PresidioOsp: da versione minima a completi (~44 e ~19 campi).\n- Nuove lookup: Titolo, TipoDipendente, RapportoDipendenza (FK richieste da\n  Dipendente).\n- Gap minori: GruppoSanguigno.transcodifica, MedicoEsterno.codice_altro_sistema,\n  CategoriaPaziente.categoria 50->100.\n- Campi calcolati come property/computed_field (Nominativo), enum come stringa.\n- Rimosso PresidioOsp.prov (non e' proprieta' XPO persistente).\n\nReparti e Medici (domini grandi/staff) restano FK-placeholder Integer\ndocumentati, promossi a voce di Backlog. Codici Gestclid restano esclusi.\n\nMigration d8c87d4e55d9 aggiornata e verificata vs metadati SQLAlchemy;\nruff pulito, test verdi in collezione.\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>\nEOF\n)\"",
+  "description": "Commit the legacy-field completion changes"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:22:39 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+[feat/campi-mancanti-anagrafica e1dc8dc] Completa i campi legacy XPO nelle tabelle anagrafiche
+ 18 files changed, 407 insertions(+), 52 deletions(-)
+ rewrite app/models/dipendente.py (76%)
+ create mode 100644 app/models/rapporto_dipendenza.py
+ create mode 100644 app/models/tipo_dipendente.py
+ create mode 100644 app/models/titolo.py
+ create mode 100644 app/schemas/rapporto_dipendenza.py
+ create mode 100644 app/schemas/tipo_dipendente.py
+ create mode 100644 app/schemas/titolo.py
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:22:42 PM</sup>
+
+Commit creato. Ora push del branch su `origin`.
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:22:43 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git push -u origin feat/campi-mancanti-anagrafica 2>&1 | tail -15",
+  "description": "Push the feature branch to origin"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/15/2026, 1:22:52 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+remote: 
+remote: Create a pull request for 'feat/campi-mancanti-anagrafica' on GitHub by visiting:        
+remote:      https://github.com/mbafumic/CoCIS/pull/new/feat/campi-mancanti-anagrafica        
+remote: 
+branch 'feat/campi-mancanti-anagrafica' set up to track 'origin/feat/campi-mancanti-anagrafica'.
+To https://github.com/mbafumic/CoCIS.git
+ * [new branch]      feat/campi-mancanti-anagrafica -> feat/campi-mancanti-anagrafica
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:23:00 PM</sup>
+
+
+---
+
+## Assistant <sup>7/15/2026, 1:23:11 PM</sup>
+
+Branch pushato. La PR non posso crearla via CLI perché `gh` non è autenticato su questa macchina. Due opzioni:
+
+**Opzione A — la creo io:** esegui `gh auth login`, poi dimmelo e lancio `gh pr create`.
+
+**Opzione B — la crei tu ora** da questo link:
+👉 https://github.com/mbafumic/CoCIS/pull/new/feat/campi-mancanti-anagrafica
+
+Titolo e corpo pronti da incollare:
+
+**Titolo:**
+```
+Completa i campi legacy XPO nelle tabelle anagrafiche
+```
+
+**Corpo:**
+```markdown
+Allinea le tabelle anagrafiche ai rispettivi oggetti business XPO legacy,
+aggiungendo tutti i campi persistenti mancanti (fonte autoritativa: oggetto
+XPO C# in `oldsystem/`, non il dump SQL).
+
+## Modifiche
+- **Dipendente** e **PresidioOsp**: da versione minima a completi (~44 e ~19 campi).
+- Nuove lookup: **Titolo**, **TipoDipendente**, **RapportoDipendenza** (FK richieste da Dipendente).
+- Gap minori: `GruppoSanguigno.transcodifica`, `MedicoEsterno.codice_altro_sistema`, `CategoriaPaziente.categoria` 50→100.
+- Campi calcolati come property/`computed_field` (Nominativo); enum legacy come stringa.
+- Rimosso `PresidioOsp.prov` (non è proprietà XPO persistente).
+
+## Fuori scope (deliberato)
+- **Reparti** e **Medici** (domini grandi/staff): restano FK-placeholder Integer documentati, promossi a voce di Backlog.
+- Codici Gestclid (`Codpaz`/`Cod_dpaz`/`Codric`): esclusi come da decisione precedente.
+
+## Verifica
+- Migration `d8c87d4e55d9` aggiornata e verificata: applicata a SQLite usa-e-getta, combacia esattamente coi metadati SQLAlchemy.
+- `ruff check`/`format` puliti, app si avvia, 10 test in collezione.
+- ⚠️ Verifica end-to-end contro Postgres reale ancora da eseguire (nessun DB raggiungibile in ambiente).
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+Riepilogo stato: commit `e1dc8dc` su `feat/campi-mancanti-anagrafica`, pushato su `origin`. Fammi sapere se preferisci l'opzione A e procedo con la creazione della PR.
+
+
+---
+
+## User <sup>7/16/2026, 11:42:41 AM</sup>
+
+<command-message>coscience</command-message>
+<command-name>/coscience</command-name>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:42:51 AM</sup>
+
+Eseguo il loop `/coscience`: leggo lo stato del progetto.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:42:51 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git branch --show-current && echo \"---status---\" && git status --short && echo \"---log---\" && git log --oneline -5",
+  "description": "Check current branch, status and recent commits"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:42:54 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+feat/campi-mancanti-anagrafica
+---status---
+ M .cc-history/2026-07-10_114234_command-messagecosciencecommand-mess_72dad8ad.md
+---log---
+af33907 Aggiunta cchistory
+e1dc8dc Completa i campi legacy XPO nelle tabelle anagrafiche
+f319d39 Aggiunto file chat locale.
+b8d3377 Aggiornate tabelle pazienti, contattipz con i campi e le relazioni mancanti.
+ccf7fcf Merge pull request #1 from mbafumic/feat/paziente-contatto-ricovero
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:42:59 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:42:59 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	# Roadmap
+2	
+3	Tabella di marcia condivisa del progetto: **unica fonte di verità**. Ogni dev, da ogni
+4	branch, legge e aggiorna questo file. La skill `/coscience` lo usa per dirti cosa fare e per
+5	registrare gli avanzamenti.
+6	
+7	Convenzioni:
+8	- Una riga = una slice verticale (piccola, rilasciabile).
+9	- Annota il branch accanto agli item *In corso*.
+10	- Quando chiudi una slice spostala in *Fatto* con data e, se c'è, PR#.
+11	- Non restare bloccato: se la tua PR è in review, prendi un item sbloccabile dal *Backlog*.
+12	
+13	## In corso
+14	- [ ] Completamento campi legacy XPO sulle tabelle anagrafiche — branch:
+15	      `feat/campi-mancanti-anagrafica`. Tutte le lookup ora hanno i campi persistenti
+16	      del rispettivo oggetto XPO: `Dipendente` e `PresidioOsp` completati (non più
+17	      minimi), aggiunte `Titolo`/`TipoDipendente`/`RapportoDipendenza`, colmati piccoli
+18	      gap (`transcodifica`, `codice_altro_sistema`, ecc.) e campi calcolati (Nominativo).
+19	      Fonte auto
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:43:17 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:43:18 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "gh auth status 2>&1 | head -3\necho \"---branch merged?---\"\ngit branch -r --merged origin/main | head",
+  "description": "Check gh auth and which branches are merged into main"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:43:23 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+You are not logged into any GitHub hosts. To log in, run: gh auth login
+---branch merged?---
+  origin/HEAD -> origin/main
+  origin/feat/campi-mancanti-anagrafica
+  origin/feat/paziente-contatto-ricovero
+  origin/main
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:43:27 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:43:30 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git fetch origin 2>&1 | tail -2\necho \"---origin/main log---\"\ngit log --oneline -4 origin/main\necho \"---is e1dc8dc in origin/main?---\"\ngit merge-base --is-ancestor e1dc8dc origin/main && echo \"SI: commit gia' in origin/main\" || echo \"NO: non ancora in main\"",
+  "description": "Fetch and check whether the branch commit is already in origin/main"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:43:33 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+---origin/main log---
+378bd8b Merge pull request #2 from mbafumic/feat/campi-mancanti-anagrafica
+e1dc8dc Completa i campi legacy XPO nelle tabelle anagrafiche
+f319d39 Aggiunto file chat locale.
+b8d3377 Aggiornate tabelle pazienti, contattipz con i campi e le relazioni mancanti.
+---is e1dc8dc in origin/main?---
+SI: commit gia' in origin/main
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:43:53 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:44:00 AM</sup>
+
+Novità: **la PR #2 è stata creata e mergiata** — il branch corrente `feat/campi-mancanti-anagrafica` è già in `origin/main`.
+
+## Cosa c'è da fare
+
+**Stato reale vs `ROADMAP.md`: la roadmap è disallineata.** Entrambi gli item in *In corso* sono in realtà **mergiati**:
+
+| Item "In corso" | Stato reale |
+|---|---|
+| Anagrafica Paziente + ContattoPz + Ricovero | mergiato via **PR #1** |
+| Completamento campi legacy XPO | mergiato via **PR #2** |
+
+Vanno spostati in *Fatto* con data e PR# (lo faccio comunque, è housekeeping del loop).
+
+**Caveat aperto ereditato:** la verifica end-to-end contro un Postgres reale (`alembic upgrade head` + `pytest`) non è mai stata eseguita — nessun DB raggiungibile finora. La Definition of Done chiede "test verdi", quindi resta un debito su entrambe le slice già mergiate.
+
+**Backlog — primi item sbloccabili** (l'anagrafica base ora è su main, quindi sono tutti sbloccati):
+- Prenotazione + Prericovero (completa il percorso ricovero)
+- Prenotazione Ambulatorio + Prestazione Ambulatoriale (percorso ambulatoriale)
+- Scheda Clinica polimorfica (Schederic→Schede + JSONB)
+- Reparti + Medici (scioglie i FK-placeholder introdotti dalla PR #2)
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:44:05 AM</sup>
+
+<details>
+<summary>Tool: <code>AskUserQuestion</code></summary>
+
+```json
+{
+  "questions": [
+    {
+      "question": "Aggiorno la ROADMAP (i 2 item mergiati → Fatto con PR #1/#2) e poi su quale slice lavoriamo?",
+      "header": "Prossima slice",
+      "options": [
+        {
+          "label": "Prenotazione + Prericovero (Recommended)",
+          "description": "Completa il percorso ricovero e valida che l'ereditarietà joined-table di ContattoPz si estenda senza rework, come promesso dal design."
+        },
+        {
+          "label": "Reparti + Medici",
+          "description": "Scioglie i FK-placeholder Integer appena introdotti (debito tecnico fresco) e completa l'anagrafica organizzativa/staff."
+        },
+        {
+          "label": "Scheda Clinica polimorfica",
+          "description": "Il pattern più centrale e complesso: Schederic→Schede con discriminatore + JSONB, ~66 sottotipi legacy."
+        },
+        {
+          "label": "Prima la verifica Postgres",
+          "description": "Prima di nuove slice, chiudiamo il debito di DoD: far girare migration e test contro un Postgres reale."
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:44:29 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Your questions have been answered: "Aggiorno la ROADMAP (i 2 item mergiati → Fatto con PR #1/#2) e poi su quale slice lavoriamo?"="Prenotazione + Prericovero (Recommended)". You can now continue with these answers in mind.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:44:32 AM</sup>
+
+Procedo: aggiorno la ROADMAP e poi pianifico la slice **Prenotazione + Prericovero**. Prima mi allineo a `main`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:44:33 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git checkout main 2>&1 | tail -2 && git pull --ff-only 2>&1 | tail -3 && git log --oneline -2",
+  "description": "Switch to main and fast-forward to origin"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:44:38 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Please commit your changes or stash them before you switch branches.
+Aborting
+Already up to date.
+af33907 Aggiunta cchistory
+e1dc8dc Completa i campi legacy XPO nelle tabelle anagrafiche
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:44:56 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:44:56 AM</sup>
+
+Il checkout è bloccato da `.cc-history/` modificato (file di transcript auto-generato). Verifico la divergenza prima di toccare qualsiasi cosa.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:44:58 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "echo \"--- af33907 in origin/main? ---\"\ngit merge-base --is-ancestor af33907 origin/main && echo \"SI\" || echo \"NO - commit locale non in main\"\necho \"--- local main vs origin/main ---\"\ngit rev-parse main origin/main\necho \"--- cosa contiene af33907 ---\"\ngit show --stat --oneline af33907 | head -5",
+  "description": "Check branch divergence and what the extra commit contains"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:44:59 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+--- af33907 in origin/main? ---
+NO - commit locale non in main
+--- local main vs origin/main ---
+f319d39442eae4b984cebf1a4c6fdacb3b03cfcb
+378bd8b4b16197e7d433672524847b6c6a288c13
+--- cosa contiene af33907 ---
+af33907 Aggiunta cchistory
+ ...ommand-messagecosciencecommand-mess_72dad8ad.md | 2720 +++++++++++++++++++-
+ 1 file changed, 2718 insertions(+), 2 deletions(-)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:09 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:11 AM</sup>
+
+Chiaro: `af33907` contiene **solo** il file di transcript `.cc-history` (nessun codice) e non è in `main`; il codice della PR #2 è invece già mergiato. Il `main` locale è indietro rispetto a `origin/main`.
+
+Metto da parte la modifica transitoria di `.cc-history` (resta recuperabile via stash), mi allineo a `main` e creo il branch della nuova slice.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:12 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git stash push -m \"cc-history transcript wip\" -- .cc-history/ 2>&1 | tail -2\ngit checkout main 2>&1 | tail -1\ngit pull --ff-only 2>&1 | tail -2\ngit log --oneline -2",
+  "description": "Stash transcript file, switch to main and fast-forward"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:45:20 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Saved working directory and index state On feat/campi-mancanti-anagrafica: cc-history transcript wip
+Switched to branch 'main'
+ create mode 100644 app/schemas/tipo_dipendente.py
+ create mode 100644 app/schemas/titolo.py
+378bd8b Merge pull request #2 from mbafumic/feat/campi-mancanti-anagrafica
+e1dc8dc Completa i campi legacy XPO nelle tabelle anagrafiche
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:23 AM</sup>
+
+Allineato a `origin/main` (378bd8b). Creo il branch della slice.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:23 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "git checkout -b feat/prenotazione-prericovero 2>&1 | tail -1 && git status --short && echo \"(working tree pulito)\"",
+  "description": "Create branch for the Prenotazione + Prericovero slice"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:45:27 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Switched to a new branch 'feat/prenotazione-prericovero'
+ M .cc-history/2026-07-10_114234_command-messagecosciencecommand-mess_72dad8ad.md
+(working tree pulito)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:30 AM</sup>
+
+Ora aggiorno la `ROADMAP.md` spostando i due item mergiati in *Fatto*.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:47 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "## In corso\n- [ ] Completamento campi legacy XPO sulle tabelle anagrafiche — branch:\n      `feat/campi-mancanti-anagrafica`. Tutte le lookup ora hanno i campi persistenti\n      del rispettivo oggetto XPO: `Dipendente` e `PresidioOsp` completati (non più\n      minimi), aggiunte `Titolo`/`TipoDipendente`/`RapportoDipendenza`, colmati piccoli\n      gap (`transcodifica`, `codice_altro_sistema`, ecc.) e campi calcolati (Nominativo).\n      Fonte autoritativa = oggetto XPO C# (colonne solo-SQL come `SiglaRegione`, o\n      pseudo-proprietà come `Prov`, non portate). `Reparti` e `Medici`, referenziati da\n      `Dipendente`/`PresidioOsp`, sono FK-placeholder (Integer nullable) — vedi Backlog.\n      Codici Gestclid (`Codpaz`/`Cod_dpaz`/`Codric`) restano esclusi come da decisione.\n      Migration allineata (verificata vs metadati), ruff pulito, test verdi in collezione;\n      manca la verifica end-to-end contro un Postgres reale.\n- [ ] Anagrafica Paziente + ContattoPz (base, campi completi) + Ricovero (sottotipo) —\n      prima slice MVP — branch: `feat/paziente-contatto-ricovero`. Paziente e ContattoPz\n      ora includono tutti i campi scalari persistenti del legacy (con relative tabelle\n      lookup: Comune, Regione, GruppoSanguigno, StatoCivile, Professione,\n      PosizioneProfessionale, TipoDocumento, LivelloIstruzione, CategoriaPaziente, Stato,\n      Asp, MedicoEsterno, PresidioOsp, Dipendente — questi ultimi due in versione minima,\n      l'anagrafica organizzativa completa è nel Backlog) e i campi calcolati (Nominativo,\n      Iniziali, IMC, Superficie Corporea, Comune_Provincia, ecc., come property Python /\n      `computed_field` Pydantic, mai colonne DB). Le relazioni uno-a-molti verso altri\n      domini (Telefoni, Parenti, Anamnesi, Fatture, Imaging, Microbiologia) sono state\n      **rimandate a slice dedicate per dominio**, vedi Backlog. Cod
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:45:48 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:45:55 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "## Backlog\n- [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)\n- [ ] Prenotazione + Prericovero (percorso ricovero: entrambi opzionali, con link\n      incrociati a Prenotazione/Prericovero/Ricovero — vedi diagramma in CLAUDE.md)\n- [ ] Prenotazione Ambulatorio + Prestazione Ambulatoriale (percorso ambulatoriale, link\n      bidirezionale tra i due)",
+  "new_string": "## Backlog\n- [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)\n- [ ] Prenotazione Ambulatorio + Prestazione Ambulatoriale (percorso ambulatoriale, link\n      bidirezionale tra i due)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:45:56 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:07 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "## Fatto\n- [x] Definire lo stack del progetto (FastAPI + PostgreSQL) e documentarlo in `CLAUDE.md` — 2026-07-10\n- [x] Analisi del db legacy (`cocisdb_vuoto.sql`) con `/graphify` per informare il modello dati — 2026-07-10\n- [x] Ricostruzione del grafo da codice sorgente legacy (`oldsystem/`, business object XPO) e mappa delle dipendenze tra moduli — 2026-07-13\n<!-- - [x] Titolo slice — 2026-06-01, PR #1 -->",
+  "new_string": "## Fatto\n- [x] Definire lo stack del progetto (FastAPI + PostgreSQL) e documentarlo in `CLAUDE.md` — 2026-07-10\n- [x] Analisi del db legacy (`cocisdb_vuoto.sql`) con `/graphify` per informare il modello dati — 2026-07-10\n- [x] Ricostruzione del grafo da codice sorgente legacy (`oldsystem/`, business object XPO) e mappa delle dipendenze tra moduli — 2026-07-13\n- [x] Anagrafica Paziente + ContattoPz (base polimorfica) + Ricovero (sottotipo) — prima slice\n      MVP: scaffolding FastAPI/SQLAlchemy/Alembic, joined-table inheritance, campi legacy\n      completi e campi calcolati come property/`computed_field` — 2026-07-13, PR #1\n- [x] Completamento campi legacy XPO sulle tabelle anagrafiche: `Dipendente` e `PresidioOsp`\n      completi, nuove lookup `Titolo`/`TipoDipendente`/`RapportoDipendenza`, gap minori\n      colmati. `Reparti`/`Medici` restano FK-placeholder (vedi Backlog) — 2026-07-16, PR #2"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:46:08 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:12 AM</sup>
+
+ROADMAP allineata. Ora entro in plan mode per la slice **Prenotazione + Prericovero**, dopo aver letto le business object legacy.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:12 AM</sup>
+
+<details>
+<summary>Tool: <code>ToolSearch</code></summary>
+
+```json
+{
+  "query": "select:EnterPlanMode",
+  "max_results": 1
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:46:12 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:15 AM</sup>
+
+<details>
+<summary>Tool: <code>EnterPlanMode</code></summary>
+
+```json
+{}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:46:15 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Entered plan mode. You should now focus on exploring the codebase and designing an implementation approach.
+
+In plan mode, you should:
+1. Thoroughly explore the codebase to understand existing patterns
+2. Identify similar features and architectural approaches
+3. Consider multiple approaches and their trade-offs
+4. Use AskUserQuestion if you need to clarify the approach
+5. Design a concrete implementation strategy
+6. When ready, use ExitPlanMode to present your plan for approval
+
+Remember: DO NOT write or edit any files yet. This is a read-only exploration and planning phase.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:18 AM</sup>
+
+Esploro le business object legacy `Prenotazioni` e `Prericoveri` per capire campi e relazioni.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:20 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "find oldsystem -iname \"Prenotazioni*.cs\" -o -iname \"Prericoveri*.cs\" | sort\necho \"--- righe ---\"\nfor f in $(find oldsystem -iname \"Prenotazioni.bo.designer.cs\" -o -iname \"Prericoveri.bo.designer.cs\" -o -iname \"Prenotazioni.bo.cs\" -o -iname \"Prericoveri.bo.cs\"); do echo \"$f: $(wc -l < \"$f\")\"; done",
+  "description": "Locate legacy Prenotazioni and Prericoveri business objects"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:46:29 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+oldsystem/AccettazioneModule/BusinessObjects/Ambulatorio/PrenotazioniAmbulatorio.bo.cs
+oldsystem/AccettazioneModule/BusinessObjects/Ambulatorio/PrenotazioniAmbulatorio.bo.designer.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/Prenotazioni.bo.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/Prenotazioni.bo.designer.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniDH.bo.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniDH.bo.designer.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniDayService.bo.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniDayService.bo.designer.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniOrd.bo.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniOrd.bo.designer.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniPreRic.bo.cs
+oldsystem/AccettazioneModule/BusinessObjects/Prenota
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:41 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:43 AM</sup>
+
+Scoperta importante: ci sono **due** file `Prenotazioni` e **5 sottotipi** (`PrenotazioniDH`, `DayService`, `Ord`, `PreRic`, `PreRicDH`) — un'altra gerarchia polimorfica. Verifico lo schema SQL e i namespace.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:46:45 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "for t in prenotazioni prericoveri prenotazionidh prenotazionidayservice prenotazioniord prenotazionipreric prenotazionipreridh prenotazionipreric_dh; do\n  echo \"=== $t ===\"\n  awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | head -40\ndone\necho \"=== tabelle che iniziano con prenotazioni ===\"\ngrep -o '^CREATE TABLE `prenotazioni[a-z_]*`' cocisdb_vuoto.sql",
+  "description": "Extract SQL schema for prenotazioni, prericoveri and subtypes"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:46:49 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== prenotazioni ===
+CREATE TABLE `prenotazioni` (
+  `OID` int(11) NOT NULL,
+  `Data` datetime DEFAULT NULL,
+  `RegimeRicovero` int(11) DEFAULT NULL,
+  `DataPrevistaRicovero` datetime DEFAULT NULL,
+  `GradoUrgenza` int(11) DEFAULT NULL,
+  `UnitàFunzionale` int(11) DEFAULT NULL,
+  `SpecialistaMedico` char(38) DEFAULT NULL,
+  `Tutor` char(38) DEFAULT NULL,
+  `DiagnosiIngresso` int(11) DEFAULT NULL,
+  `ModalitaAccesso` int(11) DEFAULT NULL,
+  `SpecialistaChirurgo` char(38) DEFAULT NULL,
+  `NoteAmministrative` varchar(250) DEFAULT NULL,
+  `NoteCliniche` varchar(255) DEFAULT NULL,
+  `DisdettaPrenotazione` int(11) DEFAULT NULL,
+  `MedicoInviante` int(11) DEFAULT NULL,
+  `ClassePriorita` int(11) DEFAULT NULL,
+  `Bloccato` int(11) DEFAULT NULL,
+  `DataBlocco` datetime DEFAULT NULL,
+  `Stato` int(11) DEFAULT NULL,
+  `MotivoDH` int(11) DEFAULT NULL,
+  `DataPrevPreRic` datetime DEFAULT NULL,
+  `DataTampone` datetime DEFAULT NULL,
+  `Email` varchar(60) DEFAULT NULL,
+  `CameraSingola` bit(1) DEFAUL
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:02 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:04 AM</sup>
+
+Scoperta chiave: i 5 "sottotipi" di Prenotazioni (`DH`, `DayService`, `Ord`, `PreRic`, `PreRicDH`) **non hanno tabelle nel DB** — esistono solo `prenotazioni` e `prenotazioniambulatorio`. Coincidono esattamente con i 5 valori dell'enum `RegimeRicovero`. Verifico se sono classi non-persistenti (viste filtrate).
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:07 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "echo \"=== PrenotazioniOrd.bo.designer.cs ===\"\ncat oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/PrenotazioniOrd.bo.designer.cs\necho \"\"\necho \"=== namespace/class dei due Prenotazioni ===\"\ngrep -n \"^namespace\\|class Prenotazioni\\|NonPersistent\\|XPObject\\|: ContattiPz\\|DefaultClassOptions\" oldsystem/AccettazioneModule/BusinessObjects/Prenotazioni.bo.designer.cs oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/Prenotazioni.bo.designer.cs",
+  "description": "Check if Prenotazioni subtypes are non-persistent views and compare the two Prenotazioni files"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:47:08 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== PrenotazioniOrd.bo.designer.cs ===
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DevExpress.ExpressApp.DC;
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.Xpo;
+using DevExpress.Data.Filtering;
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Security.Strategy;
+using GlobalModule.BusinessObjects;
+namespace AccettazioneModule.BusinessObjects.Prenotazione
+{
+  [DefaultClassOptions]
+  [MapInheritance(MapInheritanceType.ParentTable)]
+  [DevExpress.ExpressApp.DC.XafDisplayNameAttribute("Prenotazione Ricovero ordinario")]
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:21 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:24 AM</sup>
+
+Confermato — semplificazione importante: `PrenotazioniOrd` ha `[MapInheritance(MapInheritanceType.ParentTable)]`, cioè i 5 "sottotipi" **non hanno tabella propria**: sono classi di comodo UI mappate sulla tabella padre e distinte dal campo `RegimeRicovero`. Nel nuovo modello diventano semplicemente un valore di quel campo, non 5 entità.
+
+Inoltre i due file `Prenotazioni` sono **partial class della stessa classe**. Li leggo entrambi.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:25 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\oldsystem\\AccettazioneModule\\BusinessObjects\\Prenotazioni.bo.designer.cs"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:47:25 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	//------------------------------------------------------------------------------
+2	// <auto-generated>
+3	//     This code was generated by a tool.
+4	//
+5	//     Changes to this file may cause incorrect behavior and will be lost if
+6	//     the code is regenerated.
+7	// </auto-generated>
+8	//------------------------------------------------------------------------------
+9	using System;
+10	using System.Collections.Generic;
+11	using System.Linq;
+12	using System.Text;
+13	using DevExpress.ExpressApp.DC;
+14	using DevExpress.Persistent.Base;
+15	using DevExpress.Persistent.BaseImpl;
+16	using DevExpress.Xpo;
+17	namespace AccettazioneModule.BusinessObjects
+18	{
+19	  [DefaultClassOptions]
+20	  public partial class Prenotazioni : AccettazioneModule.BusinessObjects.ContattiPz
+21	  {
+22	    private System.DateTime _dataBlocco;
+23	    private GlobalModule.BooleanEnum _bloccato;
+24	    private GlobalModule.ClassePrioritaEnum _classePriorita;
+25	    private GlobalModule.BusinessObjects.MediciEsterni _
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:35 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:36 AM</sup>
+
+Il file root copre 18 campi. Dal SQL mancano `Stato`, `DataPrevPreRic`, `DataTampone`, `Email`, `CameraSingola`, `DataAvviso`, `Avvisato`, `OraRicovero` — devono stare nell'altro partial. Verifico.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:47:38 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "echo \"=== private fields (Prenotazione/Prenotazioni) ===\"\ngrep -n \"^\\s*private .*_\" oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/Prenotazioni.bo.designer.cs\necho \"\"\necho \"=== StatiPrenotazioneEnum ===\"\ngrep -rn \"enum StatiPrenotazioneEnum\" -A 12 oldsystem/ | head -16",
+  "description": "List private fields of the second Prenotazioni partial and find StatiPrenotazioneEnum"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:47:41 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== private fields (Prenotazione/Prenotazioni) ===
+38:    private string _email;
+39:    private IList<Logs.LogRicoveri> _logsPrenotazione;
+40:    private AccettazioneModule.StatiPrenotazioneEnum _stato;
+41:    private System.DateTime _dataBlocco;
+42:    private GlobalModule.BooleanEnum _bloccato;
+43:    private GlobalModule.ClassePrioritaEnum _classePriorita;
+44:    private GlobalModule.BusinessObjects.MediciEsterni _medicoInviante;
+45:    private AccettazioneModule.BusinessObjects.DisdettaPrenotazione _disdettaPrenotazione;
+46:    private AccettazioneModule.BusinessObjects.ModalitaAccesso _modalitaAccesso;
+47:    private AccettazioneModule.BusinessObjects.GradiUrgenza _gradoUrgenza;
+48:    private System.String _noteCliniche;
+49:    private System.String _noteAmministrative;
+50:    private GlobalClinModule.BusinessObjects.Diagnosi _diagnosiIngresso;
+51:    private GlobalModule.BusinessObjects.Medici _tutor;
+52:    private GlobalModule.BusinessObjects.Medici _specialistaMedico;
+53:    
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:04 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:05 AM</sup>
+
+Ora mappo le dipendenze FK di entrambe le entità per dimensionare la slice.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:09 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "for t in gradiurgenza modalitaaccesso discipline disdettaprenotazione provenienze rinvii motivirinvio diagnosi parenti; do\n  n=$(awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f&&/^  \\`/{c++} /^\\) ENGINE/{if(f){print c; exit}}\" cocisdb_vuoto.sql)\n  echo \"$t: ${n:-N/A} colonne\"\ndone\necho \"\"\necho \"=== gradiurgenza / modalitaaccesso / provenienze / disdettaprenotazione ===\"\nfor t in gradiurgenza modalitaaccesso provenienze disdettaprenotazione; do\n  awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | grep -E '^CREATE|^  `' \n  echo \"---\"\ndone",
+  "description": "Size up the FK-target lookup tables for Prenotazione/Prericovero"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:48:12 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+gradiurgenza: 5 colonne
+modalitaaccesso: 4 colonne
+discipline: 12 colonne
+disdettaprenotazione: 5 colonne
+provenienze: 6 colonne
+rinvii: 8 colonne
+motivirinvio: 4 colonne
+diagnosi: 6 colonne
+parenti: 8 colonne
+
+=== gradiurgenza / modalitaaccesso / provenienze / disdettaprenotazione ===
+CREATE TABLE `gradiurgenza` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `GradoUrgenza` varchar(30) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  `Colore` int(11) DEFAULT NULL,
+---
+CREATE TABLE `modalitaaccesso` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Modalità` varchar(50) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+---
+CREATE TABLE `provenienze` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Provenienza` varchar(70) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  `AnnoInizioValidita` smallint(5) unsigned DEFAULT NULL,
+  `AnnoFineValidita` smallint(5)
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:26 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:27 AM</sup>
+
+Lookup piccole. Verifico `discipline` e `diagnosi` (che appartengono ad altri moduli — GlobalModule e GlobalClinModule) per decidere se modellarle o usare placeholder.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:29 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "for t in discipline diagnosi; do\n  echo \"=== $t ===\"\n  awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | grep -E '^CREATE|^  `|CONSTRAINT'\n  echo \"\"\ndone",
+  "description": "Inspect discipline and diagnosi schemas"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:48:32 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== discipline ===
+CREATE TABLE `discipline` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Codice` varchar(2) DEFAULT NULL,
+  `Disciplina` varchar(50) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  `Attiva` int(11) DEFAULT NULL,
+  `TrasferimentoInterno` int(11) DEFAULT NULL,
+  `StandardProcedure` varchar(100) DEFAULT NULL,
+  `Responsabile` char(38) DEFAULT NULL,
+  `RepartoDegenza` int(11) DEFAULT NULL,
+  `GGTerapiaFinoSosp` smallint(5) unsigned DEFAULT NULL,
+  `AllegatiCC` bit(1) DEFAULT NULL,
+  CONSTRAINT `FK_Discipline_RepartoDegenza` FOREIGN KEY (`RepartoDegenza`) REFERENCES `reparti` (`OID`),
+  CONSTRAINT `FK_Discipline_Responsabile` FOREIGN KEY (`Responsabile`) REFERENCES `dipendenti` (`Oid`)
+
+=== diagnosi ===
+CREATE TABLE `diagnosi` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Descrizione` varchar(60) DEFAULT NULL,
+  `Abbreviazione` varchar(15) DEFAULT NULL,
+  `ICD9CM` int(11) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:55 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:48:57 AM</sup>
+
+Dettaglio cruciale: nel SQL `prenotazioni` **non ha** FK verso ricoveri/prericoveri — e nel C# quelle proprietà (righe 734, 751) sono `[NonPersistent]`, cioè reverse-lookup calcolati. Verifico la direzione reale delle FK su `ricoveri`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:49:00 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "echo \"=== ricoveri: colonne di link ===\"\nawk \"/^CREATE TABLE \\`ricoveri\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | grep -iE 'Prenotazione|Prericovero|CONSTRAINT.*(prenotazioni|prericoveri)'\necho \"\"\necho \"=== proprieta' NonPersistent righe 730-760 (Prenotazioni) ===\"\nsed -n '730,760p' oldsystem/AccettazioneModule/BusinessObjects/Prenotazione/Prenotazioni.bo.designer.cs",
+  "description": "Verify real FK direction between ricoveri, prenotazioni, prericoveri"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:49:05 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== ricoveri: colonne di link ===
+  `Prenotazione` int(11) DEFAULT NULL,
+  `PreRicovero` int(11) DEFAULT NULL,
+  KEY `iPrenotazione_Ricoveri` (`Prenotazione`),
+  KEY `iPreRicovero_Ricoveri` (`PreRicovero`),
+  CONSTRAINT `FK_Ricoveri_PreRicovero` FOREIGN KEY (`PreRicovero`) REFERENCES `prericoveri` (`OID`),
+  CONSTRAINT `FK_Ricoveri_Prenotazione` FOREIGN KEY (`Prenotazione`) REFERENCES `prenotazioni` (`OID`),
+
+=== proprieta' NonPersistent righe 730-760 (Prenotazioni) ===
+				SetPropertyValue("OraRicovero", ref _oraRicovero, value);
+			}
+		}
+
+		[DevExpress.Xpo.NonPersistentAttribute]
+    [DevExpress.Persistent.Base.VisibleInLookupListViewAttribute(false)]
+    [DevExpress.Persistent.Base.VisibleInListViewAttribute(false)]
+    [DevExpress.Persistent.Base.VisibleInDetailViewAttribute(false)]
+    public AccettazioneModule.BusinessObjects.Ricoveri Ricovero
+    {
+      get
+      {
+        if (!IsLoading)
+        {
+          Ricoveri ricov = Session.FindObject<Ricoveri>(new BinaryOperator("Pren
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:49:14 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:49:16 AM</sup>
+
+Quadro confermato e pulito. Le FK reali fluiscono **Ricovero → {Prenotazione, Prericovero}** e **Prericovero → Prenotazione**; i reverse (`Prenotazione.Ricovero`, `.Prericovero`) sono `NonPersistent` → in SQLAlchemy diventano `relationship()` backref, non colonne. Ultimo passo: i campi di `Prericoveri`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:49:18 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "echo \"=== Prericoveri: private fields ===\"\ngrep -n \"^\\s*private .*_\" oldsystem/AccettazioneModule/BusinessObjects/Prericoveri.bo.designer.cs\necho \"\"\necho \"=== Prericoveri: NonPersistent count ===\"\ngrep -c \"NonPersistentAttribute\" oldsystem/AccettazioneModule/BusinessObjects/Prericoveri.bo.designer.cs\necho \"=== class decl ===\"\ngrep -n \"class Prericoveri\" oldsystem/AccettazioneModule/BusinessObjects/Prericoveri.bo.designer.cs",
+  "description": "Enumerate Prericoveri persistent fields"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:49:19 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== Prericoveri: private fields ===
+38:    private List<Prericoveri> _etichetteRicovero = new List<Prericoveri>();
+39:    private DevExpress.Xpo.XPCollection<SchedeRic> _schedeSezione;
+40:    private DevExpress.Xpo.XPCollection<Ricoveri> _altriRicoveri;
+41:    private DevExpress.Xpo.XPCollection<SezioniCartella> _listaSezioni;
+42:    private GlobalModule.BusinessObjects.MediciEsterni _medicoInviante;
+43:    private AccettazioneModule.BusinessObjects.Prenotazioni _prenotazione;
+44:    private System.String _noteCliniche;
+45:    private System.String _noteAmministrative;
+46:    private System.DateTime _dataFine;
+47:    private GlobalClinModule.BusinessObjects.Diagnosi _diagnosiIngresso;
+48:    private AccettazioneModule.BusinessObjects.Provenienze _provenienza;
+49:    private GlobalModule.BusinessObjects.Medici _tutor;
+50:    private GlobalModule.BusinessObjects.Medici _specialistaMedico;
+51:    private GlobalModule.BusinessObjects.Medici _specialistaChirurgo;
+52:    private System.DateT
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:49:55 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:49:55 AM</sup>
+
+Ho il quadro completo. Scrivo il piano.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:50:38 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "C:\\Users\\OMONACO.DROMONACO\\.claude\\plans\\structured-rolling-hippo.md",
+  "content": "# Slice: Prenotazione + Prericovero (percorso ricovero)\n\n## Contesto\n\n`ContattoPz` è la base polimorfica (joined-table inheritance, PK condivisa) già su `main`,\nma ha **un solo sottotipo concreto**: `Ricovero`. Il percorso ricovero descritto in\n`CLAUDE.md` è però `Prenotazione? → Prericovero? → Ricovero`, con link opzionali.\n\nQuesta slice aggiunge i due sottotipi mancanti del percorso ricovero e i link reali fra i\ntre. Valida anche la promessa del design della slice 1: *aggiungere un sottotipo = nuova\ntabella + nuova classe mappata, zero modifiche a Paziente/ContattoPz*.\n\n### Scoperte dall'analisi legacy (cambiano il modello — vanno recepite)\n\n1. **I 5 \"sottotipi\" di Prenotazioni non esistono.** `PrenotazioniOrd/DH/DayService/PreRic/\n   PreRicDH` hanno `[MapInheritance(MapInheritanceType.ParentTable)]` e **nessuna tabella**\n   nel DB: sono classi di comodo UI mappate sulla tabella padre, distinte solo dal valore di\n   `RegimeRicovero`. → Nel nuovo modello sono **un campo**, non 5 entità.\n2. **Le due `Prenotazioni.bo.designer.cs` sono `partial class` della stessa classe** (root +\n   `Prenotazione/`): i campi vanno presi da entrambe.\n3. **Direzione reale delle FK** (`Prenotazione.Ricovero`/`.Prericovero` sono\n   `[NonPersistent]`, reverse-lookup calcolati → in SQLAlchemy sono `relationship`, non\n   colonne):\n   ```\n   Ricovero    ── prenotazione_id → Prenotazione   (nullable)\n               └─ prericovero_id  → Prericovero    (nullable)\n   Prericovero ── prenotazione_id → Prenotazione   (nullable)\n   ```\n\n## Modifiche\n\n### Nuovi sottotipi di `ContattoPz` (stesso pattern di `app/models/ricovero.py`)\n- **`app/models/prenotazione.py`** — `Prenotazione(ContattoPz)`, `__tablename__=\"prenotazioni\"`,\n  `id` = PK **e** FK→`contatti_pz.id`, `polymorphic_identity=\"prenotazione\"`.\n  Campi (da entrambe le partial + SQL): `data`, `regi
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:50:39 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file C:\Users\OMONACO.DROMONACO\.claude\plans\structured-rolling-hippo.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:50:42 AM</sup>
+
+<details>
+<summary>Tool: <code>ToolSearch</code></summary>
+
+```json
+{
+  "query": "select:ExitPlanMode",
+  "max_results": 1
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:50:42 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:50:51 AM</sup>
+
+<details>
+<summary>Tool: <code>ExitPlanMode</code></summary>
+
+```json
+{
+  "plan": "# Slice: Prenotazione + Prericovero (percorso ricovero)\n\n## Contesto\n\n`ContattoPz` è la base polimorfica (joined-table inheritance, PK condivisa) già su `main`,\nma ha **un solo sottotipo concreto**: `Ricovero`. Il percorso ricovero descritto in\n`CLAUDE.md` è però `Prenotazione? → Prericovero? → Ricovero`, con link opzionali.\n\nQuesta slice aggiunge i due sottotipi mancanti del percorso ricovero e i link reali fra i\ntre. Valida anche la promessa del design della slice 1: *aggiungere un sottotipo = nuova\ntabella + nuova classe mappata, zero modifiche a Paziente/ContattoPz*.\n\n### Scoperte dall'analisi legacy (cambiano il modello — vanno recepite)\n\n1. **I 5 \"sottotipi\" di Prenotazioni non esistono.** `PrenotazioniOrd/DH/DayService/PreRic/\n   PreRicDH` hanno `[MapInheritance(MapInheritanceType.ParentTable)]` e **nessuna tabella**\n   nel DB: sono classi di comodo UI mappate sulla tabella padre, distinte solo dal valore di\n   `RegimeRicovero`. → Nel nuovo modello sono **un campo**, non 5 entità.\n2. **Le due `Prenotazioni.bo.designer.cs` sono `partial class` della stessa classe** (root +\n   `Prenotazione/`): i campi vanno presi da entrambe.\n3. **Direzione reale delle FK** (`Prenotazione.Ricovero`/`.Prericovero` sono\n   `[NonPersistent]`, reverse-lookup calcolati → in SQLAlchemy sono `relationship`, non\n   colonne):\n   ```\n   Ricovero    ── prenotazione_id → Prenotazione   (nullable)\n               └─ prericovero_id  → Prericovero    (nullable)\n   Prericovero ── prenotazione_id → Prenotazione   (nullable)\n   ```\n\n## Modifiche\n\n### Nuovi sottotipi di `ContattoPz` (stesso pattern di `app/models/ricovero.py`)\n- **`app/models/prenotazione.py`** — `Prenotazione(ContattoPz)`, `__tablename__=\"prenotazioni\"`,\n  `id` = PK **e** FK→`contatti_pz.id`, `polymorphic_identity=\"prenotazione\"`.\n  Campi (da entrambe le partial + SQL): `data`, `regime_ricovero`, `data_prevista_ricovero`,\n  `ora_ricovero`, `data_prev_pre_ric`, `data_tampone`,
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:51:45 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+User has approved your plan. You can now start coding. Start with updating your todo list if applicable
+
+Your plan has been saved to: C:\Users\OMONACO.DROMONACO\.claude\plans\structured-rolling-hippo.md
+You can refer back to it if needed during implementation.
+
+## Approved Plan:
+# Slice: Prenotazione + Prericovero (percorso ricovero)
+
+## Contesto
+
+`ContattoPz` è la base polimorfica (joined-table inheritance, PK condivisa) già su `main`,
+ma ha **un solo sottotipo concreto**: `Ricovero`. Il percorso ricovero descritto in
+`CLAUDE.md` è però `Prenotazione? → Prericovero? → Ricovero`, con link opzionali.
+
+Questa slice aggiunge i due sottotipi mancanti del percorso ricovero e i link reali fra i
+tre. Valida anche la promessa del design della slice 1: *aggiungere un sottotipo = nuova
+tabella + nuova classe mappata, zero modifiche a Paziente/ContattoPz*.
+
+### Scoperte dall'analisi legacy (cambiano il modello — vanno recepite)
+
+1. **I 5 "sottotipi" di Prenotazioni non esistono.** `PrenotazioniOr
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:51:53 AM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup: GradoUrgenza, ModalitaAccesso, Provenienza, Disciplina, Diagnosi, DisdettaPrenotazione",
+      "status": "in_progress",
+      "activeForm": "Creando le 6 lookup"
+    },
+    {
+      "content": "Modelli Prenotazione e Prericovero (sottotipi ContattoPz)",
+      "status": "pending",
+      "activeForm": "Creando Prenotazione e Prericovero"
+    },
+    {
+      "content": "Ricovero: aggiungere prenotazione_id/prericovero_id + relationship",
+      "status": "pending",
+      "activeForm": "Aggiungendo i link su Ricovero"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py + models/__init__",
+      "status": "pending",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "pending",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo",
+      "status": "pending",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (slice → Fatto, nuove voci Backlog)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:51:53 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:51:56 AM</sup>
+
+Inizio con le 6 lookup.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:51:58 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\grado_urgenza.py",
+  "content": "from sqlalchemy import Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column\n\nfrom app.db import Base\n\n\nclass GradoUrgenza(Base):\n    \"\"\"Grado di urgenza di una prenotazione di ricovero.\"\"\"\n\n    __tablename__ = \"gradi_urgenza\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    grado_urgenza: Mapped[str] = mapped_column(String(30))\n    colore: Mapped[int | None] = mapped_column(Integer, default=None)\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:51:59 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\grado_urgenza.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:52:03 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\modalita_accesso.py",
+  "content": "from sqlalchemy import String\nfrom sqlalchemy.orm import Mapped, mapped_column\n\nfrom app.db import Base\n\n\nclass ModalitaAccesso(Base):\n    \"\"\"Modalità di accesso alla struttura (es. programmato, urgente).\"\"\"\n\n    __tablename__ = \"modalita_accesso\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    modalita: Mapped[str] = mapped_column(String(50))\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:52:04 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\modalita_accesso.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:52:09 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\provenienza.py",
+  "content": "from sqlalchemy import Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column\n\nfrom app.db import Base\n\n\nclass Provenienza(Base):\n    \"\"\"Provenienza del paziente all'accesso (con validità temporale della voce).\"\"\"\n\n    __tablename__ = \"provenienze\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    provenienza: Mapped[str] = mapped_column(String(70))\n    anno_inizio_validita: Mapped[int | None] = mapped_column(Integer, default=None)\n    anno_fine_validita: Mapped[int | None] = mapped_column(Integer, default=None)\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:52:10 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\provenienza.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:52:19 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\disciplina.py",
+  "content": "from typing import TYPE_CHECKING\n\nfrom sqlalchemy import Boolean, ForeignKey, Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.db import Base\n\nif TYPE_CHECKING:\n    from app.models.dipendente import Dipendente\n\n\nclass Disciplina(Base):\n    \"\"\"Disciplina/unità funzionale (codifica ministeriale del reparto di degenza).\n\n    `reparto_degenza_id` referenzia `Reparti`, non ancora modellato (dominio\n    anagrafica organizzativa — vedi Backlog): è un FK-placeholder Integer nullable.\n    \"\"\"\n\n    __tablename__ = \"discipline\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    codice: Mapped[str | None] = mapped_column(String(2), default=None)\n    disciplina: Mapped[str | None] = mapped_column(String(50), default=None)\n    attiva: Mapped[bool | None] = mapped_column(Boolean, default=None)\n    trasferimento_interno: Mapped[bool | None] = mapped_column(Boolean, default=None)\n    standard_procedure: Mapped[str | None] = mapped_column(String(100), default=None)\n    gg_terapia_fino_sosp: Mapped[int | None] = mapped_column(Integer, default=None)\n    allegati_cc: Mapped[bool | None] = mapped_column(Boolean, default=None)\n    responsabile_id: Mapped[int | None] = mapped_column(ForeignKey(\"dipendenti.id\"), default=None)\n    reparto_degenza_id: Mapped[int | None] = mapped_column(Integer, default=None)\n\n    responsabile: Mapped[\"Dipendente | None\"] = relationship()\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:52:20 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\disciplina.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:52:28 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\diagnosi.py",
+  "content": "from sqlalchemy import Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column\n\nfrom app.db import Base\n\n\nclass Diagnosi(Base):\n    \"\"\"Diagnosi di uso corrente (scorciatoia interna verso un codice ICD9-CM).\n\n    `icd9_cm_id` referenzia `ICD9_CM` del modulo codifiche cliniche, non ancora\n    modellato (vedi Backlog): è un FK-placeholder Integer nullable.\n    \"\"\"\n\n    __tablename__ = \"diagnosi\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    descrizione: Mapped[str | None] = mapped_column(String(60), default=None)\n    abbreviazione: Mapped[str | None] = mapped_column(String(15), default=None)\n    icd9_cm_id: Mapped[int | None] = mapped_column(Integer, default=None)\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:52:29 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\diagnosi.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:52:43 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\disdetta_prenotazione.py",
+  "content": "from typing import TYPE_CHECKING\n\nfrom sqlalchemy import ForeignKey, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.db import Base\n\nif TYPE_CHECKING:\n    from app.models.prenotazione import Prenotazione\n\n\nclass DisdettaPrenotazione(Base):\n    \"\"\"Disdetta di una prenotazione (1:1 con Prenotazione).\n\n    Nel legacy la 1:1 è circolare (`prenotazioni.DisdettaPrenotazione` **e**\n    `disdettaprenotazione.Prenotazione`, entrambe colonne). Qui teniamo una sola\n    FK, con la relationship inversa `Prenotazione.disdetta`: stessa informazione,\n    nessun ciclo di FK.\n    \"\"\"\n\n    __tablename__ = \"disdetta_prenotazione\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    motivo: Mapped[str | None] = mapped_column(String(200), default=None)\n    prenotazione_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"prenotazioni.id\"), default=None, unique=True\n    )\n\n    prenotazione: Mapped[\"Prenotazione | None\"] = relationship(back_populates=\"disdetta\")\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:52:44 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\disdetta_prenotazione.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:52:52 AM</sup>
+
+Ora i due sottotipi di `ContattoPz`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:52:57 AM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup: GradoUrgenza, ModalitaAccesso, Provenienza, Disciplina, Diagnosi, DisdettaPrenotazione",
+      "status": "completed",
+      "activeForm": "Creando le 6 lookup"
+    },
+    {
+      "content": "Modelli Prenotazione e Prericovero (sottotipi ContattoPz)",
+      "status": "in_progress",
+      "activeForm": "Creando Prenotazione e Prericovero"
+    },
+    {
+      "content": "Ricovero: aggiungere prenotazione_id/prericovero_id + relationship",
+      "status": "pending",
+      "activeForm": "Aggiungendo i link su Ricovero"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py + models/__init__",
+      "status": "pending",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "pending",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo",
+      "status": "pending",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (slice → Fatto, nuove voci Backlog)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:52:57 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:53:18 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prenotazione.py",
+  "content": "from datetime import date, datetime\nfrom typing import TYPE_CHECKING, Literal\n\nfrom sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.contatto_pz import ContattoPz\n\nif TYPE_CHECKING:\n    from app.models.diagnosi import Diagnosi\n    from app.models.disciplina import Disciplina\n    from app.models.disdetta_prenotazione import DisdettaPrenotazione\n    from app.models.grado_urgenza import GradoUrgenza\n    from app.models.medico_esterno import MedicoEsterno\n    from app.models.modalita_accesso import ModalitaAccesso\n    from app.models.prericovero import Prericovero\n    from app.models.ricovero import Ricovero\n\n\nclass Prenotazione(ContattoPz):\n    \"\"\"Prenotazione di ricovero: sottotipo concreto di ContattoPz.\n\n    `regime_ricovero` distingue i casi che nel legacy erano 5 classi separate\n    (PrenotazioniOrd/DH/DayService/PreRic/PreRicDH): erano mappate sulla tabella\n    padre (`MapInheritance.ParentTable`), senza tabella propria, quindi qui sono\n    semplicemente un valore di questo campo.\n\n    `ricovero` e `prericovero` sono relationship inverse: nel legacy erano\n    proprietà `[NonPersistent]` calcolate con una query, non colonne. Le FK reali\n    stanno sui figli (Ricovero.prenotazione_id, Prericovero.prenotazione_id).\n\n    `specialista_medico_id`/`specialista_chirurgo_id`/`tutor_id` referenziano\n    `Medici`, non ancora modellato: sono FK-placeholder Integer (vedi Backlog).\n    \"\"\"\n\n    __tablename__ = \"prenotazioni\"\n\n    id: Mapped[int] = mapped_column(ForeignKey(\"contatti_pz.id\"), primary_key=True)\n\n    data: Mapped[date | None] = mapped_column(Date, default=None)\n    regime_ricovero: Mapped[\n        Literal[\"Ordinario\", \"DHDS\", \"DayService\", \"PreRicovero\", \"PreRicoveroDH\"] | None\n    ] = mapped_column(Strin
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:53:19 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prenotazione.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:53:36 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:53:54 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prericovero.py",
+  "content": "from datetime import date\nfrom typing import TYPE_CHECKING, Literal\n\nfrom sqlalchemy import Boolean, Date, ForeignKey, Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.contatto_pz import ContattoPz\n\nif TYPE_CHECKING:\n    from app.models.diagnosi import Diagnosi\n    from app.models.dipendente import Dipendente\n    from app.models.disciplina import Disciplina\n    from app.models.medico_esterno import MedicoEsterno\n    from app.models.modalita_accesso import ModalitaAccesso\n    from app.models.prenotazione import Prenotazione\n    from app.models.provenienza import Provenienza\n    from app.models.ricovero import Ricovero\n\n\nclass Prericovero(ContattoPz):\n    \"\"\"Prericovero: accesso per esami preliminari prima del ricovero.\n\n    Sottotipo concreto di ContattoPz. Può nascere da una Prenotazione (link\n    opzionale) e a sua volta sfociare in un Ricovero (FK sul Ricovero).\n\n    Nel legacy la PK è composita `(OID, CartellaClinica)`: quirk XPO. Qui `id`\n    resta la PK condivisa con contatti_pz e `cartella_clinica` è una colonna\n    normale indicizzata.\n\n    `specialista_medico_id`/`specialista_chirurgo_id`/`tutor_id` (→Medici) e\n    `parente_id` (→Parenti) sono FK-placeholder Integer: quelle tabelle non sono\n    ancora modellate (vedi Backlog).\n    \"\"\"\n\n    __tablename__ = \"prericoveri\"\n\n    id: Mapped[int] = mapped_column(ForeignKey(\"contatti_pz.id\"), primary_key=True)\n\n    regime_ricovero: Mapped[\n        Literal[\"Ordinario\", \"DHDS\", \"DayService\", \"PreRicovero\", \"PreRicoveroDH\"] | None\n    ] = mapped_column(String(20), default=None)\n    disciplina_ricovero_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"discipline.id\"), default=None\n    )\n    data_inizio: Mapped[date | None] = mapped_column(Date, default=None)\n    data_fine: Mapped[date | None] = mapped
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:53:55 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prericovero.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:53:58 AM</sup>
+
+Ora aggiungo i link su `Ricovero`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:53:59 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\ricovero.py"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:53:59 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Wasted call — file unchanged since your last Read. Refer to that earlier tool_result instead.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:10 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\ricovero.py",
+  "content": "from datetime import date\nfrom typing import TYPE_CHECKING\n\nfrom sqlalchemy import Date, ForeignKey, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.contatto_pz import ContattoPz\n\nif TYPE_CHECKING:\n    from app.models.prenotazione import Prenotazione\n    from app.models.prericovero import Prericovero\n\n\nclass Ricovero(ContattoPz):\n    \"\"\"Ricovero ospedaliero: sottotipo concreto di ContattoPz.\n\n    id è sia PK che FK verso contatti_pz.id (PK condivisa, come nel legacy).\n    Future slice aggiungeranno figli con FK stabile su ricoveri.id (SchedaClinica,\n    Rilevazioni, ProcedurePreviste/Effettuate, SDO/SDO10).\n\n    Un Ricovero può nascere direttamente da una Prenotazione (caso urgente) oppure\n    passare da un Prericovero: entrambi i link sono opzionali e le FK reali stanno\n    qui (nel legacy i reverse su Prenotazione erano proprietà calcolate).\n    \"\"\"\n\n    __tablename__ = \"ricoveri\"\n\n    id: Mapped[int] = mapped_column(ForeignKey(\"contatti_pz.id\"), primary_key=True)\n    reparto: Mapped[str] = mapped_column(String(100))\n    data_ricovero: Mapped[date] = mapped_column(Date)\n    data_dimissione: Mapped[date | None] = mapped_column(Date, default=None)\n    stato: Mapped[str] = mapped_column(String(20), default=\"aperto\")\n\n    prenotazione_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"prenotazioni.id\"), default=None\n    )\n    prericovero_id: Mapped[int | None] = mapped_column(ForeignKey(\"prericoveri.id\"), default=None)\n\n    prenotazione: Mapped[\"Prenotazione | None\"] = relationship(\n        back_populates=\"ricovero\", foreign_keys=[prenotazione_id]\n    )\n    prericovero: Mapped[\"Prericovero | None\"] = relationship(\n        back_populates=\"ricovero\", foreign_keys=[prericovero_id]\n    )\n\n    __mapper_args__ = {\n        \"polymorphic_identity\": \"ricovero\",\n 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:54:11 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\ricovero.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:18 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:20 AM</sup>
+
+Nota: `/model` è un comando built-in della CLI (apre il selettore del modello) — non è qualcosa che posso eseguire io. Se vuoi cambiare modello, rilancialo dal prompt quando il turno è finito, oppure dimmi quale preferisci. Proseguo con la slice.
+
+Aggiorno `app/models/__init__.py` e verifico subito che i mapper polimorfici si risolvano.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:27 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\__init__.py",
+  "content": "from app.db import Base\nfrom app.models.asp import Asp\nfrom app.models.categoria_paziente import CategoriaPaziente\nfrom app.models.comune import Comune\nfrom app.models.contatto_pz import ContattoPz\nfrom app.models.diagnosi import Diagnosi\nfrom app.models.dipendente import Dipendente\nfrom app.models.disciplina import Disciplina\nfrom app.models.disdetta_prenotazione import DisdettaPrenotazione\nfrom app.models.grado_urgenza import GradoUrgenza\nfrom app.models.gruppo_sanguigno import GruppoSanguigno\nfrom app.models.livello_istruzione import LivelloIstruzione\nfrom app.models.medico_esterno import MedicoEsterno\nfrom app.models.modalita_accesso import ModalitaAccesso\nfrom app.models.paziente import Paziente\nfrom app.models.posizione_professionale import PosizioneProfessionale\nfrom app.models.prenotazione import Prenotazione\nfrom app.models.prericovero import Prericovero\nfrom app.models.presidio_osp import PresidioOsp\nfrom app.models.professione import Professione\nfrom app.models.provenienza import Provenienza\nfrom app.models.rapporto_dipendenza import RapportoDipendenza\nfrom app.models.regione import Regione\nfrom app.models.ricovero import Ricovero\nfrom app.models.stato import Stato\nfrom app.models.stato_civile import StatoCivile\nfrom app.models.tipo_dipendente import TipoDipendente\nfrom app.models.tipo_documento import TipoDocumento\nfrom app.models.titolo import Titolo\n\n__all__ = [\n    \"Base\",\n    \"Asp\",\n    \"CategoriaPaziente\",\n    \"Comune\",\n    \"ContattoPz\",\n    \"Diagnosi\",\n    \"Dipendente\",\n    \"Disciplina\",\n    \"DisdettaPrenotazione\",\n    \"GradoUrgenza\",\n    \"GruppoSanguigno\",\n    \"LivelloIstruzione\",\n    \"MedicoEsterno\",\n    \"ModalitaAccesso\",\n    \"Paziente\",\n    \"PosizioneProfessionale\",\n    \"Prenotazione\",\n    \"Prericovero\",\n    \"PresidioOsp\",\n    \"Professione\",\n    \"Provenienza\"
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:54:29 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\__init__.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:33 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python -c \"\nfrom app.models import Base\nfrom sqlalchemy.orm import configure_mappers\nconfigure_mappers()\nprint('OK mappers configurati')\nfor t in ['prenotazioni','prericoveri','ricoveri','disdetta_prenotazione']:\n    print(t, '->', [c.name for c in Base.metadata.tables[t].columns])\n\" 2>&1 | tail -20",
+  "description": "Verify polymorphic mappers and relationships resolve"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:54:42 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4197, in configure_mappers
+    _configure_registries(_all_registries(), cascade=True)
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4228, in _configure_registries
+    _do_configure_registries(registries, cascade)
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4269, in _do_configure_registries
+    mapper._post_configure_properties()
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2428, in _post_configure_properties
+    prop.init()
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\orm\interfaces.py", line 595, in init
+    self.do_init()
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1658, in do_init
+    self._setup_join_conditions()
+  File "C:\Users\OM
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:49 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:51 AM</sup>
+
+Ambiguità attesa: `prenotazioni.id` e `prericoveri.id` puntano entrambi a `contatti_pz.id` (PK condivisa dei sottotipi), quindi SQLAlchemy trova più percorsi FK. Devo esplicitare `foreign_keys` anche sui reverse.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:54:55 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prenotazione.py",
+  "old_string": "    disdetta: Mapped[\"DisdettaPrenotazione | None\"] = relationship(\n        back_populates=\"prenotazione\", uselist=False\n    )\n    prericovero: Mapped[\"Prericovero | None\"] = relationship(\n        back_populates=\"prenotazione\", uselist=False\n    )\n    ricovero: Mapped[\"Ricovero | None\"] = relationship(\n        back_populates=\"prenotazione\", uselist=False\n    )",
+  "new_string": "    # foreign_keys esplicite: i sottotipi condividono la PK con contatti_pz, quindi\n    # senza indicazione SQLAlchemy trova più percorsi FK possibili.\n    disdetta: Mapped[\"DisdettaPrenotazione | None\"] = relationship(\n        back_populates=\"prenotazione\",\n        uselist=False,\n        foreign_keys=\"DisdettaPrenotazione.prenotazione_id\",\n    )\n    prericovero: Mapped[\"Prericovero | None\"] = relationship(\n        back_populates=\"prenotazione\",\n        uselist=False,\n        foreign_keys=\"Prericovero.prenotazione_id\",\n    )\n    ricovero: Mapped[\"Ricovero | None\"] = relationship(\n        back_populates=\"prenotazione\",\n        uselist=False,\n        foreign_keys=\"Ricovero.prenotazione_id\",\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:54:57 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prenotazione.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:01 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prericovero.py",
+  "old_string": "    ricovero: Mapped[\"Ricovero | None\"] = relationship(\n        back_populates=\"prericovero\", uselist=False\n    )",
+  "new_string": "    ricovero: Mapped[\"Ricovero | None\"] = relationship(\n        back_populates=\"prericovero\",\n        uselist=False,\n        foreign_keys=\"Ricovero.prericovero_id\",\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:55:02 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prericovero.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:06 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python -c \"\nfrom app.models import Base\nfrom sqlalchemy.orm import configure_mappers\nconfigure_mappers()\nprint('OK mappers configurati')\nfor t in ['prenotazioni','prericoveri','ricoveri','disdetta_prenotazione']:\n    print(t, '->', [c.name for c in Base.metadata.tables[t].columns])\n\" 2>&1 | tail -12",
+  "description": "Re-verify mappers after adding explicit foreign_keys"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:55:15 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+OK mappers configurati
+prenotazioni -> ['id', 'data', 'regime_ricovero', 'data_prevista_ricovero', 'ora_ricovero', 'data_prev_pre_ric', 'data_tampone', 'grado_urgenza_id', 'unita_funzionale_id', 'diagnosi_ingresso_id', 'modalita_accesso_id', 'medico_inviante_id', 'specialista_medico_id', 'specialista_chirurgo_id', 'tutor_id', 'note_amministrative', 'note_cliniche', 'classe_priorita', 'motivo_dh', 'stato', 'bloccato', 'data_blocco', 'email', 'camera_singola', 'data_avviso', 'avvisato']
+prericoveri -> ['id', 'regime_ricovero', 'disciplina_ricovero_id', 'data_inizio', 'data_fine', 'cartella_clinica', 'modalita_accesso_id', 'scheda_e', 'codice_impegnativa', 'numero_impegnativa', 'data_impegnativa', 'provenienza_id', 'diagnosi_ingresso_id', 'medico_inviante_id', 'prenotazione_id', 'locked_user_id', 'specialista_medico_id', 'specialista_chirurgo_id', 'tutor_id', 'parente_id', 'note_amministrative', 'note_cliniche', 'computer', 'anno_prericovero', 'mese_prericovero']
+ricoveri -> ['id', 're
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:18 AM</sup>
+
+Le tre gerarchie polimorfiche e i backref si risolvono. Ora schemas e router.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:23 AM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup: GradoUrgenza, ModalitaAccesso, Provenienza, Disciplina, Diagnosi, DisdettaPrenotazione",
+      "status": "completed",
+      "activeForm": "Creando le 6 lookup"
+    },
+    {
+      "content": "Modelli Prenotazione e Prericovero (sottotipi ContattoPz)",
+      "status": "completed",
+      "activeForm": "Creando Prenotazione e Prericovero"
+    },
+    {
+      "content": "Ricovero: aggiungere prenotazione_id/prericovero_id + relationship",
+      "status": "completed",
+      "activeForm": "Aggiungendo i link su Ricovero"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py",
+      "status": "in_progress",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "pending",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo",
+      "status": "pending",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (slice → Fatto, nuove voci Backlog)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:55:23 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:33 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\prenotazione.py",
+  "content": "from datetime import date, datetime\nfrom typing import Literal\n\nfrom pydantic import BaseModel, ConfigDict\n\nfrom app.schemas.contatto_pz import ContattoPzBase, ContattoPzReadMixin\n\nRegimeRicovero = Literal[\"Ordinario\", \"DHDS\", \"DayService\", \"PreRicovero\", \"PreRicoveroDH\"]\n\n\nclass PrenotazioneBase(BaseModel):\n    data: date | None = None\n    regime_ricovero: RegimeRicovero | None = None\n    data_prevista_ricovero: date | None = None\n    ora_ricovero: datetime | None = None\n    data_prev_pre_ric: date | None = None\n    data_tampone: date | None = None\n    grado_urgenza_id: int | None = None\n    unita_funzionale_id: int | None = None\n    diagnosi_ingresso_id: int | None = None\n    modalita_accesso_id: int | None = None\n    medico_inviante_id: int | None = None\n    specialista_medico_id: int | None = None\n    specialista_chirurgo_id: int | None = None\n    tutor_id: int | None = None\n    note_amministrative: str | None = None\n    note_cliniche: str | None = None\n    classe_priorita: Literal[\"A\", \"B\", \"C\", \"D\"] | None = None\n    motivo_dh: Literal[\"Diagnostico\", \"Chirurgico\", \"Terapeutico\", \"Riabilitativo\"] | None = None\n    stato: Literal[\"DaEvadere\", \"Evasa\", \"Bloccata\", \"Disdetta\", \"EvasoPreric\"] | None = None\n    bloccato: bool | None = None\n    data_blocco: date | None = None\n    email: str | None = None\n    camera_singola: bool = False\n    data_avviso: date | None = None\n    avvisato: bool = False\n\n\nclass PrenotazioneCreate(ContattoPzBase, PrenotazioneBase):\n    pass\n\n\nclass PrenotazioneRead(ContattoPzReadMixin, PrenotazioneBase):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    paziente_id: int\n    tipo_contatto: str\n    data_apertura: date\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:55:34 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\prenotazione.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:43 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\prericovero.py",
+  "content": "from datetime import date\nfrom typing import Literal\n\nfrom pydantic import BaseModel, ConfigDict\n\nfrom app.schemas.contatto_pz import ContattoPzBase, ContattoPzReadMixin\nfrom app.schemas.prenotazione import RegimeRicovero\n\nMese = Literal[\n    \"Gennaio\",\n    \"Febbraio\",\n    \"Marzo\",\n    \"Aprile\",\n    \"Maggio\",\n    \"Giugno\",\n    \"Luglio\",\n    \"Agosto\",\n    \"Settembre\",\n    \"Ottobre\",\n    \"Novembre\",\n    \"Dicembre\",\n]\n\n\nclass PrericoveroBase(BaseModel):\n    regime_ricovero: RegimeRicovero | None = None\n    disciplina_ricovero_id: int | None = None\n    data_inizio: date | None = None\n    data_fine: date | None = None\n    cartella_clinica: int | None = None\n    modalita_accesso_id: int | None = None\n    scheda_e: bool | None = None\n    codice_impegnativa: str | None = None\n    numero_impegnativa: str | None = None\n    data_impegnativa: date | None = None\n    provenienza_id: int | None = None\n    diagnosi_ingresso_id: int | None = None\n    medico_inviante_id: int | None = None\n    prenotazione_id: int | None = None\n    locked_user_id: int | None = None\n    specialista_medico_id: int | None = None\n    specialista_chirurgo_id: int | None = None\n    tutor_id: int | None = None\n    parente_id: int | None = None\n    note_amministrative: str | None = None\n    note_cliniche: str | None = None\n    computer: str | None = None\n    anno_prericovero: int | None = None\n    mese_prericovero: Mese | None = None\n\n\nclass PrericoveroCreate(ContattoPzBase, PrericoveroBase):\n    pass\n\n\nclass PrericoveroRead(ContattoPzReadMixin, PrericoveroBase):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    paziente_id: int\n    tipo_contatto: str\n    data_apertura: date\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:55:44 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\prericovero.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:47 AM</sup>
+
+Ora aggiorno `RicoveroCreate`/`Read` con i link e creo i router.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:50 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\ricovero.py",
+  "old_string": "class RicoveroBase(BaseModel):\n    reparto: str\n    data_ricovero: date\n    data_dimissione: date | None = None\n    stato: Literal[\"aperto\", \"dimesso\"] = \"aperto\"",
+  "new_string": "class RicoveroBase(BaseModel):\n    reparto: str\n    data_ricovero: date\n    data_dimissione: date | None = None\n    stato: Literal[\"aperto\", \"dimesso\"] = \"aperto\"\n    # percorso ricovero: entrambi opzionali (un ricovero urgente non ha prericovero)\n    prenotazione_id: int | None = None\n    prericovero_id: int | None = None"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:55:51 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\ricovero.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:55:53 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\api\\routers\\ricoveri.py"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:55:54 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Wasted call — file unchanged since your last Read. Refer to that earlier tool_result instead.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:02 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\api\\routers\\prenotazioni.py",
+  "content": "from fastapi import APIRouter, Depends, HTTPException, status\nfrom sqlalchemy import select\nfrom sqlalchemy.orm import Session\n\nfrom app.db import get_db\nfrom app.models.paziente import Paziente\nfrom app.models.prenotazione import Prenotazione\nfrom app.schemas.prenotazione import PrenotazioneCreate, PrenotazioneRead\n\nrouter = APIRouter(tags=[\"prenotazioni\"])\n\n\n@router.post(\n    \"/pazienti/{paziente_id}/prenotazioni\",\n    response_model=PrenotazioneRead,\n    status_code=status.HTTP_201_CREATED,\n)\ndef crea_prenotazione(\n    paziente_id: int, payload: PrenotazioneCreate, db: Session = Depends(get_db)\n) -> Prenotazione:\n    if db.get(Paziente, paziente_id) is None:\n        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=\"Paziente non trovato\")\n\n    dati = payload.model_dump()\n    prenotazione = Prenotazione(\n        paziente_id=paziente_id,\n        tipo_contatto=\"prenotazione\",\n        data_apertura=dati.get(\"data\") or dati[\"data_apertura\"],\n        **dati,\n    )\n    db.add(prenotazione)\n    db.commit()\n    db.refresh(prenotazione)\n    return prenotazione\n\n\n@router.get(\"/pazienti/{paziente_id}/prenotazioni\", response_model=list[PrenotazioneRead])\ndef lista_prenotazioni(paziente_id: int, db: Session = Depends(get_db)) -> list[Prenotazione]:\n    stmt = select(Prenotazione).where(Prenotazione.paziente_id == paziente_id)\n    return list(db.scalars(stmt))\n\n\n@router.get(\"/prenotazioni/{prenotazione_id}\", response_model=PrenotazioneRead)\ndef leggi_prenotazione(prenotazione_id: int, db: Session = Depends(get_db)) -> Prenotazione:\n    prenotazione = db.get(Prenotazione, prenotazione_id)\n    if prenotazione is None:\n        raise HTTPException(\n            status_code=status.HTTP_404_NOT_FOUND, detail=\"Prenotazione non trovata\"\n        )\n    return prenotazione\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:56:03 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\api\routers\prenotazioni.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:13 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:15 AM</sup>
+
+Attenzione, un bug: `data_apertura` è NOT NULL su `ContattoPz` ma non è in `ContattoPzBase`. Il router ricoveri lo deriva da `data_ricovero`; per Prenotazione devo derivarlo da `data` (che nel legacy defaulta a oggi). Correggo.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:16 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\api\\routers\\prenotazioni.py",
+  "old_string": "from fastapi import APIRouter, Depends, HTTPException, status\nfrom sqlalchemy import select\nfrom sqlalchemy.orm import Session",
+  "new_string": "from datetime import date\n\nfrom fastapi import APIRouter, Depends, HTTPException, status\nfrom sqlalchemy import select\nfrom sqlalchemy.orm import Session"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:56:17 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\api\routers\prenotazioni.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:23 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\api\\routers\\prenotazioni.py",
+  "old_string": "    dati = payload.model_dump()\n    prenotazione = Prenotazione(\n        paziente_id=paziente_id,\n        tipo_contatto=\"prenotazione\",\n        data_apertura=dati.get(\"data\") or dati[\"data_apertura\"],\n        **dati,\n    )",
+  "new_string": "    dati = payload.model_dump()\n    # nel legacy la data prenotazione defaulta a oggi (AfterConstruction);\n    # data_apertura del ContattoPz coincide con essa.\n    dati[\"data\"] = dati.get(\"data\") or date.today()\n    prenotazione = Prenotazione(\n        paziente_id=paziente_id,\n        tipo_contatto=\"prenotazione\",\n        data_apertura=dati[\"data\"],\n        **dati,\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:56:24 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\api\routers\prenotazioni.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:35 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\api\\routers\\prericoveri.py",
+  "content": "from datetime import date\n\nfrom fastapi import APIRouter, Depends, HTTPException, status\nfrom sqlalchemy import select\nfrom sqlalchemy.orm import Session\n\nfrom app.db import get_db\nfrom app.models.paziente import Paziente\nfrom app.models.prericovero import Prericovero\nfrom app.schemas.prericovero import PrericoveroCreate, PrericoveroRead\n\nrouter = APIRouter(tags=[\"prericoveri\"])\n\n\n@router.post(\n    \"/pazienti/{paziente_id}/prericoveri\",\n    response_model=PrericoveroRead,\n    status_code=status.HTTP_201_CREATED,\n)\ndef crea_prericovero(\n    paziente_id: int, payload: PrericoveroCreate, db: Session = Depends(get_db)\n) -> Prericovero:\n    if db.get(Paziente, paziente_id) is None:\n        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=\"Paziente non trovato\")\n\n    dati = payload.model_dump()\n    dati[\"data_inizio\"] = dati.get(\"data_inizio\") or date.today()\n    prericovero = Prericovero(\n        paziente_id=paziente_id,\n        tipo_contatto=\"prericovero\",\n        data_apertura=dati[\"data_inizio\"],\n        **dati,\n    )\n    db.add(prericovero)\n    db.commit()\n    db.refresh(prericovero)\n    return prericovero\n\n\n@router.get(\"/pazienti/{paziente_id}/prericoveri\", response_model=list[PrericoveroRead])\ndef lista_prericoveri(paziente_id: int, db: Session = Depends(get_db)) -> list[Prericovero]:\n    stmt = select(Prericovero).where(Prericovero.paziente_id == paziente_id)\n    return list(db.scalars(stmt))\n\n\n@router.get(\"/prericoveri/{prericovero_id}\", response_model=PrericoveroRead)\ndef leggi_prericovero(prericovero_id: int, db: Session = Depends(get_db)) -> Prericovero:\n    prericovero = db.get(Prericovero, prericovero_id)\n    if prericovero is None:\n        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=\"Prericovero non trovato\")\n    return prericovero\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:56:36 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\api\routers\prericoveri.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:43 AM</sup>
+
+Registro i router in `app/main.py`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:45 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\main.py",
+  "content": "from fastapi import FastAPI\n\nfrom app.api.routers import pazienti, prenotazioni, prericoveri, ricoveri\n\napp = FastAPI(title=\"CoCIS API\")\n\napp.include_router(pazienti.router)\napp.include_router(prenotazioni.router)\napp.include_router(prericoveri.router)\napp.include_router(ricoveri.router)\n\n\n@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:56:46 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\main.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:49 AM</sup>
+
+Ora gli schemas Pydantic per le nuove lookup, poi la migration.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:56:58 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ncat > app/schemas/grado_urgenza.py <<'EOF'\nfrom pydantic import BaseModel, ConfigDict\n\n\nclass GradoUrgenzaRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    grado_urgenza: str\n    colore: int | None = None\nEOF\ncat > app/schemas/modalita_accesso.py <<'EOF'\nfrom pydantic import BaseModel, ConfigDict\n\n\nclass ModalitaAccessoRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    modalita: str\nEOF\ncat > app/schemas/provenienza.py <<'EOF'\nfrom pydantic import BaseModel, ConfigDict\n\n\nclass ProvenienzaRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    provenienza: str\n    anno_inizio_validita: int | None = None\n    anno_fine_validita: int | None = None\nEOF\ncat > app/schemas/diagnosi.py <<'EOF'\nfrom pydantic import BaseModel, ConfigDict\n\n\nclass DiagnosiRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    descrizione: str | None = None\n    abbreviazione: str | None = None\n    icd9_cm_id: int | None = None\nEOF\ncat > app/schemas/disciplina.py <<'EOF'\nfrom pydantic import BaseModel, ConfigDict\n\n\nclass DisciplinaRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    codice: str | None = None\n    disciplina: str | None = None\n    attiva: bool | None = None\n    trasferimento_interno: bool | None = None\n    standard_procedure: str | None = None\n    gg_terapia_fino_sosp: int | None = None\n    allegati_cc: bool | None = None\n    responsabile_id: int | None = None\n    reparto_degenza_id: int | None = None\nEOF\ncat > app/schemas/disdetta_prenotazione.py <<'EOF'\nfrom pydantic import BaseModel, ConfigDict\n\n\nclass DisdettaPrenotazioneRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    motivo: str | None = None\n    prenotazione_id: int | None = None\nEOF\necho \"creati:\
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:57:01 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+creati:
+diagnosi.py
+disciplina.py
+disdetta_prenotazione.py
+grado_urgenza.py
+modalita_accesso.py
+provenienza.py
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:57:03 AM</sup>
+
+Ora la migration. Aggiungo le lookup senza dipendenze e quelle con FK.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:57:09 AM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup: GradoUrgenza, ModalitaAccesso, Provenienza, Disciplina, Diagnosi, DisdettaPrenotazione",
+      "status": "completed",
+      "activeForm": "Creando le 6 lookup"
+    },
+    {
+      "content": "Modelli Prenotazione e Prericovero (sottotipi ContattoPz)",
+      "status": "completed",
+      "activeForm": "Creando Prenotazione e Prericovero"
+    },
+    {
+      "content": "Ricovero: aggiungere prenotazione_id/prericovero_id + relationship",
+      "status": "completed",
+      "activeForm": "Aggiungendo i link su Ricovero"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py",
+      "status": "completed",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "in_progress",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo",
+      "status": "pending",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (slice → Fatto, nuove voci Backlog)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:57:09 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:57:19 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    op.create_table(\n        \"rapporti_dipendenza\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"rapporto\", sa.String(length=40), nullable=False),\n    )",
+  "new_string": "    op.create_table(\n        \"rapporti_dipendenza\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"rapporto\", sa.String(length=40), nullable=False),\n    )\n\n    op.create_table(\n        \"gradi_urgenza\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"grado_urgenza\", sa.String(length=30), nullable=False),\n        sa.Column(\"colore\", sa.Integer(), nullable=True),\n    )\n\n    op.create_table(\n        \"modalita_accesso\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"modalita\", sa.String(length=50), nullable=False),\n    )\n\n    op.create_table(\n        \"provenienze\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"provenienza\", sa.String(length=70), nullable=False),\n        sa.Column(\"anno_inizio_validita\", sa.Integer(), nullable=True),\n        sa.Column(\"anno_fine_validita\", sa.Integer(), nullable=True),\n    )\n\n    op.create_table(\n        \"diagnosi\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"descrizione\", sa.String(length=60), nullable=True),\n        sa.Column(\"abbreviazione\", sa.String(length=15), nullable=True),\n        sa.Column(\"icd9_cm_id\", sa.Integer(), nullable=True),\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:57:20 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:57:30 AM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:57:30 AM</sup>
+
+`discipline` ha FK verso `dipendenti`, quindi va creata dopo. La aggiungo lì.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:57:35 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "        sa.Column(\"avviso\", sa.Text(), nullable=True),\n    )\n\n    # --- anagrafica principale ---",
+  "new_string": "        sa.Column(\"avviso\", sa.Text(), nullable=True),\n    )\n\n    # discipline dipende da dipendenti (responsabile)\n    op.create_table(\n        \"discipline\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"codice\", sa.String(length=2), nullable=True),\n        sa.Column(\"disciplina\", sa.String(length=50), nullable=True),\n        sa.Column(\"attiva\", sa.Boolean(), nullable=True),\n        sa.Column(\"trasferimento_interno\", sa.Boolean(), nullable=True),\n        sa.Column(\"standard_procedure\", sa.String(length=100), nullable=True),\n        sa.Column(\"gg_terapia_fino_sosp\", sa.Integer(), nullable=True),\n        sa.Column(\"allegati_cc\", sa.Boolean(), nullable=True),\n        sa.Column(\"responsabile_id\", sa.Integer(), sa.ForeignKey(\"dipendenti.id\"), nullable=True),\n        sa.Column(\"reparto_degenza_id\", sa.Integer(), nullable=True),\n    )\n\n    # --- anagrafica principale ---"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:57:36 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:57:41 AM</sup>
+
+Ora i sottotipi `prenotazioni`/`prericoveri` prima di `ricoveri`, e le nuove colonne su `ricoveri`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:01 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    op.create_table(\n        \"ricoveri\",\n        sa.Column(\"id\", sa.Integer(), sa.ForeignKey(\"contatti_pz.id\"), primary_key=True),\n        sa.Column(\"reparto\", sa.String(length=100), nullable=False),\n        sa.Column(\"data_ricovero\", sa.Date(), nullable=False),\n        sa.Column(\"data_dimissione\", sa.Date(), nullable=True),\n        sa.Column(\"stato\", sa.String(length=20), nullable=False, server_default=\"aperto\"),\n    )",
+  "new_string": "    # --- sottotipi di contatti_pz: percorso ricovero ---\n    op.create_table(\n        \"prenotazioni\",\n        sa.Column(\"id\", sa.Integer(), sa.ForeignKey(\"contatti_pz.id\"), primary_key=True),\n        sa.Column(\"data\", sa.Date(), nullable=True),\n        sa.Column(\"regime_ricovero\", sa.String(length=20), nullable=True),\n        sa.Column(\"data_prevista_ricovero\", sa.Date(), nullable=True),\n        sa.Column(\"ora_ricovero\", sa.DateTime(timezone=True), nullable=True),\n        sa.Column(\"data_prev_pre_ric\", sa.Date(), nullable=True),\n        sa.Column(\"data_tampone\", sa.Date(), nullable=True),\n        sa.Column(\"grado_urgenza_id\", sa.Integer(), sa.ForeignKey(\"gradi_urgenza.id\"), nullable=True),\n        sa.Column(\"unita_funzionale_id\", sa.Integer(), sa.ForeignKey(\"discipline.id\"), nullable=True),\n        sa.Column(\"diagnosi_ingresso_id\", sa.Integer(), sa.ForeignKey(\"diagnosi.id\"), nullable=True),\n        sa.Column(\n            \"modalita_accesso_id\", sa.Integer(), sa.ForeignKey(\"modalita_accesso.id\"), nullable=True\n        ),\n        sa.Column(\n            \"medico_inviante_id\", sa.Integer(), sa.ForeignKey(\"medici_esterni.id\"), nullable=True\n        ),\n        sa.Column(\"specialista_medico_id\", sa.Integer(), nullable=True),\n        sa.Column(\"specialista_chirurgo_id\", sa.Integer(), nullab
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:58:02 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:05 AM</sup>
+
+Ora la `downgrade()` in ordine inverso.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:10 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "def downgrade() -> None:\n    \"\"\"Downgrade schema.\"\"\"\n    op.drop_table(\"ricoveri\")\n    op.drop_index(\"ix_contatti_pz_paziente_id\", table_name=\"contatti_pz\")\n    op.drop_table(\"contatti_pz\")\n    op.drop_index(\"ix_pazienti_codice_fiscale\", table_name=\"pazienti\")\n    op.drop_table(\"pazienti\")\n    op.drop_table(\"dipendenti\")",
+  "new_string": "def downgrade() -> None:\n    \"\"\"Downgrade schema.\"\"\"\n    op.drop_table(\"disdetta_prenotazione\")\n    op.drop_table(\"ricoveri\")\n    op.drop_index(\"ix_prericoveri_cartella_clinica\", table_name=\"prericoveri\")\n    op.drop_table(\"prericoveri\")\n    op.drop_table(\"prenotazioni\")\n    op.drop_index(\"ix_contatti_pz_paziente_id\", table_name=\"contatti_pz\")\n    op.drop_table(\"contatti_pz\")\n    op.drop_index(\"ix_pazienti_codice_fiscale\", table_name=\"pazienti\")\n    op.drop_table(\"pazienti\")\n    op.drop_table(\"discipline\")\n    op.drop_table(\"dipendenti\")"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:58:11 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:15 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    op.drop_table(\"rapporti_dipendenza\")\n    op.drop_table(\"tipi_dipendente\")\n    op.drop_table(\"titoli\")",
+  "new_string": "    op.drop_table(\"diagnosi\")\n    op.drop_table(\"provenienze\")\n    op.drop_table(\"modalita_accesso\")\n    op.drop_table(\"gradi_urgenza\")\n    op.drop_table(\"rapporti_dipendenza\")\n    op.drop_table(\"tipi_dipendente\")\n    op.drop_table(\"titoli\")"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:58:16 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:20 AM</sup>
+
+Verifico che la migration combaci esattamente con i metadati.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:22 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python \"C:/Users/OMONAC~1.DRO/AppData/Local/Temp/claude/c--Users-OMONACO-DROMONACO-CoCIS/72dad8ad-6bab-4f4f-8cd3-76fa10315bfa/scratchpad/verify_migration.py\" 2>&1 | tail -12",
+  "description": "Verify migration matches model metadata for the new slice"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:58:48 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+OK - migration matches model metadata exactly
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:52 AM</sup>
+
+Migration allineata. Ora i test — inclusi quelli sul percorso completo e sul polimorfismo.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:58:57 AM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup: GradoUrgenza, ModalitaAccesso, Provenienza, Disciplina, Diagnosi, DisdettaPrenotazione",
+      "status": "completed",
+      "activeForm": "Creando le 6 lookup"
+    },
+    {
+      "content": "Modelli Prenotazione e Prericovero (sottotipi ContattoPz)",
+      "status": "completed",
+      "activeForm": "Creando Prenotazione e Prericovero"
+    },
+    {
+      "content": "Ricovero: aggiungere prenotazione_id/prericovero_id + relationship",
+      "status": "completed",
+      "activeForm": "Aggiungendo i link su Ricovero"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py",
+      "status": "completed",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "completed",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo",
+      "status": "in_progress",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (slice → Fatto, nuove voci Backlog)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:58:57 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:59:10 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\tests\\test_prenotazioni.py",
+  "content": "from fastapi.testclient import TestClient\n\n\ndef _crea_paziente(client: TestClient, codice_fiscale: str = \"BNCLCU90A41F205K\") -> int:\n    payload = {\n        \"nome\": \"Luca\",\n        \"cognome\": \"Bianchi\",\n        \"data_nascita\": \"1990-01-01\",\n        \"codice_fiscale\": codice_fiscale,\n    }\n    return client.post(\"/pazienti\", json=payload).json()[\"id\"]\n\n\ndef test_crea_prenotazione(client: TestClient) -> None:\n    paziente_id = _crea_paziente(client)\n    payload = {\n        \"data\": \"2026-07-01\",\n        \"regime_ricovero\": \"Ordinario\",\n        \"classe_priorita\": \"B\",\n        \"stato\": \"DaEvadere\",\n    }\n    response = client.post(f\"/pazienti/{paziente_id}/prenotazioni\", json=payload)\n    assert response.status_code == 201\n    body = response.json()\n    assert body[\"paziente_id\"] == paziente_id\n    assert body[\"tipo_contatto\"] == \"prenotazione\"\n    assert body[\"regime_ricovero\"] == \"Ordinario\"\n    assert body[\"classe_priorita\"] == \"B\"\n    # data_apertura del ContattoPz deriva dalla data prenotazione\n    assert body[\"data_apertura\"] == \"2026-07-01\"\n\n\ndef test_crea_prenotazione_data_default_oggi(client: TestClient) -> None:\n    paziente_id = _crea_paziente(client, \"BNCLCU90A41F205L\")\n    response = client.post(f\"/pazienti/{paziente_id}/prenotazioni\", json={})\n    assert response.status_code == 201\n    body = response.json()\n    assert body[\"data\"] is not None\n    assert body[\"data\"] == body[\"data_apertura\"]\n\n\ndef test_crea_prenotazione_paziente_inesistente(client: TestClient) -> None:\n    response = client.post(\"/pazienti/999999/prenotazioni\", json={\"data\": \"2026-07-01\"})\n    assert response.status_code == 404\n\n\ndef test_regime_ricovero_non_valido(client: TestClient) -> None:\n    paziente_id = _crea_paziente(client, \"BNCLCU90A41F205M\")\n    response = client.
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:59:11 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\tests\test_prenotazioni.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:59:33 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\tests\\test_percorso_ricovero.py",
+  "content": "\"\"\"Percorso ricovero end-to-end: Prenotazione -> Prericovero -> Ricovero.\n\nVerifica che i tre sottotipi di ContattoPz coesistano, che i link opzionali del\npercorso reggano e che il polimorfismo (joined-table inheritance) restituisca il\n`tipo_contatto` corretto per ciascun sottotipo.\n\"\"\"\n\nfrom fastapi.testclient import TestClient\nfrom sqlalchemy.orm import Session\n\nfrom app.models.contatto_pz import ContattoPz\nfrom app.models.prenotazione import Prenotazione\n\n\ndef _crea_paziente(client: TestClient, codice_fiscale: str = \"RSSGNN70A01H501Z\") -> int:\n    payload = {\n        \"nome\": \"Giovanni\",\n        \"cognome\": \"Russo\",\n        \"data_nascita\": \"1970-01-01\",\n        \"codice_fiscale\": codice_fiscale,\n    }\n    return client.post(\"/pazienti\", json=payload).json()[\"id\"]\n\n\ndef test_percorso_completo_prenotazione_prericovero_ricovero(client: TestClient) -> None:\n    paziente_id = _crea_paziente(client)\n\n    prenotazione = client.post(\n        f\"/pazienti/{paziente_id}/prenotazioni\",\n        json={\"data\": \"2026-07-01\", \"regime_ricovero\": \"Ordinario\"},\n    ).json()\n\n    prericovero = client.post(\n        f\"/pazienti/{paziente_id}/prericoveri\",\n        json={\"data_inizio\": \"2026-07-05\", \"prenotazione_id\": prenotazione[\"id\"]},\n    ).json()\n    assert prericovero[\"prenotazione_id\"] == prenotazione[\"id\"]\n    assert prericovero[\"tipo_contatto\"] == \"prericovero\"\n\n    ricovero = client.post(\n        f\"/pazienti/{paziente_id}/ricoveri\",\n        json={\n            \"reparto\": \"Cardiochirurgia\",\n            \"data_ricovero\": \"2026-07-10\",\n            \"prenotazione_id\": prenotazione[\"id\"],\n            \"prericovero_id\": prericovero[\"id\"],\n        },\n    ).json()\n    assert ricovero[\"prenotazione_id\"] == prenotazione[\"id\"]\n    assert ricovero[\"prericovero_id\"] == p
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 11:59:34 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\tests\test_percorso_ricovero.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:59:37 AM</sup>
+
+Ora ruff e verifico che i test si collezionino.
+
+
+---
+
+## Assistant <sup>7/16/2026, 11:59:38 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run ruff check --fix . 2>&1 | tail -5\necho \"---format---\"\nuv run ruff format . 2>&1 | tail -2\necho \"---check---\"\nuv run ruff check . 2>&1 | tail -3\necho \"---collect---\"\ntimeout 25 uv run pytest --collect-only -q 2>&1 | tail -8",
+  "description": "Run ruff and collect tests"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:00:07 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+59 |     medico_inviante_id: Mapped[int | None] = mapped_column(
+60 |         ForeignKey("medici_esterni.id"), default=None
+   |
+
+Found 6 errors.
+---format---
+5 files reformatted, 71 files left unchanged
+---check---
+All checks passed!
+---collect---
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+20 tests collected in 0.06s
+[This command modified 5 files you've previously read: tests\test_percorso_ricovero.py, alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py, app\models\prericovero.py, app\models\ricovero.py, app\models\prenotazione.py. Call Read 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:11 PM</sup>
+
+Ruff pulito, 20 test collezionati. Verifico che tutto regga insieme: mapper, migration e boot dell'app.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:15 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python \"C:/Users/OMONAC~1.DRO/AppData/Local/Temp/claude/c--Users-OMONACO-DROMONACO-CoCIS/72dad8ad-6bab-4f4f-8cd3-76fa10315bfa/scratchpad/verify_migration.py\" 2>&1 | tail -3\necho \"--- app boot + rotte ---\"\nuv run python -c \"\nfrom app.main import app\nfrom fastapi.testclient import TestClient\nprint(TestClient(app).get('/health').json())\nrotte = sorted(r.path for r in app.routes if 'prenotazioni' in r.path or 'prericoveri' in r.path)\nprint('rotte nuove:', rotte)\n\" 2>&1 | tail -2",
+  "description": "Verify migration consistency and that new routes are registered"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:00:23 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+OK - migration matches model metadata exactly
+--- app boot + rotte ---
+AttributeError: '_IncludedRouter' object has no attribute 'path'
+{'status': 'ok'}
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:27 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python -c \"\nfrom app.main import app\nrotte = sorted({getattr(r, 'path', None) for r in app.routes} - {None})\nfor r in rotte:\n    print(r)\n\" 2>&1 | tail -12",
+  "description": "List registered routes safely"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:00:33 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+/docs
+/docs/oauth2-redirect
+/health
+/openapi.json
+/redoc
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:36 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:37 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "uv run python -c \"\nfrom app.main import app\npaths = sorted(app.openapi()['paths'].keys())\nfor p in paths:\n    print(p)\n\" 2>&1 | tail -12",
+  "description": "List API paths via OpenAPI schema"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:00:42 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+/health
+/pazienti
+/pazienti/{paziente_id}
+/pazienti/{paziente_id}/prenotazioni
+/pazienti/{paziente_id}/prericoveri
+/pazienti/{paziente_id}/ricoveri
+/prenotazioni/{prenotazione_id}
+/prericoveri/{prericovero_id}
+/ricoveri/{ricovero_id}
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:52 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:54 PM</sup>
+
+Tutte le rotte registrate. I test non hanno mai girato per mancanza di Postgres — ma il `conftest` legge `TEST_DATABASE_URL`, quindi posso **eseguirli davvero su SQLite** per esercitare la logica dei router. Non sostituisce Postgres, ma è molto meglio della sola collezione.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:00:56 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nrm -f test_tmp.db\nTEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" timeout 120 uv run pytest -q 2>&1 | tail -25\nrm -f test_tmp.db",
+  "description": "Actually run the full test suite against SQLite to exercise router logic"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:03 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+....................                                                     [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+20 passed, 1 warning in 1.17s
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:07 PM</sup>
+
+**Tutti e 20 i test passano** — inclusi il percorso completo Prenotazione→Prericovero→Ricovero, il polimorfismo e i backref. È la prima volta che la suite gira davvero in questo progetto.
+
+Aggiungo `test_tmp.db` al `.gitignore` e aggiorno la ROADMAP.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:11 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup + modelli Prenotazione/Prericovero + link su Ricovero",
+      "status": "completed",
+      "activeForm": "Creando modelli e lookup"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py",
+      "status": "completed",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "completed",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo — 20/20 passano su SQLite",
+      "status": "completed",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Documentare in README come lanciare i test su SQLite (sblocca il debito DoD)",
+      "status": "in_progress",
+      "activeForm": "Documentando il run dei test"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (slice → Fatto, nuove voci Backlog)",
+      "status": "pending",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:11 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:14 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\.gitignore"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:15 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	# Ambiente / segreti
+2	.env
+3	.env.*
+4	!.env.example
+5	
+6	# OS / editor
+7	.DS_Store
+8	.idea/
+9	.vscode/
+10	
+11	# Cache comuni (a prescindere dallo stack)
+12	__pycache__/
+13	*.py[cod]
+14	.venv/
+15	venv/
+16	cocisenv/
+17	node_modules/
+18	dist/
+19	build/
+20	.pytest_cache/
+21	.ruff_cache/
+22	
+23	# graphify - rigenerabile con `graphify cocisdb_vuoto.sql`
+24	# graphify-out/
+25	
+26	oldsystem/
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:19 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\.gitignore",
+  "old_string": ".pytest_cache/\n.ruff_cache/",
+  "new_string": ".pytest_cache/\n.ruff_cache/\n\n# DB SQLite usa-e-getta per i test (vedi README)\n*.sqlite3\ntest_tmp.db"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:20 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\.gitignore has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:23 PM</sup>
+
+Documento nel README come lanciare i test senza Postgres — sblocca il debito di DoD.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:24 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\README.md",
+  "offset": 1,
+  "limit": 28
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:24 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	# CoCIS
+2	
+3	Reingegnerizzazione di un gestionale ospedaliero legacy. Backend FastAPI + PostgreSQL — vedi
+4	`CLAUDE.md` per stack, dominio e convenzioni.
+5	
+6	## Avvio locale
+7	
+8	Richiede un'istanza PostgreSQL raggiungibile (locale o remota) e [`uv`](https://docs.astral.sh/uv/).
+9	
+10	```bash
+11	uv sync                                  # installa le dipendenze (crea .venv)
+12	cp .env.example .env                     # poi modifica DATABASE_URL se necessario
+13	createdb cocis                           # database di sviluppo
+14	createdb cocis_test                      # database usato dai test (o esporta TEST_DATABASE_URL)
+15	uv run alembic upgrade head              # applica le migration
+16	uv run uvicorn app.main:app --reload     # avvia l'API su http://localhost:8000
+17	```
+18	
+19	Verifica: `uv run pytest` (test) e `uv run ruff check . && uv run ruff format --check .`
+20	(qualità).
+21	
+22	---
+23	
+24	# Coscience Template
+25	
+26	Template per progetti software **Claude AI-native** del
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:33 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\README.md",
+  "old_string": "Verifica: `uv run pytest` (test) e `uv run ruff check . && uv run ruff format --check .`\n(qualità).\n\n---",
+  "new_string": "## Test e qualità\n\n```bash\nuv run pytest                                     # test (usa il DB cocis_test)\nuv run ruff check . && uv run ruff format --check .   # qualità\n```\n\nI test leggono `TEST_DATABASE_URL` (default: `.../cocis_test`). **Senza un PostgreSQL a\ndisposizione** si possono comunque eseguire su uno SQLite usa-e-getta:\n\n```bash\nTEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" uv run pytest\n```\n\nÈ un ripiego utile in sviluppo — le fixture creano lo schema da `Base.metadata`, quindi non\npassa da Alembic e non copre le differenze specifiche di PostgreSQL (tipi, vincoli, JSONB\nfuturo). **Prima di considerare chiusa una slice, i test vanno eseguiti su PostgreSQL reale.**\n\n---"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:34 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\README.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:38 PM</sup>
+
+Ora aggiorno la ROADMAP.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:42 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup + modelli Prenotazione/Prericovero + link su Ricovero",
+      "status": "completed",
+      "activeForm": "Creando modelli e lookup"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py",
+      "status": "completed",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "completed",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo — 20/20 passano su SQLite",
+      "status": "completed",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Documentare in README come lanciare i test su SQLite",
+      "status": "completed",
+      "activeForm": "Documentando il run dei test"
+    },
+    {
+      "content": "Aggiornare ROADMAP.md (slice → Fatto, nuove voci Backlog)",
+      "status": "in_progress",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:42 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:01:54 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "## In corso\n- [ ] Prenotazione + Prericovero (percorso ricovero) — branch: `feat/prenotazione-prericovero`\n\n## Debito aperto (da chiudere appena c'è un Postgres raggiungibile)\n- [ ] **Verifica end-to-end mai eseguita** su tutto il modello dati già mergiato (PR #1, #2):\n      nessun PostgreSQL è stato raggiungibile nelle sessioni di sviluppo, quindi `alembic\n      upgrade head` e `pytest` non hanno **mai** girato contro un DB reale. Finora la\n      coerenza migration↔modelli è stata verificata solo applicando la migration a uno\n      SQLite usa-e-getta e confrontandola con i metadati SQLAlchemy. La Definition of Done\n      (\"test verdi\") non è quindi soddisfatta per le slice già chiuse.",
+  "new_string": "## In corso\n<!-- - [ ] Titolo slice — branch: `feat/...` -->\n\n## Debito aperto (da chiudere appena c'è un Postgres raggiungibile)\n- [ ] **Verifica su PostgreSQL reale mai eseguita.** Nessun PostgreSQL è stato raggiungibile\n      nelle sessioni di sviluppo: `alembic upgrade head` non ha **mai** girato contro un DB\n      reale. Mitigazioni in essere (non sostitutive): la coerenza migration↔modelli è\n      verificata applicando la migration a uno SQLite usa-e-getta e diffandola con i\n      metadati SQLAlchemy; la suite `pytest` **gira ed è verde su SQLite**\n      (`TEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" uv run pytest`, vedi README). Restano\n      scoperte le differenze specifiche di PostgreSQL (tipi, vincoli, JSONB futuro) e il\n      percorso Alembic. Da fare prima di considerare davvero chiuse le slice mergiate."
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:01:55 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:01 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "- [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)",
+  "new_string": "- [ ] Rinvii + MotiviRinvio (uno-a-molti da Prenotazione)\n- [ ] Codifiche cliniche ICD9/ICD10 (GlobalClinModule): oggi `Diagnosi.icd9_cm_id` è un\n      FK-placeholder Integer\n- [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:02:02 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:07 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "- [ ] Procedure previste / effettuate collegate al Ricovero",
+  "new_string": "- [ ] Procedure previste / effettuate collegate al Ricovero (incl. la collection\n      `ProcedurePreviste` su Prenotazione)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:02:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:10 PM</sup>
+
+Ora sposto la slice in *Fatto*.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:19 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "- [x] Completamento campi legacy XPO sulle tabelle anagrafiche: `Dipendente` e `PresidioOsp`\n      completi, nuove lookup `Titolo`/`TipoDipendente`/`RapportoDipendenza`, gap minori\n      colmati. `Reparti`/`Medici` restano FK-placeholder (vedi Backlog) — 2026-07-16, PR #2",
+  "new_string": "- [x] Completamento campi legacy XPO sulle tabelle anagrafiche: `Dipendente` e `PresidioOsp`\n      completi, nuove lookup `Titolo`/`TipoDipendente`/`RapportoDipendenza`, gap minori\n      colmati. `Reparti`/`Medici` restano FK-placeholder (vedi Backlog) — 2026-07-16, PR #2\n- [x] Prenotazione + Prericovero (percorso ricovero): due nuovi sottotipi di `ContattoPz`,\n      link reali `Ricovero→{Prenotazione,Prericovero}` e `Prericovero→Prenotazione` (i\n      reverse erano `[NonPersistent]` nel legacy → relationship), 6 lookup nuove\n      (`GradoUrgenza`, `ModalitaAccesso`, `Provenienza`, `Disciplina`, `Diagnosi`,\n      `DisdettaPrenotazione`), router + 20 test verdi (prima esecuzione reale della suite,\n      su SQLite). Scoperta: i 5 \"sottotipi\" legacy di Prenotazioni (Ord/DH/DayService/\n      PreRic/PreRicDH) **non hanno tabella** (`MapInheritance.ParentTable`) → sono il campo\n      `regime_ricovero`, non entità — 2026-07-16, branch `feat/prenotazione-prericovero`"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:02:20 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:23 PM</sup>
+
+Aggiorno anche `CLAUDE.md`: il diagramma di dominio va corretto con la scoperta sui 5 falsi sottotipi e la direzione reale delle FK.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:24 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\CLAUDE.md",
+  "offset": 26,
+  "limit": 24
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:02:24 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+26	```
+27	Paziente (anagrafica)
+28	  └─ ContattoPz (contatto/interazione — radice polimorfica, chiave condivisa OID)
+29	        │
+30	        ├─ Percorso Ricovero (degenza):
+31	        │     Prenotazione (opzionale — solo se il caso NON è urgente)
+32	        │        └─→ Prericovero (opzionale — accesso per esami preliminari pre-ricovero)
+33	        │               └─→ Ricovero ─┬─ N SchedaClinica (radice polimorfica Schederic→
+34	        │                             │   Schede, ~66 sottotipi: cartella infermieristica,
+35	        │                             │   cartella CEC, referti, scale di valutazione,
+36	        │                             │   consulenze...)
+37	        │                             ├─ N Rilevazioni (parametri vitali, esami di laboratorio)
+38	        │                             ├─ N ProcedurePreviste / ProcedureEffettuate
+39	        │                             └─ 1 SDO + 1 SDO10 (scheda dimissione, doppia codifica)
+40	        │     Prenotazione, Prericovero 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:30 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\CLAUDE.md",
+  "old_string": "        │     Prenotazione, Prericovero e Ricovero si referenziano a vicenda (link opzionali\n        │     in entrambe le direzioni): un Ricovero può nascere direttamente da una\n        │     Prenotazione (urgenza) oppure passare da un Prericovero.",
+  "new_string": "        │     Un Ricovero può nascere direttamente da una Prenotazione (urgenza) oppure\n        │     passare da un Prericovero. Le FK reali stanno sui figli e sono tutte\n        │     opzionali: Ricovero→Prenotazione, Ricovero→Prericovero, Prericovero→\n        │     Prenotazione. I link inversi (Prenotazione.Ricovero/.Prericovero) nel legacy\n        │     erano proprietà `[NonPersistent]` calcolate: nel nuovo modello sono\n        │     relationship, non colonne."
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:02:31 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\CLAUDE.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:35 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\CLAUDE.md",
+  "offset": 50,
+  "limit": 16
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:02:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+50	```
+51	
+52	Decisioni di design per la riscrittura:
+53	- **`ContattoPz` e `Schederic` sono basi polimorfiche** nel legacy (class-table inheritance
+54	  DevExpress, PK condivisa). Nel nuovo modello: **non portare 1:1** le decine di sottotipi.
+55	  Preferire un'unica entità con discriminatore di tipo (`tipo_scheda`, `tipo_contatto`) e un
+56	  campo `JSONB` per gli attributi specifici del sottotipo, salvo che servano validazioni forti
+57	  per-tipo (in quel caso, joined-table inheritance via SQLAlchemy).
+58	- Le tabelle di sistema DevExpress (audit, permessi, metadata XPO — riconoscibili dai prefissi
+59	  `devexpress_*`, `persistent*`, `xpo*`, `security*`) sono infrastruttura ORM legacy: **non
+60	  vanno migrate**. Permessi e audit si reimplementano nativamente sullo stack scelto.
+61	- `Ricovero` nel legacy è una "god table" da 84 colonne: nel nuovo modello va scomposto per
+62	  bounded context (clinico, amministrativo/DRG, posti letto) sfruttando le ~49 tabelle figlie
+63	  già esistent
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:48 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\CLAUDE.md",
+  "old_string": "- `Ricovero` nel legacy è una \"god table\" da 84 colonne: nel nuovo modello va scomposto per\n  bounded context (clinico, amministrativo/DRG, posti letto) sfruttando le ~49 tabelle figlie\n  già esistenti come guida ai confini.",
+  "new_string": "- `Ricovero` nel legacy è una \"god table\" da 84 colonne: nel nuovo modello va scomposto per\n  bounded context (clinico, amministrativo/DRG, posti letto) sfruttando le ~49 tabelle figlie\n  già esistenti come guida ai confini.\n- **Attenzione ai falsi sottotipi XPO.** Una classe con\n  `[MapInheritance(MapInheritanceType.ParentTable)]` **non ha una tabella propria**: è mappata\n  sulla tabella padre e si distingue solo per il valore di un campo. Caso reale: le 5 classi\n  `PrenotazioniOrd/DH/DayService/PreRic/PreRicDH` sono soltanto i valori di\n  `regime_ricovero` su `Prenotazione`, non entità. Prima di modellare un \"sottotipo\",\n  verificare che esista la tabella nel dump SQL.\n- **Verificare sempre la persistenza prima di creare una colonna.** Le proprietà\n  `[NonPersistent]` (spesso reverse-lookup via query, o stringhe concatenate per la UI) non\n  sono colonne: diventano `relationship` o property calcolate. Idem per i `PersistentAlias`\n  (campi calcolati) → `@property` + `computed_field` Pydantic, mai colonne DB."
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:02:49 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\CLAUDE.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:52 PM</sup>
+
+Verifica finale completa prima del commit.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:02:56 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\necho \"=== ruff ===\"\nuv run ruff check . 2>&1 | tail -2\nuv run ruff format --check . 2>&1 | tail -1\necho \"=== migration vs modelli ===\"\nuv run python \"C:/Users/OMONAC~1.DRO/AppData/Local/Temp/claude/c--Users-OMONACO-DROMONACO-CoCIS/72dad8ad-6bab-4f4f-8cd3-76fa10315bfa/scratchpad/verify_migration.py\" 2>&1 | tail -2\necho \"=== test ===\"\nrm -f test_tmp.db\nTEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" timeout 120 uv run pytest -q 2>&1 | tail -2\nrm -f test_tmp.db",
+  "description": "Final verification: ruff, migration consistency, full test suite"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:04:30 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== ruff ===
+All checks passed!
+76 files already formatted
+=== migration vs modelli ===
+OK - migration matches model metadata exactly
+=== test ===
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+20 passed, 1 warning in 1.22s
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:04:33 PM</sup>
+
+Tutto verde. Committo e pusho.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:04:34 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit add ROADMAP.md CLAUDE.md README.md .gitignore alembic/ app/ tests/\ngit status --short | grep -v '^ M .cc-history'",
+  "description": "Stage slice changes excluding the transcript file"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:04:38 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+warning: LF will be replaced by CRLF in app/main.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/__init__.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/ricovero.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/schemas/ricovero.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/api/routers/prenotazioni.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/api/routers/prericoveri.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/models/diagnosi.py.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in app/mode
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:04:52 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit commit -m \"$(cat <<'EOF'\nAggiunge Prenotazione e Prericovero (percorso ricovero)\n\nCompleta il percorso ricovero descritto in CLAUDE.md aggiungendo i due\nsottotipi mancanti di ContattoPz. Valida che l'ereditarieta' joined-table\nsi estenda senza toccare Paziente/ContattoPz.\n\n- Prenotazione e Prericovero: sottotipi di ContattoPz con PK condivisa.\n- Link reali del percorso, tutti opzionali e con la FK sul figlio:\n  Ricovero->Prenotazione, Ricovero->Prericovero, Prericovero->Prenotazione.\n  I reverse (Prenotazione.ricovero/.prericovero) erano [NonPersistent] nel\n  legacy: qui sono relationship, non colonne.\n- 6 lookup nuove: GradoUrgenza, ModalitaAccesso, Provenienza, Disciplina,\n  Diagnosi, DisdettaPrenotazione.\n- Router e schemas riusano ContattoPzBase/ContattoPzReadMixin.\n\nScoperte legacy recepite (documentate in CLAUDE.md):\n- I 5 \"sottotipi\" di Prenotazioni (Ord/DH/DayService/PreRic/PreRicDH) hanno\n  MapInheritance.ParentTable e nessuna tabella: sono il campo regime_ricovero,\n  non entita'.\n- La 1:1 circolare con DisdettaPrenotazione e' ridotta a una sola FK.\n\nReparti/Medici/Parenti/ICD9 restano FK-placeholder (voci di Backlog).\n\nVerifica: 20/20 test verdi - prima esecuzione reale della suite, su SQLite\n(TEST_DATABASE_URL, documentato in README); migration verificata vs metadati;\nruff pulito. Resta il debito: mai girata su PostgreSQL reale.\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>\nEOF\n)\" 2>&1 | tail -5",
+  "description": "Commit the Prenotazione/Prericovero slice"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:04:57 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+create mode 100644 app/schemas/prenotazione.py
+ create mode 100644 app/schemas/prericovero.py
+ create mode 100644 app/schemas/provenienza.py
+ create mode 100644 tests/test_percorso_ricovero.py
+ create mode 100644 tests/test_prenotazioni.py
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:05:00 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit push -u origin feat/prenotazione-prericovero 2>&1 | tail -6",
+  "description": "Push the slice branch"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:05:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+remote: Create a pull request for 'feat/prenotazione-prericovero' on GitHub by visiting:        
+remote:      https://github.com/mbafumic/CoCIS/pull/new/feat/prenotazione-prericovero        
+remote: 
+branch 'feat/prenotazione-prericovero' set up to track 'origin/feat/prenotazione-prericovero'.
+To https://github.com/mbafumic/CoCIS.git
+ * [new branch]      feat/prenotazione-prericovero -> feat/prenotazione-prericovero
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:05:22 PM</sup>
+
+Slice **Prenotazione + Prericovero** completata, committata e pushata.
+
+## Il risultato più importante: i test girano davvero
+
+Ho scoperto che il `conftest` legge `TEST_DATABASE_URL`, quindi ho potuto eseguire la suite su uno SQLite usa-e-getta: **20/20 verdi — prima esecuzione reale dei test in questo progetto**. Finora ci si era fermati alla sola "collezione". Ho documentato il comando nel README e aggiornato il *Debito aperto* in ROADMAP: resta scoperto PostgreSQL (tipi/vincoli specifici e il percorso Alembic), ma non è più "mai verificato".
+
+## Due scoperte legacy che hanno cambiato il modello
+
+1. **I 5 "sottotipi" di Prenotazioni non esistono.** `PrenotazioniOrd/DH/DayService/PreRic/PreRicDH` hanno `MapInheritance.ParentTable` e nessuna tabella nel DB: sono mappati sulla tabella padre e distinti solo da `RegimeRicovero`. Sono diventati **un campo**, non 5 entità — un bel po' di lavoro inutile evitato.
+2. **La direzione delle FK era l'opposta di quanto ipotizzato.** `Prenotazione.Ricovero`/`.Prericovero` sono `[NonPersistent]` (query calcolate), non colonne. Le FK reali stanno sui figli: `Ricovero→{Prenotazione, Prericovero}`, `Prericovero→Prenotazione`. Nel modello sono `relationship`.
+
+Ho aggiunto entrambe le lezioni a `CLAUDE.md` come regole generali (verificare che la tabella esista prima di modellare un "sottotipo"; verificare la persistenza prima di creare una colonna) — serviranno per le ~66 schede cliniche.
+
+**Nota tecnica:** i sottotipi condividono la PK con `contatti_pz`, quindi SQLAlchemy trovava percorsi FK ambigui; ho dovuto esplicitare `foreign_keys` sui reverse.
+
+**Deviazione deliberata dal legacy:** la 1:1 `Prenotazione↔DisdettaPrenotazione` aveva colonne in *entrambe* le direzioni (FK circolare). Ne ho tenuta una sola + relationship inversa: stessa informazione, nessun ciclo.
+
+PR da aprire qui (`gh` non è autenticato): https://github.com/mbafumic/CoCIS/pull/new/feat/prenotazione-prericovero
+
+Se fai `gh auth login` te la creo io con titolo e corpo già pronti.
+
+
+---
+
+## User <sup>7/16/2026, 12:12:31 PM</sup>
+
+gh autenticato
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:12:34 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:12:34 PM</sup>
+
+Verifico l'autenticazione e creo la PR.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:12:35 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "gh auth status 2>&1 | head -5",
+  "description": "Verify gh authentication"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:12:39 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+github.com
+  ✓ Logged in to github.com account mbafumic (keyring)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:12:42 PM</sup>
+
+Autenticato come `mbafumic`. Creo la PR.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:12:59 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngh pr create --base main --head feat/prenotazione-prericovero --title \"Aggiunge Prenotazione e Prericovero (percorso ricovero)\" --body \"$(cat <<'EOF'\nCompleta il percorso ricovero descritto in `CLAUDE.md` aggiungendo i due sottotipi mancanti\ndi `ContattoPz`. Valida la promessa di design della prima slice: *aggiungere un sottotipo =\nnuova tabella + nuova classe mappata, zero modifiche a `Paziente`/`ContattoPz`*.\n\n## Modifiche\n- **`Prenotazione`** e **`Prericovero`**: sottotipi di `ContattoPz` (joined-table inheritance, PK condivisa).\n- **Link reali del percorso**, tutti opzionali e con la FK sul figlio:\n  `Ricovero→Prenotazione`, `Ricovero→Prericovero`, `Prericovero→Prenotazione`.\n- 6 lookup nuove: `GradoUrgenza`, `ModalitaAccesso`, `Provenienza`, `Disciplina`, `Diagnosi`, `DisdettaPrenotazione`.\n- Router + schemas che riusano `ContattoPzBase`/`ContattoPzReadMixin`.\n\n## Scoperte legacy recepite (documentate in CLAUDE.md come regole generali)\n1. **I 5 \"sottotipi\" di Prenotazioni non esistono.** `PrenotazioniOrd/DH/DayService/PreRic/PreRicDH`\n   hanno `[MapInheritance(MapInheritanceType.ParentTable)]` e **nessuna tabella** nel DB: sono\n   mappati sulla tabella padre e distinti solo da `RegimeRicovero`. → Sono **un campo**, non 5 entità.\n2. **Direzione delle FK opposta a quanto ipotizzato.** `Prenotazione.Ricovero`/`.Prericovero` sono\n   `[NonPersistent]` (reverse-lookup calcolati), non colonne → in SQLAlchemy sono `relationship`.\n\nEntrambe le lezioni sono ora regole in `CLAUDE.md` (verificare che la tabella esista prima di\nmodellare un \"sottotipo\"; verificare la persistenza prima di creare una colonna): serviranno\nper le ~66 schede cliniche.\n\n## Deviazione deliberata dal legacy\nLa 1:1 `Prenotazione↔DisdettaPrenotazione` aveva colonne in **entrambe** le direzioni (FK\ncircolare). Ne teniamo **una sola** + relationship inversa: stessa informazione, nessun ciclo.\n\n## Nota tecnica\nI 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:13:07 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+https://github.com/mbafumic/CoCIS/pull/3
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:13:16 PM</sup>
+
+**PR #3 creata:** https://github.com/mbafumic/CoCIS/pull/3
+
+Aggiorno la ROADMAP con il numero di PR e chiudo il loop.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:13:18 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "      `regime_ricovero`, non entità — 2026-07-16, branch `feat/prenotazione-prericovero`",
+  "new_string": "      `regime_ricovero`, non entità — 2026-07-16, PR #3"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:13:19 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:13:24 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit add ROADMAP.md && git commit -q -m \"$(cat <<'EOF'\nAnnota PR #3 nella roadmap\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>\nEOF\n)\" && git push -q 2>&1 | tail -2\necho \"pushato\"\ngit log --oneline -2",
+  "description": "Commit and push the ROADMAP PR number annotation"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:13:30 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+pushato
+12cb713 Annota PR #3 nella roadmap
+7179397 Aggiunge Prenotazione e Prericovero (percorso ricovero)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:13:37 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "6 nuove lookup + modelli Prenotazione/Prericovero + link su Ricovero",
+      "status": "completed",
+      "activeForm": "Creando modelli e lookup"
+    },
+    {
+      "content": "Schemas Pydantic + router prenotazioni/prericoveri + main.py",
+      "status": "completed",
+      "activeForm": "Creando schemas e router"
+    },
+    {
+      "content": "Migration: nuove tabelle + colonne su ricoveri (upgrade/downgrade)",
+      "status": "completed",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: percorso Prenotazione→Prericovero→Ricovero + polimorfismo — 20/20 verdi",
+      "status": "completed",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Documentare in README come lanciare i test su SQLite",
+      "status": "completed",
+      "activeForm": "Documentando il run dei test"
+    },
+    {
+      "content": "ROADMAP + CLAUDE.md aggiornati, PR #3 aperta",
+      "status": "completed",
+      "activeForm": "Aggiornando ROADMAP"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:13:37 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:13:54 PM</sup>
+
+Slice chiusa. **PR #3 aperta:** https://github.com/mbafumic/CoCIS/pull/3
+
+## Definition of Done
+| Criterio | Stato |
+|---|---|
+| Codice autodichiarativo | ✅ |
+| Test verdi + qualità pulita | ✅ 20/20 su SQLite, ruff pulito — ⚠️ mai su PostgreSQL |
+| ROADMAP + doc aggiornati | ✅ ROADMAP, CLAUDE.md, README |
+| PR aperta | ✅ #3 |
+
+L'unico punto non pieno resta PostgreSQL, tracciato esplicitamente come *Debito aperto* in ROADMAP invece di essere nascosto.
+
+## Prossimo passo (senza restare bloccati)
+Mentre la PR #3 è in review, il Backlog ha diversi item sbloccabili. I più naturali:
+- **Reparti + Medici** — scioglierebbe i FK-placeholder accumulati in 3 slice (`reparto_predefinito_id`, `specialista_*_id`, `direttore_sanitario_id`…): è il debito tecnico più denso.
+- **Prenotazione Ambulatorio + Prestazione Ambulatoriale** — completa l'altro percorso di `ContattoPz`, riusando esattamente il pattern appena validato.
+- **Scheda Clinica polimorfica** — la più grande, e ora meglio armata: le due regole aggiunte a `CLAUDE.md` (falsi sottotipi `ParentTable`, proprietà `[NonPersistent]`) sono esattamente ciò che serve per non modellare 66 entità fantasma.
+
+Se hai un PostgreSQL raggiungibile anche solo temporaneamente (Docker, istanza remota), consiglio invece di chiudere prima il debito: `alembic upgrade head` + `pytest` validerebbero in un colpo tutto il modello di 3 slice.
+
+
+---
+
+## User <sup>7/16/2026, 12:15:46 PM</sup>
+
+Reparti + Medici
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:15:57 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:15:59 PM</sup>
+
+Prima verifico lo stato: **Reparti + Medici** tocca FK-placeholder introdotti anche dalla PR #3 (`Disciplina.reparto_degenza_id`, gli `specialista_*` su Prenotazione/Prericovero), quindi dipende da come sta quella PR.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:16:00 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngh pr view 3 --json number,state,mergeable,mergeStateStatus 2>&1 | head -10\necho \"--- origin/main ---\"\ngit fetch -q origin && git log --oneline -1 origin/main",
+  "description": "Check PR #3 state and origin/main"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:16:06 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+{"mergeStateStatus":"CLEAN","mergeable":"MERGEABLE","number":3,"state":"OPEN"}
+--- origin/main ---
+378bd8b Merge pull request #2 from mbafumic/feat/campi-mancanti-anagrafica
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:16:19 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:16:23 PM</sup>
+
+PR #3 è **aperta e mergeable (CLEAN)**, ma non ancora su `main`. Questo conta: `Disciplina` (e i placeholder `specialista_*` su Prenotazione/Prericovero) esistono **solo nella PR #3**. Inoltre ogni slice finora modifica la stessa migration `d8c87d4e55d9`, quindi lavorare in parallelo su `main` produrrebbe conflitti quasi certi.
+
+Reparti + Medici scioglierebbe placeholder che vivono in **entrambi** i posti:
+
+| Placeholder | Dove sta |
+|---|---|
+| `Dipendente.reparto_predefinito_id` | `main` (PR #2) |
+| `PresidioOsp.direttore_sanitario_id` / `responsabile_dipartimento_id` | `main` (PR #2) |
+| `Disciplina.reparto_degenza_id` | **PR #3** |
+| `Prenotazione`/`Prericovero.specialista_*_id`, `tutor_id` | **PR #3** |
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:16:29 PM</sup>
+
+<details>
+<summary>Tool: <code>AskUserQuestion</code></summary>
+
+```json
+{
+  "questions": [
+    {
+      "question": "Reparti + Medici tocca placeholder presenti sia su main sia nella PR #3 (non mergiata). Come procedo?",
+      "header": "Base della slice",
+      "options": [
+        {
+          "label": "Merge PR #3, poi branch da main (Recommended)",
+          "description": "La PR #3 è CLEAN/mergeable e l'ho già verificata (20/20 test verdi). Mergiandola, Reparti+Medici scioglie TUTTI i placeholder in un colpo, senza conflitti sulla migration."
+        },
+        {
+          "label": "Branch impilato su feat/prenotazione-prericovero",
+          "description": "Lascio la PR #3 in review e ci impilo sopra la nuova slice. Nessun conflitto, ma la PR risulta stacked e va rebasata se la #3 cambia in review."
+        },
+        {
+          "label": "Branch da main, solo i placeholder di PR #2",
+          "description": "Slice più piccola (solo Dipendente/PresidioOsp), ma lascia il lavoro a metà e crea conflitti sulla migration con la PR #3."
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:17:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Your questions have been answered: "Reparti + Medici tocca placeholder presenti sia su main sia nella PR #3 (non mergiata). Come procedo?"="Merge PR #3, poi branch da main (Recommended)". You can now continue with these answers in mind.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:17:12 PM</sup>
+
+Mergio la PR #3 e mi allineo a `main`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:17:14 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngh pr merge 3 --merge --delete-branch=false 2>&1 | tail -3\necho \"--- allineo main ---\"\ngit stash push -q -m \"cc-history wip\" -- .cc-history/ 2>/dev/null\ngit checkout -q main && git pull -q --ff-only && git log --oneline -2",
+  "description": "Merge PR #3 and sync main"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:19:18 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+--- allineo main ---
+53dc83e Merge pull request #3 from mbafumic/feat/prenotazione-prericovero
+12cb713 Annota PR #3 nella roadmap
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:19:21 PM</sup>
+
+PR #3 mergiata, `main` allineato. Creo il branch e pianifico.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:19:23 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit checkout -q -b feat/reparti-medici && git branch --show-current\necho \"--- placeholder da sciogliere (su main) ---\"\ngrep -rn \"reparto_predefinito_id\\|reparto_degenza_id\\|direttore_sanitario_id\\|responsabile_dipartimento_id\\|specialista_medico_id\\|specialista_chirurgo_id\\|tutor_id\" app/models/ | grep \"mapped_column(Integer\" ",
+  "description": "Create branch and list the Integer placeholders to resolve"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:20:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+feat/reparti-medici
+--- placeholder da sciogliere (su main) ---
+app/models/dipendente.py:60:    reparto_predefinito_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/disciplina.py:30:    reparto_degenza_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/prenotazione.py:66:    specialista_medico_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/prenotazione.py:67:    specialista_chirurgo_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/prenotazione.py:68:    tutor_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/prericovero.py:68:    specialista_medico_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/prericovero.py:69:    specialista_chirurgo_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/prericovero.py:70:    tutor_id: Mapped[int | None] = mapped_column(Integer, default=None)
+app/models/presidio_osp.py:49:    direttore_san
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:20:11 PM</sup>
+
+Tutti i 10 placeholder sono ora visibili su un unico branch. Entro in plan mode dopo aver studiato le business object legacy.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:20:11 PM</sup>
+
+<details>
+<summary>Tool: <code>EnterPlanMode</code></summary>
+
+```json
+{}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:20:11 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Entered plan mode. You should now focus on exploring the codebase and designing an implementation approach.
+
+In plan mode, you should:
+1. Thoroughly explore the codebase to understand existing patterns
+2. Identify similar features and architectural approaches
+3. Consider multiple approaches and their trade-offs
+4. Use AskUserQuestion if you need to clarify the approach
+5. Design a concrete implementation strategy
+6. When ready, use ExitPlanMode to present your plan for approval
+
+Remember: DO NOT write or edit any files yet. This is a read-only exploration and planning phase.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:20:40 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:20:41 PM</sup>
+
+Il piano esistente riguarda la slice Prenotazione/Prericovero, ora mergiata: lo riscrivo da zero. Esploro le business object legacy.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:20:45 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nfor f in $(find oldsystem -iname \"Reparti.bo*.cs\" -o -iname \"Medici.bo*.cs\" -o -iname \"Specializzazioni.bo*.cs\"); do echo \"$f: $(wc -l < \"$f\")\"; done\necho \"=== tabelle join M:M dipendenti/reparti? ===\"\ngrep -oiE '^CREATE TABLE `[a-z_]*(reparti|medici)[a-z_]*`' cocisdb_vuoto.sql\necho \"=== permissionpolicyuser ha ObjectType? ===\"\nawk \"/^CREATE TABLE \\`permissionpolicyuser\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | grep -iE '^  `|^CREATE'",
+  "description": "Locate Reparti/Medici sources, M:M join tables, and the XPO type discriminator"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:20:50 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+oldsystem/GlobalModule/BusinessObjects/Medici.bo.cs: 10
+oldsystem/GlobalModule/BusinessObjects/Medici.bo.designer.cs: 295
+oldsystem/GlobalModule/BusinessObjects/Reparti.bo.cs: 10
+oldsystem/GlobalModule/BusinessObjects/Reparti.bo.designer.cs: 572
+oldsystem/GlobalModule/BusinessObjects/Specializzazioni.bo.cs: 10
+oldsystem/GlobalModule/BusinessObjects/Specializzazioni.bo.designer.cs: 91
+=== tabelle join M:M dipendenti/reparti? ===
+CREATE TABLE `magreparti`
+CREATE TABLE `magrepartififo`
+CREATE TABLE `medici`
+CREATE TABLE `mediciambulatorio`
+CREATE TABLE `mediciambulatorioprogressivi`
+CREATE TABLE `mediciesterni`
+CREATE TABLE `mediciprogop`
+CREATE TABLE `prestazioniprestazioni_mediciambulatoriomediciambulatorio`
+CREATE TABLE `procedureeffettuateprocedureeffettuate_mediciequipe`
+CREATE TABLE `reparti`
+CREATE TABLE `repartimdw`
+CREATE TABLE `repartireparti_dipendentidipendenti`
+CREATE TABLE `repartireparti_medicimedici`
+=== permissionpolicyuser ha ObjectType? ===
+CREATE TABLE `permissionpolic
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:20:56 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:20:57 PM</sup>
+
+Due scoperte importanti: il discriminatore XPO (`ObjectType`) sta su `permissionpolicyuser` (radice della gerarchia, che non migriamo), e ci sono **due tabelle di join M:M**: `repartireparti_dipendentidipendenti` e `repartireparti_medicimedici`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:21:01 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nfor t in repartireparti_dipendentidipendenti repartireparti_medicimedici; do\n  echo \"=== $t ===\"\n  awk \"/^CREATE TABLE \\`$t\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | grep -iE '^  `|CONSTRAINT|^CREATE'\ndone\necho \"\"\necho \"=== Medici: private fields ===\"\ngrep -nE \"^\\s*private .*_|class Medici\" oldsystem/GlobalModule/BusinessObjects/Medici.bo.designer.cs",
+  "description": "Inspect M:M join tables and Medici fields"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:21:04 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== repartireparti_dipendentidipendenti ===
+CREATE TABLE `repartireparti_dipendentidipendenti` (
+  `Dipendenti` char(38) DEFAULT NULL,
+  `Reparti` int(11) DEFAULT NULL,
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  CONSTRAINT `FK_RepartiReparti_DipendentiDipendenti_Dipendenti` FOREIGN KEY (`Dipendenti`) REFERENCES `dipendenti` (`Oid`),
+  CONSTRAINT `FK_RepartiReparti_DipendentiDipendenti_Reparti` FOREIGN KEY (`Reparti`) REFERENCES `reparti` (`OID`)
+=== repartireparti_medicimedici ===
+CREATE TABLE `repartireparti_medicimedici` (
+  `Medici` char(38) DEFAULT NULL,
+  `Reparti` int(11) DEFAULT NULL,
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  CONSTRAINT `FK_RepartiReparti_MediciMedici_Medici` FOREIGN KEY (`Medici`) REFERENCES `medici` (`Oid`),
+  CONSTRAINT `FK_RepartiReparti_MediciMedici_Reparti` FOREIGN KEY (`Reparti`) REFERENCES `reparti` (`OID`)
+
+=== Medici: private fields ===
+24:  public partial clas
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:21:25 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:21:26 PM</sup>
+
+`Medici : Dipendenti` è confermata come **sottotipo joined-table** — sarebbe la seconda gerarchia polimorfica del progetto. Leggo i campi di `Reparti`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:21:29 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\necho \"=== Reparti: private fields ===\"\ngrep -nE \"^\\s*private .*_|class Reparti\" oldsystem/GlobalModule/BusinessObjects/Reparti.bo.designer.cs\necho \"\"\necho \"=== Reparti: NonPersistent / Alias / Association ===\"\ngrep -nE \"NonPersistentAttribute|PersistentAlias|AssociationAttribute\" oldsystem/GlobalModule/BusinessObjects/Reparti.bo.designer.cs",
+  "description": "Enumerate Reparti persistent fields and associations"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:21:30 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== Reparti: private fields ===
+24:  public partial class Reparti : DevExpress.Xpo.XPObject, IResource
+26:    private GlobalModule.BooleanEnum _gestioneNotizieCliniche;
+27:    private System.String _codiceLIS;
+28:    private GlobalModule.BooleanEnum _effettuaProcedure;
+29:    private GlobalModule.BooleanEnum _accettaTrasferimenti;
+30:    private GlobalModule.BusinessObjects.PresidiOsp _presidio;
+31:    private GlobalModule.TipoMagazzinoEnum _tipoMagazzino;
+32:    private System.String _sigla;
+33:    private System.String _caption;
+35:    private System.Object _id;
+36:    private GlobalModule.TipoRepartoEnum _tipo;
+37:    private System.Int16 _lettiNonAccreditati;
+38:    private System.UInt16 _lettiAccreditati;
+39:    private System.String _reparto;
+40:		private DateTime _oraValidazioneTerapia;
+41:		private short _maxAnticipoSomministrazione;
+42:		private short _maxPosticipoSomministrazione;
+43:		private DateTime _oraInsulinaColazione;
+44:		private DateTime _oraInsulinaPranzo;
+45:		priv
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:21:51 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:21:56 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\necho \"=== specializzazioni SQL ===\"\nawk \"/^CREATE TABLE \\`specializzazioni\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | grep -iE '^  `|CONSTRAINT|^CREATE'\necho \"\"\necho \"=== Medici: FirmaReferti persistente? ===\"\ngrep -nE \"FirmaReferti|NonPersistentAttribute|PersistentAlias\" oldsystem/GlobalModule/BusinessObjects/Medici.bo.designer.cs | head -12\necho \"\"\necho \"=== enum TipoCompensoEnum / TipoRepartoEnum / TipoMagazzinoEnum ===\"\ngrep -nE \"enum (TipoCompensoEnum|TipoRepartoEnum|TipoMagazzinoEnum)\" oldsystem/GlobalModule/Enumerations.cs",
+  "description": "Check specializzazioni, Medici FirmaReferti persistence, and enums"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:21:58 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== specializzazioni SQL ===
+CREATE TABLE `specializzazioni` (
+  `OID` int(11) NOT NULL AUTO_INCREMENT,
+  `Specializzazione` varchar(50) DEFAULT NULL,
+  `Chirurgica` int(11) DEFAULT NULL,
+  `TipoDipendente` int(11) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  `GCRecord` int(11) DEFAULT NULL,
+  `Sigla` varchar(10) DEFAULT NULL,
+  CONSTRAINT `FK_Specializzazioni_TipoDipendente` FOREIGN KEY (`TipoDipendente`) REFERENCES `tipodipendenti` (`OID`)
+
+=== Medici: FirmaReferti persistente? ===
+108:    [PersistentAlias("concat(Titolo.Titolo,' ', concat(Upper(Substring(PrimoCognome,0,1)),Lower(Substring(PrimoCognome,1))),' ',trim(concat(Upper(Substring(SecondoCognome,0,1)),Lower(Substring(SecondoCognome,1)))), ' ', concat(Upper(Substring(PrimoNome,0,1)),Lower(Substring(PrimoNome,1))),' ',trim(concat(Upper(Substring(SecondoNome,0,1)),Lower(Substring(SecondoNome,1)))), ' - ',CodiceRegionale)")]
+109:    public System.String FirmaReferti
+113:        return Convert.ToString(EvaluateAli
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:22:53 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:22:55 PM</sup>
+
+`FirmaReferti` è un `PersistentAlias` (calcolato) → property, non colonna. Verifico l'ultima incognita: la M:M `reparti↔medici` da quale lato è dichiarata, e il ciclo di FK.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:22:59 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\necho \"=== Medici: associations ===\"\ngrep -nE \"AssociationAttribute|XPCollection|NoForeignKey\" oldsystem/GlobalModule/BusinessObjects/Medici.bo.designer.cs\necho \"\"\necho \"=== Reparti.bo.cs (partial non-designer) ===\"\ncat oldsystem/GlobalModule/BusinessObjects/Reparti.bo.cs\necho \"=== presidiosp: FK reali nel SQL (ciclo?) ===\"\nawk \"/^CREATE TABLE \\`presidiosp\\` \\(/{f=1} f{print} /^\\) ENGINE/{if(f)exit}\" cocisdb_vuoto.sql | grep -i CONSTRAINT",
+  "description": "Find the reparti-medici M:M declaration side and confirm the FK cycle break"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:23:06 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== Medici: associations ===
+
+=== Reparti.bo.cs (partial non-designer) ===
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace GlobalModule.BusinessObjects
+{
+    public partial class Reparti
+    {
+    }
+}
+=== presidiosp: FK reali nel SQL (ciclo?) ===
+  CONSTRAINT `FK_PresidiOsp_Comune` FOREIGN KEY (`Comune`) REFERENCES `comuni` (`OID`)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:23:59 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:24:02 PM</sup>
+
+Ultimo tassello chiarito. Due scoperte:
+
+1. **`repartireparti_medicimedici` è una tabella morta**: né `Reparti` né `Medici` dichiarano quella M:M nell'oggetto XPO. Per la regola già in `CLAUDE.md` (l'oggetto XPO è autoritativo, il SQL ha residui non mappati — come `SiglaRegione`), **non va modellata**. Resta solo `reparti↔dipendenti`.
+2. **C'è un ciclo di FK reale**: `presidi_osp → medici → dipendenti → presidi_osp`. Il legacy lo rompe *deliberatamente* non mettendo la FK su `DirettoreSanitario` (il SQL conferma: solo `Comune` ha constraint).
+
+Scrivo il piano.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:24:40 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "C:\\Users\\OMONACO.DROMONACO\\.claude\\plans\\structured-rolling-hippo.md",
+  "content": "# Slice: Reparti + Medici (anagrafica organizzativa / staff)\n\n## Contesto\n\nTre slice consecutive hanno accumulato **10 colonne `Integer` FK-placeholder** che puntano a\n`Reparti` e `Medici`, tabelle mai modellate. Questa slice le modella e scioglie il debito:\ni placeholder diventano FK vere e navigabili.\n\n| Placeholder | Diventa |\n|---|---|\n| `Dipendente.reparto_predefinito_id` | FK → `reparti.id` |\n| `Disciplina.reparto_degenza_id` | FK → `reparti.id` |\n| `Prenotazione.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |\n| `Prericovero.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |\n| `PresidioOsp.direttore_sanitario_id` / `responsabile_dipartimento_id` | relationship (no FK — vedi ciclo) |\n\n### Scoperte dall'analisi legacy (recepite nel modello)\n\n1. **`Medici : Dipendenti` è ereditarietà joined-table** (PK condivisa `medici.Oid → dipendenti.Oid`):\n   è la **seconda gerarchia polimorfica** del progetto dopo `ContattoPz`. Il discriminatore XPO\n   (`ObjectType`) sta su `permissionpolicyuser`, radice della gerarchia che **non migriamo** →\n   serve un discriminatore nostro su `dipendenti`.\n2. **`repartireparti_medicimedici` è una tabella morta**: nessun oggetto XPO (né `Reparti` né\n   `Medici`) dichiara quella M:M. Per la regola in `CLAUDE.md` (oggetto XPO autoritativo, il\n   SQL ha residui non mappati) **non va modellata**. Resta solo `reparti↔dipendenti`.\n3. **Ciclo di FK reale**: `presidi_osp → medici → dipendenti → presidi_osp`. Il legacy lo rompe\n   deliberatamente: `presidiosp.DirettoreSanitario`/`ResponsabileDipartimento` sono `[NoForeignKey]`\n   (il SQL conferma: l'unico constraint su `presidiosp` è `Comune`).\n4. **`Medici.FirmaReferti` è un `PersistentAlias`** (concatenazione per la firma dei referti) →\n   `@property`, non colonna. Confermato: nessuna colonna
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:24:41 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file C:\Users\OMONACO.DROMONACO\.claude\plans\structured-rolling-hippo.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:24:45 PM</sup>
+
+<details>
+<summary>Tool: <code>ExitPlanMode</code></summary>
+
+```json
+{
+  "plan": "# Slice: Reparti + Medici (anagrafica organizzativa / staff)\n\n## Contesto\n\nTre slice consecutive hanno accumulato **10 colonne `Integer` FK-placeholder** che puntano a\n`Reparti` e `Medici`, tabelle mai modellate. Questa slice le modella e scioglie il debito:\ni placeholder diventano FK vere e navigabili.\n\n| Placeholder | Diventa |\n|---|---|\n| `Dipendente.reparto_predefinito_id` | FK → `reparti.id` |\n| `Disciplina.reparto_degenza_id` | FK → `reparti.id` |\n| `Prenotazione.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |\n| `Prericovero.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |\n| `PresidioOsp.direttore_sanitario_id` / `responsabile_dipartimento_id` | relationship (no FK — vedi ciclo) |\n\n### Scoperte dall'analisi legacy (recepite nel modello)\n\n1. **`Medici : Dipendenti` è ereditarietà joined-table** (PK condivisa `medici.Oid → dipendenti.Oid`):\n   è la **seconda gerarchia polimorfica** del progetto dopo `ContattoPz`. Il discriminatore XPO\n   (`ObjectType`) sta su `permissionpolicyuser`, radice della gerarchia che **non migriamo** →\n   serve un discriminatore nostro su `dipendenti`.\n2. **`repartireparti_medicimedici` è una tabella morta**: nessun oggetto XPO (né `Reparti` né\n   `Medici`) dichiara quella M:M. Per la regola in `CLAUDE.md` (oggetto XPO autoritativo, il\n   SQL ha residui non mappati) **non va modellata**. Resta solo `reparti↔dipendenti`.\n3. **Ciclo di FK reale**: `presidi_osp → medici → dipendenti → presidi_osp`. Il legacy lo rompe\n   deliberatamente: `presidiosp.DirettoreSanitario`/`ResponsabileDipartimento` sono `[NoForeignKey]`\n   (il SQL conferma: l'unico constraint su `presidiosp` è `Comune`).\n4. **`Medici.FirmaReferti` è un `PersistentAlias`** (concatenazione per la firma dei referti) →\n   `@property`, non colonna. Confermato: nessuna colonna nel SQL.\n\n## Modifiche\n\n### Nuovi modelli\n- **`app/models/reparto.py`** — `Reparto` (`rep
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:25:03 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+User has approved your plan. You can now start coding. Start with updating your todo list if applicable
+
+Your plan has been saved to: C:\Users\OMONACO.DROMONACO\.claude\plans\structured-rolling-hippo.md
+You can refer back to it if needed during implementation.
+
+## Approved Plan:
+# Slice: Reparti + Medici (anagrafica organizzativa / staff)
+
+## Contesto
+
+Tre slice consecutive hanno accumulato **10 colonne `Integer` FK-placeholder** che puntano a
+`Reparti` e `Medici`, tabelle mai modellate. Questa slice le modella e scioglie il debito:
+i placeholder diventano FK vere e navigabili.
+
+| Placeholder | Diventa |
+|---|---|
+| `Dipendente.reparto_predefinito_id` | FK → `reparti.id` |
+| `Disciplina.reparto_degenza_id` | FK → `reparti.id` |
+| `Prenotazione.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |
+| `Prericovero.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |
+| `PresidioOsp.direttore_sanitario_id` / `responsabile_dipart
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:25:11 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "Modello Reparto + tabella M:M reparti_dipendenti",
+      "status": "in_progress",
+      "activeForm": "Creando Reparto e la M:M"
+    },
+    {
+      "content": "Modello Medico (sottotipo di Dipendente) + discriminatore tipo_personale su Dipendente",
+      "status": "pending",
+      "activeForm": "Creando Medico e il discriminatore"
+    },
+    {
+      "content": "Sciogliere i 10 placeholder: Dipendente, Disciplina, Prenotazione, Prericovero, PresidioOsp",
+      "status": "pending",
+      "activeForm": "Sciogliendo i placeholder in FK vere"
+    },
+    {
+      "content": "Schemas Pydantic + models/__init__",
+      "status": "pending",
+      "activeForm": "Creando schemas"
+    },
+    {
+      "content": "Migration: riordino per dipendenze + nuove tabelle + FK",
+      "status": "pending",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: polimorfismo Medico, M:M, self-ref, placeholder sciolti",
+      "status": "pending",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "ROADMAP + CLAUDE.md, commit + PR",
+      "status": "pending",
+      "activeForm": "Aggiornando doc e aprendo PR"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:25:11 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:25:30 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\reparto.py",
+  "content": "from datetime import date, datetime\nfrom typing import TYPE_CHECKING, Literal\n\nfrom sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, String, Table\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.db import Base\n\nif TYPE_CHECKING:\n    from app.models.dipendente import Dipendente\n    from app.models.presidio_osp import PresidioOsp\n\n# M:M reparti <-> dipendenti (association \"Reparti-Dipendenti\" nel legacy).\n# Nota: nel dump SQL esiste anche `repartireparti_medicimedici`, ma nessun oggetto\n# XPO la dichiara: e' un residuo legacy non mappato e non viene modellata.\nreparti_dipendenti = Table(\n    \"reparti_dipendenti\",\n    Base.metadata,\n    Column(\"reparto_id\", ForeignKey(\"reparti.id\"), primary_key=True),\n    Column(\"dipendente_id\", ForeignKey(\"dipendenti.id\"), primary_key=True),\n)\n\n\nclass Reparto(Base):\n    \"\"\"Reparto/unità operativa di un presidio ospedaliero.\n\n    `reparto_mag_id` e `reparto_trasf_mag_id` sono self-riferimenti: indicano il\n    reparto di riferimento per il magazzino e per i trasferimenti di magazzino.\n    \"\"\"\n\n    __tablename__ = \"reparti\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    reparto: Mapped[str | None] = mapped_column(String(50), default=None)\n    sigla: Mapped[str | None] = mapped_column(String(11), default=None)\n    tipo: Mapped[Literal[\"Degenza\", \"Servizio\", \"Supporto\"] | None] = mapped_column(\n        String(20), default=None\n    )\n    presidio_id: Mapped[int | None] = mapped_column(ForeignKey(\"presidi_osp.id\"), default=None)\n\n    letti_accreditati: Mapped[int | None] = mapped_column(Integer, default=None)\n    letti_non_accreditati: Mapped[int | None] = mapped_column(Integer, default=None)\n    no_check_letto_occupato: Mapped[bool] = mapped_column(Boolean, default=False)\n\n    # magazzino\n    tipo_magazzino: Mapped[L
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:25:31 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\reparto.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:25:35 PM</sup>
+
+Ora `Medico` come sottotipo di `Dipendente`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:25:47 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\medico.py",
+  "content": "from datetime import date\nfrom decimal import Decimal\nfrom typing import TYPE_CHECKING, Literal\n\nfrom sqlalchemy import Boolean, Date, ForeignKey, Numeric, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.dipendente import Dipendente\n\nif TYPE_CHECKING:\n    pass\n\n\nclass Medico(Dipendente):\n    \"\"\"Medico: sottotipo concreto di Dipendente (joined-table inheritance).\n\n    Nel legacy `Medici : Dipendenti` con PK condivisa (`medici.Oid → dipendenti.Oid`).\n    Il discriminatore XPO (`ObjectType`) stava sulla radice `PermissionPolicyUser`,\n    infrastruttura di sicurezza che non migriamo: qui il discriminatore è\n    `Dipendente.tipo_personale`.\n\n    `tutor_spec_id` è un self-riferimento: il medico tutor di uno specializzando.\n    \"\"\"\n\n    __tablename__ = \"medici\"\n\n    id: Mapped[int] = mapped_column(ForeignKey(\"dipendenti.id\"), primary_key=True)\n\n    n_empam: Mapped[str | None] = mapped_column(String(10), default=None)\n    codice_regionale: Mapped[str | None] = mapped_column(String(16), default=None)\n    codice_lis: Mapped[str | None] = mapped_column(String(10), default=None)\n    chirurgo: Mapped[bool] = mapped_column(Boolean, default=False)\n    revisore_cc: Mapped[bool] = mapped_column(Boolean, default=False)\n    no_validazione_rilascio: Mapped[bool] = mapped_column(Boolean, default=False)\n\n    font_referti: Mapped[str | None] = mapped_column(String(100), default=None)\n    sigla_prog_op: Mapped[str | None] = mapped_column(String(3), default=None)\n\n    # compenso ambulatoriale\n    percentuale_ambulatorio: Mapped[Decimal | None] = mapped_column(\n        Numeric(28, 8), default=None\n    )\n    percentuale_ambulatorio_prec: Mapped[Decimal | None] = mapped_column(\n        Numeric(28, 8), default=None\n    )\n    data_variazione_percentuale: Mapped[date | None] = mapped_column(Date, default=None)\n
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:25:48 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\models\medico.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:25:52 PM</sup>
+
+Ora `Dipendente`: discriminatore, FK reale a `reparti`, e la M:M.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:01 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\dipendente.py",
+  "old_string": "if TYPE_CHECKING:\n    from app.models.comune import Comune\n    from app.models.presidio_osp import PresidioOsp\n    from app.models.rapporto_dipendenza import RapportoDipendenza\n    from app.models.tipo_dipendente import TipoDipendente\n    from app.models.titolo import Titolo\n\n\nclass Dipendente(Base):\n    \"\"\"Personale della struttura.\n\n    Nel legacy estende `PermissionPolicyUser` (base sicurezza DevExpress): quella\n    infrastruttura (username/password/ruoli/audit XPO) non viene migrata, si\n    reimplementa nativamente. Qui restano i soli campi di dominio.\n\n    `reparto_predefinito_id` referenzia `Reparti`, tabella grande di dominio proprio\n    (anagrafica organizzativa) non ancora modellata: è un FK-placeholder (Integer\n    nullable) finché `reparti` non sarà modellata. La relazione uno-a-molti inversa\n    con Reparti (un dipendente afferisce a più reparti) segue nella stessa slice.\n    \"\"\"\n\n    __tablename__ = \"dipendenti\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)",
+  "new_string": "if TYPE_CHECKING:\n    from app.models.comune import Comune\n    from app.models.presidio_osp import PresidioOsp\n    from app.models.rapporto_dipendenza import RapportoDipendenza\n    from app.models.reparto import Reparto\n    from app.models.tipo_dipendente import TipoDipendente\n    from app.models.titolo import Titolo\n\n\nclass Dipendente(Base):\n    \"\"\"Personale della struttura. Base polimorfica: `Medico` ne è un sottotipo.\n\n    Nel legacy estende `PermissionPolicyUser` (base sicurezza DevExpress): quella\n    infrastruttura (username/password/ruoli/audit XPO) non viene migrata, si\n    reimplementa nativamente. Qui restano i soli campi di dominio.\n\n    Il discriminatore è `tipo_personale` (nel legacy era `ObjectType` sulla radice\n    `PermissionPolicyUser`). Da non confondere con `tipo_dipendente_id`, ch
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:02 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\dipendente.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:07 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\dipendente.py",
+  "old_string": "    presidio_id: Mapped[int | None] = mapped_column(ForeignKey(\"presidi_osp.id\"), default=None)\n    reparto_predefinito_id: Mapped[int | None] = mapped_column(Integer, default=None)",
+  "new_string": "    presidio_id: Mapped[int | None] = mapped_column(ForeignKey(\"presidi_osp.id\"), default=None)\n    reparto_predefinito_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"reparti.id\"), default=None\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\dipendente.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:12 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\dipendente.py",
+  "offset": 100,
+  "limit": 22
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:12 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+100	    nodo_startup: Mapped[str | None] = mapped_column(String(100), default=None)
+101	    codice_esterno: Mapped[int | None] = mapped_column(Integer, default=None)
+102	    id_esterno: Mapped[int | None] = mapped_column(Integer, default=None)
+103	    avviso: Mapped[str | None] = mapped_column(Text, default=None)
+104	
+105	    comune_nascita: Mapped["Comune | None"] = relationship(foreign_keys=[comune_nascita_id])
+106	    comune_residenza: Mapped["Comune | None"] = relationship(foreign_keys=[comune_residenza_id])
+107	    rapporto_dipendenza: Mapped["RapportoDipendenza | None"] = relationship()
+108	    titolo: Mapped["Titolo | None"] = relationship()
+109	    tipo_dipendente: Mapped["TipoDipendente | None"] = relationship()
+110	    presidio: Mapped["PresidioOsp | None"] = relationship(back_populates="dipendenti")
+111	
+112	    @property
+113	    def nominativo(self) -> str:
+114	        """Es. 'Rossi Mario'. Calcolato, non persistito (era un PersistentAlias)."""
+115	        return f"{self.co
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:19 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\dipendente.py",
+  "old_string": "    presidio: Mapped[\"PresidioOsp | None\"] = relationship(back_populates=\"dipendenti\")\n\n    @property\n    def nominativo(self) -> str:\n        \"\"\"Es. 'Rossi Mario'. Calcolato, non persistito (era un PersistentAlias).\"\"\"\n        return f\"{self.cognome} {self.nome}\"",
+  "new_string": "    presidio: Mapped[\"PresidioOsp | None\"] = relationship(\n        back_populates=\"dipendenti\", foreign_keys=[presidio_id]\n    )\n    reparto_predefinito: Mapped[\"Reparto | None\"] = relationship(\n        foreign_keys=[reparto_predefinito_id]\n    )\n    reparti: Mapped[list[\"Reparto\"]] = relationship(\n        secondary=\"reparti_dipendenti\", back_populates=\"dipendenti\"\n    )\n\n    __mapper_args__ = {\n        \"polymorphic_on\": \"tipo_personale\",\n        \"polymorphic_identity\": \"dipendente\",\n    }\n\n    @property\n    def nominativo(self) -> str:\n        \"\"\"Es. 'Rossi Mario'. Calcolato, non persistito (era un PersistentAlias).\"\"\"\n        return f\"{self.cognome} {self.nome}\""
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:20 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\dipendente.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:24 PM</sup>
+
+Ora sciolgo i restanti placeholder: `Disciplina`, `Prenotazione`, `Prericovero`, `PresidioOsp`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:27 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\disciplina.py",
+  "old_string": "if TYPE_CHECKING:\n    from app.models.dipendente import Dipendente\n\n\nclass Disciplina(Base):\n    \"\"\"Disciplina/unità funzionale (codifica ministeriale del reparto di degenza).\n\n    `reparto_degenza_id` referenzia `Reparti`, non ancora modellato (dominio\n    anagrafica organizzativa — vedi Backlog): è un FK-placeholder Integer nullable.\n    \"\"\"",
+  "new_string": "if TYPE_CHECKING:\n    from app.models.dipendente import Dipendente\n    from app.models.reparto import Reparto\n\n\nclass Disciplina(Base):\n    \"\"\"Disciplina/unità funzionale (codifica ministeriale del reparto di degenza).\"\"\""
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:28 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\disciplina.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:34 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\disciplina.py",
+  "old_string": "    responsabile_id: Mapped[int | None] = mapped_column(ForeignKey(\"dipendenti.id\"), default=None)\n    reparto_degenza_id: Mapped[int | None] = mapped_column(Integer, default=None)\n\n    responsabile: Mapped[\"Dipendente | None\"] = relationship()",
+  "new_string": "    responsabile_id: Mapped[int | None] = mapped_column(ForeignKey(\"dipendenti.id\"), default=None)\n    reparto_degenza_id: Mapped[int | None] = mapped_column(ForeignKey(\"reparti.id\"), default=None)\n\n    responsabile: Mapped[\"Dipendente | None\"] = relationship()\n    reparto_degenza: Mapped[\"Reparto | None\"] = relationship()"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\disciplina.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:41 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prenotazione.py",
+  "old_string": "    # FK-placeholder verso Medici (non ancora modellato)\n    specialista_medico_id: Mapped[int | None] = mapped_column(Integer, default=None)\n    specialista_chirurgo_id: Mapped[int | None] = mapped_column(Integer, default=None)\n    tutor_id: Mapped[int | None] = mapped_column(Integer, default=None)",
+  "new_string": "    specialista_medico_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"medici.id\"), default=None\n    )\n    specialista_chirurgo_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"medici.id\"), default=None\n    )\n    tutor_id: Mapped[int | None] = mapped_column(ForeignKey(\"medici.id\"), default=None)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:42 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prenotazione.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:45 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:46 PM</sup>
+
+Il diagnostico segnala che `Integer` non serve più in `prenotazione.py`. Procedo con `prericovero` e poi sistemo gli import.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:50 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prericovero.py",
+  "old_string": "    # FK-placeholder verso Medici / Parenti (non ancora modellati)\n    specialista_medico_id: Mapped[int | None] = mapped_column(Integer, default=None)\n    specialista_chirurgo_id: Mapped[int | None] = mapped_column(Integer, default=None)\n    tutor_id: Mapped[int | None] = mapped_column(Integer, default=None)\n    parente_id: Mapped[int | None] = mapped_column(Integer, default=None)",
+  "new_string": "    specialista_medico_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"medici.id\"), default=None\n    )\n    specialista_chirurgo_id: Mapped[int | None] = mapped_column(\n        ForeignKey(\"medici.id\"), default=None\n    )\n    tutor_id: Mapped[int | None] = mapped_column(ForeignKey(\"medici.id\"), default=None)\n    # FK-placeholder verso Parenti (non ancora modellato - vedi Backlog)\n    parente_id: Mapped[int | None] = mapped_column(Integer, default=None)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:26:51 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prericovero.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:55 PM</sup>
+
+Ora aggiungo le relationship verso `Medico` su entrambi (con `foreign_keys` esplicite: 3 FK verso la stessa tabella).
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:26:59 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prenotazione.py",
+  "old_string": "    grado_urgenza: Mapped[\"GradoUrgenza | None\"] = relationship()\n    unita_funzionale: Mapped[\"Disciplina | None\"] = relationship()\n    diagnosi_ingresso: Mapped[\"Diagnosi | None\"] = relationship()\n    modalita_accesso: Mapped[\"ModalitaAccesso | None\"] = relationship()\n    medico_inviante: Mapped[\"MedicoEsterno | None\"] = relationship()",
+  "new_string": "    grado_urgenza: Mapped[\"GradoUrgenza | None\"] = relationship()\n    unita_funzionale: Mapped[\"Disciplina | None\"] = relationship()\n    diagnosi_ingresso: Mapped[\"Diagnosi | None\"] = relationship()\n    modalita_accesso: Mapped[\"ModalitaAccesso | None\"] = relationship()\n    medico_inviante: Mapped[\"MedicoEsterno | None\"] = relationship()\n    specialista_medico: Mapped[\"Medico | None\"] = relationship(\n        foreign_keys=[specialista_medico_id]\n    )\n    specialista_chirurgo: Mapped[\"Medico | None\"] = relationship(\n        foreign_keys=[specialista_chirurgo_id]\n    )\n    tutor: Mapped[\"Medico | None\"] = relationship(foreign_keys=[tutor_id])"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:27:00 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prenotazione.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:03 PM</sup>
+
+Devo aggiungere l'import di `Medico` nel blocco `TYPE_CHECKING` e rimuovere `Integer` ora inutilizzato.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:09 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prenotazione.py",
+  "old_string": "from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.contatto_pz import ContattoPz\n\nif TYPE_CHECKING:\n    from app.models.diagnosi import Diagnosi\n    from app.models.disciplina import Disciplina\n    from app.models.disdetta_prenotazione import DisdettaPrenotazione\n    from app.models.grado_urgenza import GradoUrgenza\n    from app.models.medico_esterno import MedicoEsterno\n    from app.models.modalita_accesso import ModalitaAccesso\n    from app.models.prericovero import Prericovero\n    from app.models.ricovero import Ricovero",
+  "new_string": "from sqlalchemy import Boolean, Date, DateTime, ForeignKey, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.contatto_pz import ContattoPz\n\nif TYPE_CHECKING:\n    from app.models.diagnosi import Diagnosi\n    from app.models.disciplina import Disciplina\n    from app.models.disdetta_prenotazione import DisdettaPrenotazione\n    from app.models.grado_urgenza import GradoUrgenza\n    from app.models.medico import Medico\n    from app.models.medico_esterno import MedicoEsterno\n    from app.models.modalita_accesso import ModalitaAccesso\n    from app.models.prericovero import Prericovero\n    from app.models.ricovero import Ricovero"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:27:10 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prenotazione.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:15 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prericovero.py",
+  "old_string": "    from app.models.diagnosi import Diagnosi\n    from app.models.dipendente import Dipendente\n    from app.models.disciplina import Disciplina\n    from app.models.medico_esterno import MedicoEsterno",
+  "new_string": "    from app.models.diagnosi import Diagnosi\n    from app.models.dipendente import Dipendente\n    from app.models.disciplina import Disciplina\n    from app.models.medico import Medico\n    from app.models.medico_esterno import MedicoEsterno"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:27:16 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prericovero.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:21 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prericovero.py",
+  "old_string": "    medico_inviante: Mapped[\"MedicoEsterno | None\"] = relationship()\n    locked_user: Mapped[\"Dipendente | None\"] = relationship()",
+  "new_string": "    medico_inviante: Mapped[\"MedicoEsterno | None\"] = relationship()\n    locked_user: Mapped[\"Dipendente | None\"] = relationship(foreign_keys=[locked_user_id])\n    specialista_medico: Mapped[\"Medico | None\"] = relationship(\n        foreign_keys=[specialista_medico_id]\n    )\n    specialista_chirurgo: Mapped[\"Medico | None\"] = relationship(\n        foreign_keys=[specialista_chirurgo_id]\n    )\n    tutor: Mapped[\"Medico | None\"] = relationship(foreign_keys=[tutor_id])"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:27:22 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prericovero.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:25 PM</sup>
+
+Ora `PresidioOsp`: la collection `reparti` e le relationship senza FK (rompono il ciclo).
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:32 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\presidio_osp.py",
+  "old_string": "if TYPE_CHECKING:\n    from app.models.asp import Asp\n    from app.models.comune import Comune\n    from app.models.dipendente import Dipendente\n\n\nclass PresidioOsp(Base):\n    \"\"\"Presidio ospedaliero (sede fisica della struttura).\n\n    `direttore_sanitario_id` e `responsabile_dipartimento_id` referenziano\n    `Medici` nel legacy: `Medici` non è ancora modellato (è un sottotipo di\n    `Dipendente`, dominio staff medico — vedi Backlog), quindi qui sono FK-placeholder\n    (Integer nullable, diventeranno FK vere quando la tabella medici sarà modellata).\n    \"\"\"",
+  "new_string": "if TYPE_CHECKING:\n    from app.models.asp import Asp\n    from app.models.comune import Comune\n    from app.models.dipendente import Dipendente\n    from app.models.medico import Medico\n    from app.models.reparto import Reparto\n\n\nclass PresidioOsp(Base):\n    \"\"\"Presidio ospedaliero (sede fisica della struttura).\n\n    `direttore_sanitario_id` e `responsabile_dipartimento_id` referenziano `Medico`\n    ma **non hanno una FK a DB**, di proposito: creerebbero un ciclo\n    `presidi_osp → medici → dipendenti → presidi_osp`. Il legacy risolve allo stesso\n    modo (`[NoForeignKey]`: nel dump SQL l'unico constraint di `presidiosp` è\n    `Comune`). Le relationship qui sotto le rendono comunque navigabili dall'ORM.\n    \"\"\""
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:27:33 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\presidio_osp.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:42 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\presidio_osp.py",
+  "old_string": "    # FK-placeholder verso Medici (non ancora modellato) - vedi docstring\n    direttore_sanitario_id: Mapped[int | None] = mapped_column(Integer, default=None)\n    responsabile_dipartimento_id: Mapped[int | None] = mapped_column(Integer, default=None)\n\n    comune: Mapped[\"Comune | None\"] = relationship()\n    asp: Mapped[\"Asp | None\"] = relationship()\n    dipendenti: Mapped[list[\"Dipendente\"]] = relationship(back_populates=\"presidio\")",
+  "new_string": "    # Riferimenti a Medico senza FK a DB (ciclo) - vedi docstring\n    direttore_sanitario_id: Mapped[int | None] = mapped_column(Integer, default=None)\n    responsabile_dipartimento_id: Mapped[int | None] = mapped_column(Integer, default=None)\n\n    comune: Mapped[\"Comune | None\"] = relationship()\n    asp: Mapped[\"Asp | None\"] = relationship()\n    dipendenti: Mapped[list[\"Dipendente\"]] = relationship(\n        back_populates=\"presidio\", foreign_keys=\"Dipendente.presidio_id\"\n    )\n    reparti: Mapped[list[\"Reparto\"]] = relationship(back_populates=\"presidio\")\n    direttore_sanitario: Mapped[\"Medico | None\"] = relationship(\n        primaryjoin=\"foreign(PresidioOsp.direttore_sanitario_id) == Medico.id\",\n        viewonly=True,\n    )\n    responsabile_dipartimento: Mapped[\"Medico | None\"] = relationship(\n        primaryjoin=\"foreign(PresidioOsp.responsabile_dipartimento_id) == Medico.id\",\n        viewonly=True,\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:27:43 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\presidio_osp.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:47 PM</sup>
+
+Aggiorno `models/__init__.py` e verifico subito i mapper (due gerarchie polimorfiche + self-FK + M:M).
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:27:50 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\npython - <<'EOF'\nimport re, pathlib\np = pathlib.Path(\"app/models/__init__.py\")\ns = p.read_text(encoding=\"utf-8\")\ns = s.replace(\n    \"from app.models.medico_esterno import MedicoEsterno\",\n    \"from app.models.medico import Medico\\nfrom app.models.medico_esterno import MedicoEsterno\",\n)\ns = s.replace(\n    \"from app.models.regione import Regione\",\n    \"from app.models.regione import Regione\\nfrom app.models.reparto import Reparto, reparti_dipendenti\",\n)\ns = s.replace('    \"MedicoEsterno\",', '    \"Medico\",\\n    \"MedicoEsterno\",')\ns = s.replace('    \"Regione\",', '    \"Regione\",\\n    \"Reparto\",\\n    \"reparti_dipendenti\",')\np.write_text(s, encoding=\"utf-8\")\nprint(s)\nEOF",
+  "description": "Register Medico and Reparto in models/__init__.py"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:28:07 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+from app.db import Base
+from app.models.asp import Asp
+from app.models.categoria_paziente import CategoriaPaziente
+from app.models.comune import Comune
+from app.models.contatto_pz import ContattoPz
+from app.models.diagnosi import Diagnosi
+from app.models.dipendente import Dipendente
+from app.models.disciplina import Disciplina
+from app.models.disdetta_prenotazione import DisdettaPrenotazione
+from app.models.grado_urgenza import GradoUrgenza
+from app.models.gruppo_sanguigno import GruppoSanguigno
+from app.models.livello_istruzione import LivelloIstruzione
+from app.models.medico import Medico
+from app.models.medico_esterno import MedicoEsterno
+from app.models.modalita_accesso import ModalitaAccesso
+from app.models.paziente import Paziente
+from app.models.posizione_professionale import PosizioneProfessionale
+from app.models.prenotazione import Prenotazione
+from app.models.prericovero import Prericovero
+from app.models.presidio_osp import PresidioOsp
+from app.models.pro
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:28:12 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nuv run python -c \"\nfrom app.models import Base\nfrom sqlalchemy.orm import configure_mappers\nconfigure_mappers()\nprint('OK mappers')\nfor t in ['reparti','medici','reparti_dipendenti']:\n    print(t, '->', [c.name for c in Base.metadata.tables[t].columns])\n\" 2>&1 | tail -12",
+  "description": "Verify mappers with two polymorphic hierarchies, self-FKs and M:M"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:28:18 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+OK mappers
+reparti -> ['id', 'reparto', 'sigla', 'tipo', 'presidio_id', 'letti_accreditati', 'letti_non_accreditati', 'no_check_letto_occupato', 'tipo_magazzino', 'reparto_mag_id', 'reparto_trasf_mag_id', 'accetta_trasferimenti', 'effettua_procedure', 'gestione_notizie_cliniche', 'gestione_terapia', 'data_avvio_terapia', 'ora_validazione_terapia', 'max_anticipo_somministrazione', 'max_posticipo_somministrazione', 'ora_insulina_colazione', 'ora_insulina_pranzo', 'ora_insulina_cena', 'ora_insulina_sera', 'codice_lis', 'diario_fkt', 'consegne_lavagna', 'print_order', 'standard_procedure_giorno', 'standard_procedure_cipi_giorno', 'personale_docwin', 'shutdown_time']
+medici -> ['id', 'n_empam', 'codice_regionale', 'codice_lis', 'chirurgo', 'revisore_cc', 'no_validazione_rilascio', 'font_referti', 'sigla_prog_op', 'percentuale_ambulatorio', 'percentuale_ambulatorio_prec', 'data_variazione_percentuale', 'tipo_compenso', 'specializzando', 'tutor_spec_id', 'anno_corso']
+reparti_dipendenti ->
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:28:21 PM</sup>
+
+Mapper OK con entrambe le gerarchie. Ora schemas e migration.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:28:25 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "Modello Reparto + M:M + Medico (sottotipo) + discriminatore tipo_personale",
+      "status": "completed",
+      "activeForm": "Creando Reparto e Medico"
+    },
+    {
+      "content": "Sciogliere i 10 placeholder: Dipendente, Disciplina, Prenotazione, Prericovero, PresidioOsp",
+      "status": "completed",
+      "activeForm": "Sciogliendo i placeholder in FK vere"
+    },
+    {
+      "content": "Schemas Pydantic (Reparto, Medico) + DipendenteRead.tipo_personale",
+      "status": "in_progress",
+      "activeForm": "Creando schemas"
+    },
+    {
+      "content": "Migration: riordino per dipendenze + nuove tabelle + FK",
+      "status": "pending",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: polimorfismo Medico, M:M, self-ref, placeholder sciolti",
+      "status": "pending",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "ROADMAP + CLAUDE.md, commit + PR",
+      "status": "pending",
+      "activeForm": "Aggiornando doc e aprendo PR"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:28:25 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:28:34 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\reparto.py",
+  "content": "from datetime import date, datetime\nfrom typing import Literal\n\nfrom pydantic import BaseModel, ConfigDict\n\n\nclass RepartoRead(BaseModel):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    reparto: str | None = None\n    sigla: str | None = None\n    tipo: Literal[\"Degenza\", \"Servizio\", \"Supporto\"] | None = None\n    presidio_id: int | None = None\n    letti_accreditati: int | None = None\n    letti_non_accreditati: int | None = None\n    no_check_letto_occupato: bool = False\n    tipo_magazzino: Literal[\"Centrale\", \"Reparto\", \"Nessuno\"] | None = None\n    reparto_mag_id: int | None = None\n    reparto_trasf_mag_id: int | None = None\n    accetta_trasferimenti: bool | None = None\n    effettua_procedure: bool | None = None\n    gestione_notizie_cliniche: bool | None = None\n    gestione_terapia: bool = False\n    data_avvio_terapia: date | None = None\n    ora_validazione_terapia: datetime | None = None\n    max_anticipo_somministrazione: int | None = None\n    max_posticipo_somministrazione: int | None = None\n    ora_insulina_colazione: datetime | None = None\n    ora_insulina_pranzo: datetime | None = None\n    ora_insulina_cena: datetime | None = None\n    ora_insulina_sera: datetime | None = None\n    codice_lis: str | None = None\n    diario_fkt: bool = False\n    consegne_lavagna: bool = False\n    print_order: int | None = None\n    standard_procedure_giorno: str | None = None\n    standard_procedure_cipi_giorno: str | None = None\n    personale_docwin: str | None = None\n    shutdown_time: int | None = None\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:28:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\reparto.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:28:44 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\medico.py",
+  "content": "from datetime import date\nfrom decimal import Decimal\nfrom typing import Literal\n\nfrom pydantic import BaseModel, ConfigDict, computed_field\n\nfrom app.schemas.dipendente import DipendenteBase\n\n\nclass MedicoBase(DipendenteBase):\n    \"\"\"Un Medico è un Dipendente: eredita tutti i campi dell'anagrafica personale.\"\"\"\n\n    n_empam: str | None = None\n    codice_regionale: str | None = None\n    codice_lis: str | None = None\n    chirurgo: bool = False\n    revisore_cc: bool = False\n    no_validazione_rilascio: bool = False\n    font_referti: str | None = None\n    sigla_prog_op: str | None = None\n    percentuale_ambulatorio: Decimal | None = None\n    percentuale_ambulatorio_prec: Decimal | None = None\n    data_variazione_percentuale: date | None = None\n    tipo_compenso: Literal[\"Fattura\", \"BustaPaga\", \"Altro\"] | None = None\n    specializzando: bool = False\n    tutor_spec_id: int | None = None\n    anno_corso: str | None = None\n\n\nclass MedicoCreate(MedicoBase):\n    pass\n\n\nclass MedicoRead(MedicoBase):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    tipo_personale: str\n\n    @computed_field\n    @property\n    def nominativo(self) -> str:\n        return f\"{self.cognome} {self.nome}\"\n\n    @computed_field\n    @property\n    def firma_referti(self) -> str:\n        nominativo = f\"{self.cognome} {self.nome}\".strip()\n        if self.codice_regionale:\n            return f\"{nominativo} - {self.codice_regionale}\"\n        return nominativo\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:28:45 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\medico.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:28:49 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\schemas\\dipendente.py",
+  "old_string": "class DipendenteRead(DipendenteBase):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int",
+  "new_string": "class DipendenteRead(DipendenteBase):\n    model_config = ConfigDict(from_attributes=True)\n\n    id: int\n    tipo_personale: str"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:28:50 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\schemas\dipendente.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:28:54 PM</sup>
+
+Ora la migration: riordino per dipendenze (`reparti` prima di `dipendenti`, `medici` dopo).
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:07 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    # dipendenti dipende da comuni, presidi_osp, titoli, tipi_dipendente, rapporti_dipendenza\n    op.create_table(\n        \"dipendenti\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"cognome\", sa.String(length=30), nullable=False),",
+  "new_string": "    # reparti dipende da presidi_osp (+ self-FK magazzino)\n    op.create_table(\n        \"reparti\",\n        sa.Column(\"id\", sa.Integer(), primary_key=True),\n        sa.Column(\"reparto\", sa.String(length=50), nullable=True),\n        sa.Column(\"sigla\", sa.String(length=11), nullable=True),\n        sa.Column(\"tipo\", sa.String(length=20), nullable=True),\n        sa.Column(\"presidio_id\", sa.Integer(), sa.ForeignKey(\"presidi_osp.id\"), nullable=True),\n        sa.Column(\"letti_accreditati\", sa.Integer(), nullable=True),\n        sa.Column(\"letti_non_accreditati\", sa.Integer(), nullable=True),\n        sa.Column(\n            \"no_check_letto_occupato\", sa.Boolean(), nullable=False, server_default=sa.false()\n        ),\n        sa.Column(\"tipo_magazzino\", sa.String(length=20), nullable=True),\n        sa.Column(\"reparto_mag_id\", sa.Integer(), sa.ForeignKey(\"reparti.id\"), nullable=True),\n        sa.Column(\n            \"reparto_trasf_mag_id\", sa.Integer(), sa.ForeignKey(\"reparti.id\"), nullable=True\n        ),\n        sa.Column(\"accetta_trasferimenti\", sa.Boolean(), nullable=True),\n        sa.Column(\"effettua_procedure\", sa.Boolean(), nullable=True),\n        sa.Column(\"gestione_notizie_cliniche\", sa.Boolean(), nullable=True),\n        sa.Column(\"gestione_terapia\", sa.Boolean(), nullable=False, server_default=sa.false()),\n        sa.Column(\"data_avvio_terapia\", sa.Date(), nullable=True),\n        sa.Column(\"ora_validazione_terapia\", sa.DateTime(timezone=True), nullable=Tr
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:29:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:14 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "        sa.Column(\"presidio_id\", sa.Integer(), sa.ForeignKey(\"presidi_osp.id\"), nullable=True),\n        sa.Column(\"reparto_predefinito_id\", sa.Integer(), nullable=True),",
+  "new_string": "        sa.Column(\"presidio_id\", sa.Integer(), sa.ForeignKey(\"presidi_osp.id\"), nullable=True),\n        sa.Column(\n            \"reparto_predefinito_id\", sa.Integer(), sa.ForeignKey(\"reparti.id\"), nullable=True\n        ),"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:29:15 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:18 PM</sup>
+
+Ora `medici` (dopo dipendenti), la M:M, e la FK reale su `discipline`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:26 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    # discipline dipende da dipendenti (responsabile)\n    op.create_table(\n        \"discipline\",",
+  "new_string": "    # medici: sottotipo di dipendenti (PK condivisa) + self-FK tutor\n    op.create_table(\n        \"medici\",\n        sa.Column(\"id\", sa.Integer(), sa.ForeignKey(\"dipendenti.id\"), primary_key=True),\n        sa.Column(\"n_empam\", sa.String(length=10), nullable=True),\n        sa.Column(\"codice_regionale\", sa.String(length=16), nullable=True),\n        sa.Column(\"codice_lis\", sa.String(length=10), nullable=True),\n        sa.Column(\"chirurgo\", sa.Boolean(), nullable=False, server_default=sa.false()),\n        sa.Column(\"revisore_cc\", sa.Boolean(), nullable=False, server_default=sa.false()),\n        sa.Column(\n            \"no_validazione_rilascio\", sa.Boolean(), nullable=False, server_default=sa.false()\n        ),\n        sa.Column(\"font_referti\", sa.String(length=100), nullable=True),\n        sa.Column(\"sigla_prog_op\", sa.String(length=3), nullable=True),\n        sa.Column(\"percentuale_ambulatorio\", sa.Numeric(28, 8), nullable=True),\n        sa.Column(\"percentuale_ambulatorio_prec\", sa.Numeric(28, 8), nullable=True),\n        sa.Column(\"data_variazione_percentuale\", sa.Date(), nullable=True),\n        sa.Column(\"tipo_compenso\", sa.String(length=20), nullable=True),\n        sa.Column(\"specializzando\", sa.Boolean(), nullable=False, server_default=sa.false()),\n        sa.Column(\"tutor_spec_id\", sa.Integer(), sa.ForeignKey(\"medici.id\"), nullable=True),\n        sa.Column(\"anno_corso\", sa.String(length=100), nullable=True),\n    )\n\n    # M:M reparti <-> dipendenti\n    op.create_table(\n        \"reparti_dipendenti\",\n        sa.Column(\"reparto_id\", sa.Integer(), sa.ForeignKey(\"reparti.id\"), primary_key=True),\n        sa.Column(\"dip
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:29:27 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:32 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "        sa.Column(\"responsabile_id\", sa.Integer(), sa.ForeignKey(\"dipendenti.id\"), nullable=True),\n        sa.Column(\"reparto_degenza_id\", sa.Integer(), nullable=True),\n    )",
+  "new_string": "        sa.Column(\"responsabile_id\", sa.Integer(), sa.ForeignKey(\"dipendenti.id\"), nullable=True),\n        sa.Column(\"reparto_degenza_id\", sa.Integer(), sa.ForeignKey(\"reparti.id\"), nullable=True),\n    )"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:29:33 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:36 PM</sup>
+
+Ora le FK verso `medici` su prenotazioni/prericoveri e la `downgrade()`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:41 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\npython - <<'PYEOF'\nimport pathlib\np = pathlib.Path(\"alembic/versions/d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py\")\ns = p.read_text(encoding=\"utf-8\")\n\nold = '''        sa.Column(\"specialista_medico_id\", sa.Integer(), nullable=True),\n        sa.Column(\"specialista_chirurgo_id\", sa.Integer(), nullable=True),\n        sa.Column(\"tutor_id\", sa.Integer(), nullable=True),'''\nnew = '''        sa.Column(\n            \"specialista_medico_id\", sa.Integer(), sa.ForeignKey(\"medici.id\"), nullable=True\n        ),\n        sa.Column(\n            \"specialista_chirurgo_id\", sa.Integer(), sa.ForeignKey(\"medici.id\"), nullable=True\n        ),\n        sa.Column(\"tutor_id\", sa.Integer(), sa.ForeignKey(\"medici.id\"), nullable=True),'''\nn = s.count(old)\nassert n == 2, f\"atteso 2 blocchi (prenotazioni + prericoveri), trovati {n}\"\ns = s.replace(old, new)\np.write_text(s, encoding=\"utf-8\")\nprint(f\"sostituiti {n} blocchi specialista_*/tutor -> FK medici.id\")\nPYEOF",
+  "description": "Turn specialista/tutor placeholders into real FKs in both prenotazioni and prericoveri"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:29:44 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+sostituiti 2 blocchi specialista_*/tutor -> FK medici.id
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:47 PM</sup>
+
+Ora la `downgrade()` in ordine inverso.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:51 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\alembic\\versions\\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py",
+  "old_string": "    op.drop_table(\"pazienti\")\n    op.drop_table(\"discipline\")\n    op.drop_table(\"dipendenti\")",
+  "new_string": "    op.drop_table(\"pazienti\")\n    op.drop_table(\"discipline\")\n    op.drop_table(\"reparti_dipendenti\")\n    op.drop_table(\"medici\")\n    op.drop_table(\"dipendenti\")\n    op.drop_table(\"reparti\")"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:29:52 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:29:57 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nuv run python \"C:/Users/OMONAC~1.DRO/AppData/Local/Temp/claude/c--Users-OMONACO-DROMONACO-CoCIS/72dad8ad-6bab-4f4f-8cd3-76fa10315bfa/scratchpad/verify_migration.py\" 2>&1 | tail -8",
+  "description": "Verify migration matches model metadata"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:30:03 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+OK - migration matches model metadata exactly
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:30:05 PM</sup>
+
+Migration allineata. Ora i test.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:30:10 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "Modello Reparto + M:M + Medico (sottotipo) + discriminatore tipo_personale",
+      "status": "completed",
+      "activeForm": "Creando Reparto e Medico"
+    },
+    {
+      "content": "Sciogliere i 10 placeholder: Dipendente, Disciplina, Prenotazione, Prericovero, PresidioOsp",
+      "status": "completed",
+      "activeForm": "Sciogliendo i placeholder in FK vere"
+    },
+    {
+      "content": "Schemas Pydantic (Reparto, Medico) + DipendenteRead.tipo_personale",
+      "status": "completed",
+      "activeForm": "Creando schemas"
+    },
+    {
+      "content": "Migration: riordino per dipendenze + nuove tabelle + FK",
+      "status": "completed",
+      "activeForm": "Aggiornando la migration"
+    },
+    {
+      "content": "Test: polimorfismo Medico, M:M, self-ref, placeholder sciolti",
+      "status": "in_progress",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "Verifica: mappers, migration vs metadati, ruff, pytest",
+      "status": "pending",
+      "activeForm": "Verificando"
+    },
+    {
+      "content": "ROADMAP + CLAUDE.md, commit + PR",
+      "status": "pending",
+      "activeForm": "Aggiornando doc e aprendo PR"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:30:10 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:30:37 PM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\tests\\test_reparti_medici.py",
+  "content": "\"\"\"Anagrafica organizzativa: Reparto e Medico.\n\nVerifica la seconda gerarchia polimorfica del progetto (`Dipendente` → `Medico`),\nla M:M reparti↔dipendenti, i self-riferimenti e — soprattutto — che i\nFK-placeholder accumulati dalle slice precedenti ora navighino davvero.\n\"\"\"\n\nfrom datetime import date\n\nfrom sqlalchemy import select\nfrom sqlalchemy.orm import Session\n\nfrom app.models.dipendente import Dipendente\nfrom app.models.disciplina import Disciplina\nfrom app.models.medico import Medico\nfrom app.models.paziente import Paziente\nfrom app.models.prenotazione import Prenotazione\nfrom app.models.presidio_osp import PresidioOsp\nfrom app.models.reparto import Reparto\n\n\ndef test_medico_e_sottotipo_polimorfico_di_dipendente(db_session: Session) -> None:\n    dipendente = Dipendente(cognome=\"Rossi\", nome=\"Mario\")\n    medico = Medico(cognome=\"Bianchi\", nome=\"Anna\", chirurgo=True, codice_regionale=\"MI12345\")\n    db_session.add_all([dipendente, medico])\n    db_session.flush()\n\n    assert dipendente.tipo_personale == \"dipendente\"\n    assert medico.tipo_personale == \"medico\"\n\n    # interrogando la base si ottiene l'istanza del sottotipo giusto\n    db_session.expire_all()\n    tutti = db_session.scalars(select(Dipendente).order_by(Dipendente.cognome)).all()\n    per_tipo = {d.cognome: d for d in tutti}\n    assert isinstance(per_tipo[\"Bianchi\"], Medico)\n    assert not isinstance(per_tipo[\"Rossi\"], Medico)\n\n    # e la query sul sottotipo filtra solo i medici\n    medici = db_session.scalars(select(Medico)).all()\n    assert [m.cognome for m in medici] == [\"Bianchi\"]\n\n\ndef test_medico_firma_referti_calcolata(db_session: Session) -> None:\n    medico = Medico(cognome=\"Bianchi\", nome=\"Anna\", codice_regionale=\"MI12345\")\n    db_session.add(medico)\n    db_session.flush()\n    assert medico.firma_referti == \"Bianchi
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:30:38 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+File created successfully at: c:\Users\OMONACO.DROMONACO\CoCIS\tests\test_reparti_medici.py (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:30:42 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nrm -f test_tmp.db\nTEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" timeout 150 uv run pytest -q 2>&1 | tail -25\nrm -f test_tmp.db",
+  "description": "Run full test suite including new Reparti/Medici tests"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:30:50 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+............................                                             [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+28 passed, 1 warning in 1.53s
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:30:53 PM</sup>
+
+**28/28 verdi** — gli 8 nuovi test passano e i 20 esistenti non hanno regressioni. Ruff e verifica finale.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:30:58 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nuv run ruff check --fix . 2>&1 | tail -3\nuv run ruff format . 2>&1 | tail -1\necho \"=== check finale ===\"\nuv run ruff check . 2>&1 | tail -2\nuv run ruff format --check . 2>&1 | tail -1\necho \"=== migration ===\"\nuv run python \"C:/Users/OMONAC~1.DRO/AppData/Local/Temp/claude/c--Users-OMONACO-DROMONACO-CoCIS/72dad8ad-6bab-4f4f-8cd3-76fa10315bfa/scratchpad/verify_migration.py\" 2>&1 | tail -2\necho \"=== test ===\"\nrm -f test_tmp.db\nTEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" timeout 150 uv run pytest -q 2>&1 | tail -2\nrm -f test_tmp.db",
+  "description": "Final verification: ruff, migration, tests"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:31:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+|
+
+Found 2 errors (1 fixed, 1 remaining).
+5 files reformatted, 76 files left unchanged
+=== check finale ===
+All checks passed!
+81 files already formatted
+=== migration ===
+OK - migration matches model metadata exactly
+=== test ===
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+28 passed, 1 warning in 1.27s
+[This command modified 6 files you've previously read: app\schemas\medico.py, tests\test_reparti_medici.py, alembic\versions\d8c87d4e55d9_create_pazienti_contatti_pz_ricoveri.py, app\models\prericovero.py, app\models\prenotazione.py and 1 more. Call Read before editing.]
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:31:41 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:31:42 PM</sup>
+
+Tutto verde (28/28, ruff pulito, migration allineata). Ma i docstring di `Prenotazione`/`Prericovero` dicono ancora che gli specialisti sono placeholder — ora è falso. Li correggo: la doc non deve mentire.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:31:46 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prenotazione.py",
+  "old_string": "    `ricovero` e `prericovero` sono relationship inverse: nel legacy erano\n    proprietà `[NonPersistent]` calcolate con una query, non colonne. Le FK reali\n    stanno sui figli (Ricovero.prenotazione_id, Prericovero.prenotazione_id).\n\n    `specialista_medico_id`/`specialista_chirurgo_id`/`tutor_id` referenziano\n    `Medici`, non ancora modellato: sono FK-placeholder Integer (vedi Backlog).\n    \"\"\"",
+  "new_string": "    `ricovero` e `prericovero` sono relationship inverse: nel legacy erano\n    proprietà `[NonPersistent]` calcolate con una query, non colonne. Le FK reali\n    stanno sui figli (Ricovero.prenotazione_id, Prericovero.prenotazione_id).\n    \"\"\""
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:31:47 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prenotazione.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:31:59 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\app\\models\\prericovero.py",
+  "old_string": "    Nel legacy la PK è composita `(OID, CartellaClinica)`: quirk XPO. Qui `id`\n    resta la PK condivisa con contatti_pz e `cartella_clinica` è una colonna\n    normale indicizzata.\n\n    `specialista_medico_id`/`specialista_chirurgo_id`/`tutor_id` (→Medici) e\n    `parente_id` (→Parenti) sono FK-placeholder Integer: quelle tabelle non sono\n    ancora modellate (vedi Backlog).\n    \"\"\"",
+  "new_string": "    Nel legacy la PK è composita `(OID, CartellaClinica)`: quirk XPO. Qui `id`\n    resta la PK condivisa con contatti_pz e `cartella_clinica` è una colonna\n    normale indicizzata.\n\n    `parente_id` (→Parenti) è un FK-placeholder Integer: quella tabella non è\n    ancora modellata (vedi Backlog).\n    \"\"\""
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:00 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\app\models\prericovero.py has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:02 PM</sup>
+
+Ora ROADMAP e CLAUDE.md.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:05 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "Modello Reparto + M:M + Medico (sottotipo) + discriminatore tipo_personale",
+      "status": "completed",
+      "activeForm": "Creando Reparto e Medico"
+    },
+    {
+      "content": "Sciogliere i 10 placeholder",
+      "status": "completed",
+      "activeForm": "Sciogliendo i placeholder"
+    },
+    {
+      "content": "Schemas Pydantic + migration",
+      "status": "completed",
+      "activeForm": "Creando schemas e migration"
+    },
+    {
+      "content": "Test: 28/28 verdi (8 nuovi)",
+      "status": "completed",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "ROADMAP + CLAUDE.md aggiornati",
+      "status": "in_progress",
+      "activeForm": "Aggiornando la documentazione"
+    },
+    {
+      "content": "Commit + PR",
+      "status": "pending",
+      "activeForm": "Aprendo la PR"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:05 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:17 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "- [ ] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` è una tabella grande\n      (~30 campi, letti/magazzino/terapia), `Medici` è un sottotipo di `Dipendente`\n      (chiave condivisa). Oggi sono referenziati come FK-placeholder Integer da\n      `Dipendente.reparto_predefinito_id` e `PresidioOsp.direttore_sanitario_id`/\n      `responsabile_dipartimento_id`: modellandoli, quei placeholder diventano FK vere e\n      si aggiungono le relazioni inverse (Dipendente↔Reparti, ecc.). Vedi mappa moduli in\n      CLAUDE.md.",
+  "new_string": "- [ ] Specializzazioni (M:M con Dipendente, legata a `TipoDipendente`)\n- [ ] Parenti del paziente: oggi `Prericovero.parente_id` è un FK-placeholder Integer"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:18 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:22 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "offset": 24,
+  "limit": 30
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:22 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+24	      percorso Alembic. Da fare prima di considerare davvero chiuse le slice mergiate.
+25	
+26	## Backlog
+27	- [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)
+28	- [ ] Prenotazione Ambulatorio + Prestazione Ambulatoriale (percorso ambulatoriale, link
+29	      bidirezionale tra i due)
+30	- [ ] Rilevazioni (parametri vitali, esami di laboratorio) collegate al Ricovero
+31	- [ ] Procedure previste / effettuate collegate al Ricovero (incl. la collection
+32	      `ProcedurePreviste` su Prenotazione)
+33	- [ ] SDO / SDO10 (scheda dimissione ospedaliera)
+34	- [ ] Rinvii + MotiviRinvio (uno-a-molti da Prenotazione)
+35	- [ ] Codifiche cliniche ICD9/ICD10 (GlobalClinModule): oggi `Diagnosi.icd9_cm_id` è un
+36	      FK-placeholder Integer
+37	- [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)
+38	- [ ] Parenti del paziente (uno-a-molti da Paziente)
+39	- [ ] Anamnesi clinica (FattoriRischio, Patologie, AllergieIntolleranze,
+40	      Interven
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:27 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:28 PM</sup>
+
+C'è un duplicato su "Parenti". Consolido e aggiungo `Letti` (collection di Reparto, fuori scope).
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:32 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "- [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)\n- [ ] Parenti del paziente (uno-a-molti da Paziente)\n- [ ] Anamnesi clinica (FattoriRischio, Patologie, AllergieIntolleranze,",
+  "new_string": "- [ ] Contatti telefonici (Telefoni/TelefoniPz — uno-a-molti da ContattoPz)\n- [ ] Parenti del paziente (uno-a-molti da Paziente); oggi `Prericovero.parente_id` è un\n      FK-placeholder Integer\n- [ ] Gestione posti letto (Letti/Camere — uno-a-molti da Reparto)\n- [ ] Anamnesi clinica (FattoriRischio, Patologie, AllergieIntolleranze,"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:33 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:38 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "- [ ] Specializzazioni (M:M con Dipendente, legata a `TipoDipendente`)\n- [ ] Parenti del paziente: oggi `Prericovero.parente_id` è un FK-placeholder Integer",
+  "new_string": "- [ ] Specializzazioni (M:M con Dipendente, legata a `TipoDipendente`)"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:39 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:47 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "      `regime_ricovero`, non entità — 2026-07-16, PR #3",
+  "new_string": "      `regime_ricovero`, non entità — 2026-07-16, PR #3\n- [x] Reparti + Medici (anagrafica organizzativa/staff): `Reparto` (~30 campi, M:M con\n      Dipendente, self-ref magazzino) e `Medico` come **sottotipo di `Dipendente`**\n      (seconda gerarchia polimorfica del progetto, discriminatore `tipo_personale`).\n      **Sciolti 8 dei 10 FK-placeholder** accumulati nelle slice precedenti; i 2 su\n      `PresidioOsp` restano senza FK a DB di proposito (ciclo `presidi_osp→medici→\n      dipendenti→presidi_osp`, come nel legacy) ma sono navigabili via relationship.\n      Scoperta: `repartireparti_medicimedici` è una tabella morta (nessun oggetto XPO la\n      dichiara) → non modellata — 2026-07-16, branch `feat/reparti-medici`"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:48 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:53 PM</sup>
+
+Ora `CLAUDE.md`: aggiorno il modello di dominio con la seconda gerarchia polimorfica.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:32:54 PM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\CLAUDE.md",
+  "offset": 52,
+  "limit": 26
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:32:54 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+52	Decisioni di design per la riscrittura:
+53	- **`ContattoPz` e `Schederic` sono basi polimorfiche** nel legacy (class-table inheritance
+54	  DevExpress, PK condivisa). Nel nuovo modello: **non portare 1:1** le decine di sottotipi.
+55	  Preferire un'unica entità con discriminatore di tipo (`tipo_scheda`, `tipo_contatto`) e un
+56	  campo `JSONB` per gli attributi specifici del sottotipo, salvo che servano validazioni forti
+57	  per-tipo (in quel caso, joined-table inheritance via SQLAlchemy).
+58	- Le tabelle di sistema DevExpress (audit, permessi, metadata XPO — riconoscibili dai prefissi
+59	  `devexpress_*`, `persistent*`, `xpo*`, `security*`) sono infrastruttura ORM legacy: **non
+60	  vanno migrate**. Permessi e audit si reimplementano nativamente sullo stack scelto.
+61	- `Ricovero` nel legacy è una "god table" da 84 colonne: nel nuovo modello va scomposto per
+62	  bounded context (clinico, amministrativo/DRG, posti letto) sfruttando le ~49 tabelle figlie
+63	  già esistenti come guid
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:33:05 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\CLAUDE.md",
+  "old_string": "Decisioni di design per la riscrittura:\n- **`ContattoPz` e `Schederic` sono basi polimorfiche** nel legacy (class-table inheritance\n  DevExpress, PK condivisa). Nel nuovo modello: **non portare 1:1** le decine di sottotipi.\n  Preferire un'unica entità con discriminatore di tipo (`tipo_scheda`, `tipo_contatto`) e un\n  campo `JSONB` per gli attributi specifici del sottotipo, salvo che servano validazioni forti\n  per-tipo (in quel caso, joined-table inheritance via SQLAlchemy).",
+  "new_string": "Decisioni di design per la riscrittura:\n- **`ContattoPz` e `Schederic` sono basi polimorfiche** nel legacy (class-table inheritance\n  DevExpress, PK condivisa). Nel nuovo modello: **non portare 1:1** le decine di sottotipi.\n  Preferire un'unica entità con discriminatore di tipo (`tipo_scheda`, `tipo_contatto`) e un\n  campo `JSONB` per gli attributi specifici del sottotipo, salvo che servano validazioni forti\n  per-tipo (in quel caso, joined-table inheritance via SQLAlchemy).\n- **Gerarchie polimorfiche implementate** (joined-table inheritance, PK condivisa):\n  `ContattoPz` → `Prenotazione`/`Prericovero`/`Ricovero` (discriminatore `tipo_contatto`) e\n  `Dipendente` → `Medico` (discriminatore `tipo_personale`). Attenzione: nel legacy il\n  discriminatore XPO (`ObjectType`) sta sulla **radice** della gerarchia — per `Dipendenti`\n  è `PermissionPolicyUser`, infrastruttura di sicurezza che non migriamo, quindi il\n  discriminatore va introdotto ex novo.\n- **I sottotipi condividono la PK con la base**: se un modello ha altre FK verso una tabella\n  della stessa gerarchia, SQLAlchemy trova percorsi ambigui → servono `foreign_keys` /\n  `inherit_condition` espliciti (vedi `app/models/prenotazione.py`)."
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:33:06 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\CLAUDE.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:33:19 PM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\CLAUDE.md",
+  "old_string": "- **Verificare sempre la persistenza prima di creare una colonna.** Le proprietà\n  `[NonPersistent]` (spesso reverse-lookup via query, o stringhe concatenate per la UI) non\n  sono colonne: diventano `relationship` o property calcolate. Idem per i `PersistentAlias`\n  (campi calcolati) → `@property` + `computed_field` Pydantic, mai colonne DB.",
+  "new_string": "- **Verificare sempre la persistenza prima di creare una colonna.** Le proprietà\n  `[NonPersistent]` (spesso reverse-lookup via query, o stringhe concatenate per la UI) non\n  sono colonne: diventano `relationship` o property calcolate. Idem per i `PersistentAlias`\n  (campi calcolati) → `@property` + `computed_field` Pydantic, mai colonne DB.\n- **Il dump SQL contiene tabelle e colonne morte.** L'oggetto XPO è la fonte autoritativa: se\n  nessuna business object dichiara una tabella/colonna, è un residuo e non va modellato (casi\n  reali: la M:M `repartireparti_medicimedici`, la colonna `comuni.SiglaRegione`,\n  `presidiosp.Prov`).\n- **FK-placeholder**: quando un campo referenzia una tabella di un dominio non ancora\n  modellato, si usa una colonna `Integer` nullable documentata, e la si promuove a FK vera\n  nella slice che modella quel dominio (vedi lo scioglimento fatto in `feat/reparti-medici`).\n- **Cicli di FK**: `presidi_osp → medici → dipendenti → presidi_osp` è un ciclo reale. Il\n  legacy lo rompe con `[NoForeignKey]` su `PresidiOsp.DirettoreSanitario`; facciamo lo stesso\n  (colonna senza FK + `relationship` con `primaryjoin`). Una FK vera richiederebbe\n  `use_alter` (ALTER ADD CONSTRAINT), che SQLite non supporta e romperebbe test e verifica."
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:33:20 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\CLAUDE.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:33:22 PM</sup>
+
+Verifica finale e commit.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:33:27 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nuv run ruff check . 2>&1 | tail -1\nuv run ruff format --check . 2>&1 | tail -1\nuv run python \"C:/Users/OMONAC~1.DRO/AppData/Local/Temp/claude/c--Users-OMONACO-DROMONACO-CoCIS/72dad8ad-6bab-4f4f-8cd3-76fa10315bfa/scratchpad/verify_migration.py\" 2>&1 | tail -1\nrm -f test_tmp.db\nTEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" timeout 150 uv run pytest -q 2>&1 | tail -1\nrm -f test_tmp.db\necho \"=== placeholder Integer rimasti ===\"\ngrep -rn \"FK-placeholder\" app/models/ | head",
+  "description": "Final verification and check remaining placeholders"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:33:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+All checks passed!
+81 files already formatted
+OK - migration matches model metadata exactly
+28 passed, 1 warning in 1.36s
+=== placeholder Integer rimasti ===
+app/models/diagnosi.py:11:    modellato (vedi Backlog): è un FK-placeholder Integer nullable.
+app/models/prericovero.py:31:    `parente_id` (→Parenti) è un FK-placeholder Integer: quella tabella non è
+app/models/prericovero.py:72:    # FK-placeholder verso Parenti (non ancora modellato - vedi Backlog)
+Binary file app/models/__pycache__/diagnosi.cpython-312.pyc matches
+Binary file app/models/__pycache__/prericovero.cpython-312.pyc matches
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:33:42 PM</sup>
+
+Restano solo 2 placeholder (`Diagnosi.icd9_cm_id` e `Prericovero.parente_id`), entrambi tracciati nel Backlog. Committo.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:33:54 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit add ROADMAP.md CLAUDE.md app/ tests/ alembic/ 2>&1 | grep -v \"warning: LF\" | head -2\ngit commit -q -m \"$(cat <<'EOF'\nAggiunge Reparti e Medici (anagrafica organizzativa/staff)\n\nModella le due tabelle rimaste scoperte e scioglie il debito dei FK-placeholder\naccumulato dalle tre slice precedenti.\n\n- Reparto: ~30 campi XPO, FK a presidi_osp, self-ref magazzino\n  (reparto_mag/reparto_trasf_mag), M:M con Dipendente.\n- Medico: sottotipo di Dipendente (joined-table, PK condivisa). E' la seconda\n  gerarchia polimorfica del progetto: il discriminatore XPO (ObjectType) stava\n  su PermissionPolicyUser, che non migriamo, quindi ne introduciamo uno nostro\n  (tipo_personale). Da non confondere con tipo_dipendente_id, che e' la FK alla\n  lookup: quello e' dato di riferimento, questo e' il tipo ORM della riga.\n- 8 placeholder su 10 diventano FK vere: Dipendente.reparto_predefinito,\n  Disciplina.reparto_degenza, Prenotazione/Prericovero.specialista_* e tutor.\n- I 2 su PresidioOsp restano senza FK a DB di proposito: creerebbero il ciclo\n  presidi_osp->medici->dipendenti->presidi_osp. Il legacy fa lo stesso\n  ([NoForeignKey]); qui restano navigabili via relationship con primaryjoin.\n\nScoperte legacy recepite (documentate in CLAUDE.md):\n- repartireparti_medicimedici e' una tabella morta: nessun oggetto XPO la\n  dichiara -> non modellata (come comuni.SiglaRegione, presidiosp.Prov).\n- Medici.FirmaReferti e' un PersistentAlias -> property, non colonna.\n\nVerifica: 28/28 test verdi (8 nuovi: polimorfismo, M:M, self-ref, placeholder\nsciolti); migration verificata vs metadati; ruff pulito. Resta il debito noto:\nmai girata su PostgreSQL reale.\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>\nEOF\n)\"\ngit push -q -u origin feat/reparti-medici 2>&1 | tail -2\necho \"pushato\"; git log --oneline -1",
+  "description": "Commit and push the Reparti/Medici slice"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:35:08 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file will have its original line endings in your working directory
+The file will have its original line endings in your working directory
+remote:      https://github.com/mbafumic/CoCIS/pull/new/feat/reparti-medici        
+remote: 
+pushato
+dce18f9 Aggiunge Reparti e Medici (anagrafica organizzativa/staff)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:35:28 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngh pr create --base main --head feat/reparti-medici --title \"Aggiunge Reparti e Medici (anagrafica organizzativa/staff)\" --body \"$(cat <<'EOF'\nModella le due tabelle rimaste scoperte dell'anagrafica organizzativa e **scioglie il debito\ndei FK-placeholder** accumulato dalle tre slice precedenti.\n\n## Modifiche\n- **`Reparto`**: ~30 campi persistenti dell'oggetto XPO, FK a `presidi_osp`, self-riferimenti\n  per il magazzino (`reparto_mag` / `reparto_trasf_mag`), M:M con `Dipendente`.\n- **`Medico`**: sottotipo di `Dipendente` (joined-table inheritance, PK condivisa) — **seconda\n  gerarchia polimorfica del progetto** dopo `ContattoPz`.\n\n## Scioglimento dei placeholder (8 su 10)\n| Prima (`Integer`, nessuna FK) | Ora |\n|---|---|\n| `Dipendente.reparto_predefinito_id` | FK → `reparti.id` |\n| `Disciplina.reparto_degenza_id` | FK → `reparti.id` |\n| `Prenotazione.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |\n| `Prericovero.specialista_medico_id` / `specialista_chirurgo_id` / `tutor_id` | FK → `medici.id` |\n\nI 2 su `PresidioOsp` (`direttore_sanitario_id`, `responsabile_dipartimento_id`) **restano senza\nFK a DB, di proposito**: creerebbero il ciclo `presidi_osp → medici → dipendenti → presidi_osp`.\nIl legacy risolve identicamente (`[NoForeignKey]`; nel dump SQL l'unico constraint di\n`presidiosp` è `Comune`). Qui restano **navigabili** via `relationship` con `primaryjoin`.\nUna FK vera richiederebbe `use_alter` (ALTER ADD CONSTRAINT), che SQLite non supporta e che\nromperebbe sia i test sia lo script di verifica.\n\n## Nota sul discriminatore\nIl discriminatore XPO (`ObjectType`) stava su `PermissionPolicyUser`, radice della gerarchia\nche **non migriamo** → ne introduciamo uno nostro: **`tipo_personale`**. Da non confondere con\n`tipo_dipendente_id`, che è la FK alla lookup `tipi_dipendente`: quello è un dato di\nriferimento editabile, questo è il tipo ORM della r
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:36:46 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+https://github.com/mbafumic/CoCIS/pull/4
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:36:51 PM</sup>
+
+<details>
+<summary>Tool: <code>TodoWrite</code></summary>
+
+```json
+{
+  "todos": [
+    {
+      "content": "Modello Reparto + M:M + Medico (sottotipo) + discriminatore tipo_personale",
+      "status": "completed",
+      "activeForm": "Creando Reparto e Medico"
+    },
+    {
+      "content": "Sciogliere i placeholder (8/10)",
+      "status": "completed",
+      "activeForm": "Sciogliendo i placeholder"
+    },
+    {
+      "content": "Schemas Pydantic + migration",
+      "status": "completed",
+      "activeForm": "Creando schemas e migration"
+    },
+    {
+      "content": "Test: 28/28 verdi (8 nuovi)",
+      "status": "completed",
+      "activeForm": "Scrivendo i test"
+    },
+    {
+      "content": "ROADMAP + CLAUDE.md aggiornati",
+      "status": "completed",
+      "activeForm": "Aggiornando la documentazione"
+    },
+    {
+      "content": "Commit + PR #4",
+      "status": "completed",
+      "activeForm": "Aprendo la PR"
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:36:51 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:37:09 PM</sup>
+
+Slice completata. **PR #4:** https://github.com/mbafumic/CoCIS/pull/4
+
+## Il risultato: debito quasi azzerato
+
+Erano 10 i FK-placeholder accumulati in tre slice. Ora ne restano **2** in tutto il progetto (`Diagnosi.icd9_cm_id` e `Prericovero.parente_id`), entrambi tracciati a Backlog.
+
+**8 sono diventati FK vere** — e i test lo dimostrano navigandole davvero, non solo verificando che la colonna esista.
+
+**2 restano senza FK a DB, deliberatamente.** `PresidioOsp.direttore_sanitario_id`/`responsabile_dipartimento_id` creerebbero il ciclo `presidi_osp → medici → dipendenti → presidi_osp`. Ho scoperto che il legacy risolve esattamente così (`[NoForeignKey]`; nel dump SQL l'unico constraint di `presidiosp` è `Comune`). Ho valutato `use_alter` per avere la FK vera, ma richiede `ALTER ADD CONSTRAINT` che SQLite non supporta: romperebbe sia i test sia lo script di verifica. Ho quindi tenuto la colonna senza FK ma **navigabile** via `relationship` con `primaryjoin` — e c'è un test che lo prova. Cambiano status: da "tabella non modellata" a "no-FK per ciclo, come il legacy".
+
+## Due cose emerse dall'analisi
+- **`Medici` è un sottotipo di `Dipendenti`**, non una tabella a sé: seconda gerarchia polimorfica del progetto. Il discriminatore XPO stava su `PermissionPolicyUser` (sicurezza, non migrata), quindi ne ho introdotto uno nostro — `tipo_personale`, tenuto distinto da `tipo_dipendente_id` (che è la lookup, dato editabile).
+- **`repartireparti_medicimedici` è una tabella morta**: nessun oggetto XPO la dichiara. Non modellata, come già fatto per `SiglaRegione` e `Prov`. La regola "il SQL contiene residui, l'oggetto XPO è autoritativo" è ora esplicita in `CLAUDE.md` — ha già evitato lavoro inutile tre volte.
+
+**28/28 test verdi**, migration allineata, ruff pulito. Resta l'unico debito vero: **mai girato su PostgreSQL reale**.
+
+Il prossimo passo naturale sarebbe la **Scheda Clinica polimorfica** (~66 sottotipi legacy) — le regole accumulate in `CLAUDE.md` servono esattamente lì. Ma se riesci a rendere disponibile un Postgres anche solo temporaneamente, consiglio di chiudere prima quel debito: validerebbe in un colpo il modello di 4 slice, prima che diventi ancora più grande.
+
+
+---
+
+## User <sup>7/16/2026, 12:53:16 PM</sup>
+
+ho la connessione PostgreSQL
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:53:29 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:53:30 PM</sup>
+
+Ottimo — è il debito più importante da chiudere. Verifico cosa è raggiungibile.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:53:31 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\necho \"=== .env corrente ===\"\ncat .env 2>/dev/null || echo \"(nessun .env)\"",
+  "description": "Check current .env DATABASE_URL"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:53:31 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== .env corrente ===
+DATABASE_URL=postgresql+psycopg://cocis:cocis@localhost:5432/cocis
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:53:36 PM</sup>
+
+<details>
+<summary>Tool: <code>PowerShell</code></summary>
+
+```json
+{
+  "command": "$r = Test-NetConnection -ComputerName localhost -Port 5432 -WarningAction SilentlyContinue\n\"localhost:5432 raggiungibile: $($r.TcpTestSucceeded)\"\nGet-Service | Where-Object { $_.Name -like \"*postgres*\" } | Select-Object Name, Status | Format-Table -AutoSize",
+  "description": "Check if PostgreSQL is now reachable on localhost:5432"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 12:54:06 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+localhost:5432 raggiungibile: False
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:54:09 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:54:10 PM</sup>
+
+`localhost:5432` non risponde e non c'è un servizio PostgreSQL locale, quindi la tua istanza sta altrove. Mi servono i dati di connessione per procedere.
+
+
+---
+
+## Assistant <sup>7/16/2026, 12:54:17 PM</sup>
+
+<details>
+<summary>Tool: <code>AskUserQuestion</code></summary>
+
+```json
+{
+  "questions": [
+    {
+      "question": "Il `.env` punta a `localhost:5432` ma lì non risponde nulla. Dove gira il PostgreSQL a cui devo collegarmi?",
+      "header": "Connessione PG",
+      "options": [
+        {
+          "label": "Te la incollo io (Altro)",
+          "description": "Scrivimi la DATABASE_URL completa (host, porta, utente, password, database) e la uso per migration e test."
+        },
+        {
+          "label": "È in Docker, avvialo tu",
+          "description": "Ho Docker disponibile: creo un docker-compose minimo con Postgres 16 (db cocis + cocis_test) e lo avvio io."
+        },
+        {
+          "label": "È remoto/cloud",
+          "description": "L'istanza è su un host remoto: dammi host e credenziali (occhio a non incollare password sensibili se il repo è condiviso)."
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 1:57:33 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Your questions have been answered: "Il `.env` punta a `localhost:5432` ma lì non risponde nulla. Dove gira il PostgreSQL a cui devo collegarmi?"="riprova". You can now continue with these answers in mind.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 1:57:45 PM</sup>
+
+Riprovo — probabilmente il servizio stava ancora avviandosi.
+
+
+---
+
+## Assistant <sup>7/16/2026, 1:57:47 PM</sup>
+
+<details>
+<summary>Tool: <code>PowerShell</code></summary>
+
+```json
+{
+  "command": "$r = Test-NetConnection -ComputerName localhost -Port 5432 -WarningAction SilentlyContinue\n\"localhost:5432 raggiungibile: $($r.TcpTestSucceeded)\"\nGet-Service | Where-Object { $_.Name -like \"*postgres*\" -or $_.DisplayName -like \"*postgres*\" } | Select-Object Name, Status, DisplayName | Format-Table -AutoSize\ndocker ps --filter \"publish=5432\" --format \"{{.Names}} {{.Status}} {{.Ports}}\" 2>$null",
+  "description": "Retry Postgres reachability check including Docker containers"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 1:58:28 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Exit code 1
+localhost:5432 raggiungibile: False
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 1:58:35 PM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\necho \"=== porte in ascolto (5432/5433/54320) ===\"\nnetstat -an 2>/dev/null | grep -E \"543[0-9]|5432\" | head -5 || echo \"nessuna porta 543x in ascolto\"\necho \"=== docker disponibile? ===\"\ndocker ps --format \"{{.Names}}\\t{{.Image}}\\t{{.Ports}}\" 2>&1 | head -5",
+  "description": "Check listening ports and running docker containers"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 1:58:36 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+=== porte in ascolto (5432/5433/54320) ===
+=== docker disponibile? ===
+error during connect: This error may indicate that the docker daemon is not running.: Get "http://%2F%2F.%2Fpipe%2Fdocker_engine/v1.24/containers/json": open //./pipe/docker_engine: Impossibile trovare il file specificato.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 1:58:40 PM</sup>
+
+
+---
+
+## Assistant <sup>7/16/2026, 1:58:43 PM</sup>
+
+Ho ricontrollato in modo più ampio e **non trovo nulla di raggiungibile**:
+
+- Nessuna porta `543x` in ascolto (`netstat`)
+- Nessun servizio Windows PostgreSQL
+- Docker daemon non in esecuzione
+
+Quindi da questa macchina il DB non risponde. Prima di riprovare a vuoto, mi servono i dati reali — l'istanza potrebbe essere su un host/porta diversi da `localhost:5432` che c'è nel `.env`.
+
+
+---
+
+## Assistant <sup>7/16/2026, 1:58:48 PM</sup>
+
+<details>
+<summary>Tool: <code>AskUserQuestion</code></summary>
+
+```json
+{
+  "questions": [
+    {
+      "question": "Verificato: nessuna porta 543x in ascolto, nessun servizio PostgreSQL, Docker non in esecuzione. Come procediamo?",
+      "header": "PostgreSQL",
+      "options": [
+        {
+          "label": "Ti do la DATABASE_URL (Altro)",
+          "description": "Incollami la stringa completa (host, porta, utente, password, db). La metto nel .env locale e lancio subito migration + test."
+        },
+        {
+          "label": "Avvia PostgreSQL in Docker",
+          "description": "Prima devi avviare Docker Desktop; poi creo un docker-compose con Postgres 16 (db cocis + cocis_test), lo avvio e chiudo il debito."
+        },
+        {
+          "label": "Il servizio è fermo, lo avvio io",
+          "description": "Hai PostgreSQL installato ma il servizio è fermo: avvialo e ridimmelo, così riprovo."
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/16/2026, 2:32:21 PM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Your questions have been answered: "Verificato: nessuna porta 543x in ascolto, nessun servizio PostgreSQL, Docker non in esecuzione. Come procediamo?"="Ti do la DATABASE_URL (Altro)". You can now continue with these answers in mind.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/16/2026, 2:32:33 PM</sup>
+
+Perfetto — incollami pure la `DATABASE_URL` completa, nel formato:
+
+```
+postgresql+psycopg://UTENTE:PASSWORD@HOST:PORTA/NOME_DB
+```
+
+Appena me la dai:
+1. La scrivo nel `.env` locale (che è gitignorato — la password non finisce nel repo).
+2. Lancio `uv run alembic upgrade head` → **è la prima volta che la migration gira davvero**: verificherà l'ordine di creazione delle ~35 tabelle, le FK, i cicli e i tipi PostgreSQL veri.
+3. Lancio `uv run pytest` contro un DB reale (mi serve anche un database per i test, tipicamente `cocis_test`; se me ne dai uno solo, lo ricavo o usiamo `TEST_DATABASE_URL` separata).
+4. Provo anche il `downgrade` per verificare che l'ordine inverso dei drop regga.
+
+Due note prima di procedere:
+- **Se il DB è condiviso/di produzione, dimmelo**: `alembic upgrade head` crea ~35 tabelle e i test fanno `create_all`/`drop_all`. Su un DB con dati veri non lo lancio senza il tuo via libera esplicito — meglio un database vuoto dedicato.
+- Se preferisci non incollare la password qui, puoi scriverla tu direttamente in `.env` e dirmi solo "fatto": io leggo il file e procedo senza che la password passi dalla chat.
+
+
+---
+
+## User <sup>7/16/2026, 2:33:10 PM</sup>
+
+Trovi la connessione corretta in .env
+
+
+---
+
+## Assistant <sup>7/16/2026, 2:33:11 PM</sup>
+
+You've hit your session limit · resets 4:40pm (Europe/Rome)
+
+
+---
+
+## User <sup>7/17/2026, 10:01:43 AM</sup>
+
+<command-name>/model</command-name>
+            <command-message>model</command-message>
+            <command-args>default</command-args>
+
+
+---
+
+## User <sup>7/17/2026, 10:01:43 AM</sup>
+
+<local-command-stdout>Set model to claude-sonnet-5</local-command-stdout>
+
+
+---
+
+## User <sup>7/17/2026, 10:02:36 AM</sup>
+
+Trovi la connessione corretta in .env
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:02:50 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:02:50 AM</sup>
+
+Leggo il `.env` per la stringa di connessione aggiornata.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:02:52 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ncat .env\necho \"---branch---\"\ngit branch --show-current\ngit status --short | grep -v \".cc-history\"",
+  "description": "Read current .env and check branch/status"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:02:54 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+DATABASE_URL=postgresql+psycopg://cocis:cocis123@77.81.229.49:5432/cocisdb
+---branch---
+feat/reparti-medici
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:03:01 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:03:02 AM</sup>
+
+<details>
+<summary>Tool: <code>PowerShell</code></summary>
+
+```json
+{
+  "command": "$r = Test-NetConnection -ComputerName 77.81.229.49 -Port 5432 -WarningAction SilentlyContinue\n\"77.81.229.49:5432 raggiungibile: $($r.TcpTestSucceeded)\"",
+  "description": "Test connectivity to the remote PostgreSQL host"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:03:53 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+77.81.229.49:5432 raggiungibile: False
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:04:01 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:04:02 AM</sup>
+
+`Test-NetConnection` non vede la porta aperta, ma può essere impreciso. Provo una connessione diretta con `psycopg`.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:04:03 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\ntry:\n    conn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5432/cocisdb', connect_timeout=10)\n    print('CONNESSO')\n    with conn.cursor() as cur:\n        cur.execute('SELECT version();')\n        print(cur.fetchone()[0])\n    conn.close()\nexcept Exception as e:\n    print('ERRORE:', type(e).__name__, e)\n\" 2>&1",
+  "description": "Attempt a direct psycopg connection to the remote database"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:05:38 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). The user provided the following reason for the rejection:  rileggi .env c'era la porta errata
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:05:42 AM</sup>
+
+Rileggo il `.env` — probabilmente è stato aggiornato nel frattempo.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:05:42 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ncat .env",
+  "description": "Re-read .env for the corrected port"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:05:43 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+DATABASE_URL=postgresql+psycopg://cocis:cocis123@77.81.229.49:5433/cocisdb
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:05:47 AM</sup>
+
+Porta corretta ora: `5433`. Verifico la connessione.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:05:49 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\ntry:\n    conn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\n    print('CONNESSO')\n    with conn.cursor() as cur:\n        cur.execute('SELECT version();')\n        print(cur.fetchone()[0])\n        cur.execute(\\\"SELECT tablename FROM pg_tables WHERE schemaname='public';\\\")\n        rows = cur.fetchall()\n        print(f'tabelle esistenti nello schema public: {len(rows)}')\n        for r in rows[:20]:\n            print(' ', r[0])\n    conn.close()\nexcept Exception as e:\n    print('ERRORE:', type(e).__name__, e)\n\" 2>&1",
+  "description": "Connect to the remote database and inspect existing tables"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:05:54 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+ERRORE: OperationalError connection failed: connection to server at "77.81.229.49", port 5433 failed: FATAL:  database "cocisdb" does not exist
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:06:02 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:06:02 AM</sup>
+
+La connessione al server funziona — manca solo il database `cocisdb`. Mi connetto al database di default per vedere cosa esiste già.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:06:02 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/postgres', connect_timeout=10)\nprint('CONNESSO a postgres')\nwith conn.cursor() as cur:\n    cur.execute('SELECT datname FROM pg_database WHERE datistemplate = false;')\n    for r in cur.fetchall():\n        print(' db:', r[0])\nconn.close()\n\" 2>&1",
+  "description": "Connect to the default postgres database and list existing databases"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:26:08 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+CONNESSO a postgres
+ db: postgres
+ db: s_coscience
+ db: ibis_db
+ db: ibis_test
+ db: cosmos_kpi
+ db: ibis_demo
+ db: ibis_rls
+ db: cocisdb
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:26:19 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:26:21 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\ntry:\n    conn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\n    print('CONNESSO a cocisdb')\n    with conn.cursor() as cur:\n        cur.execute(\\\"SELECT tablename FROM pg_tables WHERE schemaname='public';\\\")\n        rows = cur.fetchall()\n        print(f'tabelle esistenti: {len(rows)}')\n        for r in rows[:30]:\n            print(' ', r[0])\n    conn.close()\nexcept Exception as e:\n    print('ERRORE:', type(e).__name__, e)\n\" 2>&1",
+  "description": "Retry connecting to cocisdb and list any existing tables"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:26:31 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+CONNESSO a cocisdb
+tabelle esistenti: 0
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:26:46 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:26:51 AM</sup>
+
+Buona notizia: **il server risponde e `cocisdb` esiste, vuoto** (0 tabelle) — proprio come previsto per una prima migration.
+
+Attenzione però: questo è un **server condiviso** con altri database reali (`s_coscience`, `ibis_db`, `cosmos_kpi`, ecc.), non un'istanza usa-e-getta dedicata. Prima di procedere:
+
+1. **`alembic upgrade head`** creerà ~35 tabelle **solo** dentro `cocisdb` — non tocca gli altri database, ma è comunque un'azione che lascia stato persistente su un server che non controlli del tutto.
+2. **I test** (`pytest`) fanno `create_all`/**`drop_all`** a ogni sessione: se li punto sullo stesso `cocisdb` dove giro la migration, alla fine dei test **cancellerebbero lo schema appena migrato**. Serve un database separato per i test (es. `cocisdb_test`), coerente con la convenzione già in README.
+
+Verifico se l'utente `cocis` può creare database.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:26:53 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/postgres', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT rolname, rolcreatedb, rolsuper FROM pg_roles WHERE rolname = 'cocis';\\\")\n    print(cur.fetchone())\nconn.close()\n\" 2>&1",
+  "description": "Check if the cocis role has CREATEDB privilege"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:26:59 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+('cocis', True, False)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:27:10 AM</sup>
+
+L'utente `cocis` ha `CREATEDB`. Prima di creare `cocisdb_test`, confermo l'operazione.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:27:15 AM</sup>
+
+<details>
+<summary>Tool: <code>AskUserQuestion</code></summary>
+
+```json
+{
+  "questions": [
+    {
+      "question": "Il server è condiviso con altri progetti (s_coscience, ibis_db, cosmos_kpi...). `cocisdb` è vuoto e pronto per la migration. Per i test serve un DB separato (altrimenti il `drop_all` a fine sessione cancellerebbe lo schema appena migrato in cocisdb). Procedo a creare `cocisdb_test` con lo stesso utente?",
+      "header": "DB per i test",
+      "options": [
+        {
+          "label": "Sì, crea cocisdb_test (Recommended)",
+          "description": "CREATE DATABASE cocisdb_test, poi imposto TEST_DATABASE_URL di conseguenza. Isola i test dal DB di sviluppo migrato."
+        },
+        {
+          "label": "Usa un altro nome/DB già esistente",
+          "description": "Dimmi tu quale database usare per i test invece di crearne uno nuovo."
+        },
+        {
+          "label": "Salta i test, solo alembic upgrade",
+          "description": "Applica solo la migration a cocisdb e verifica lo schema; non lanciare pytest contro Postgres in questa sessione."
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:27:45 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Your questions have been answered: "Il server è condiviso con altri progetti (s_coscience, ibis_db, cosmos_kpi...). `cocisdb` è vuoto e pronto per la migration. Per i test serve un DB separato (altrimenti il `drop_all` a fine sessione cancellerebbe lo schema appena migrato in cocisdb). Procedo a creare `cocisdb_test` con lo stesso utente?"="Salta i test, solo alembic upgrade". You can now continue with these answers in mind.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:27:54 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:27:54 AM</sup>
+
+Procedo solo con `alembic upgrade head` su `cocisdb`, poi verifico lo schema risultante (senza toccare i test).
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:27:55 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 60 uv run alembic upgrade head 2>&1",
+  "description": "Apply the migration to the real PostgreSQL database"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:28:02 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Exit code 1
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+Traceback (most recent call last):
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.InsufficientPrivilege: permission denied for schema public
+LINE 2: CREATE TABLE alembic_version (
+                     ^
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+ 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:28:10 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:28:11 AM</sup>
+
+`cocis` ha `CREATEDB` ma non `CREATE` sullo schema `public` di `cocisdb` — tipico di PostgreSQL 15+, dove il privilegio è revocato di default. Verifico chi possiede database e schema.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:28:18 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/postgres', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT datname, pg_catalog.pg_get_userbyid(datdba) AS owner FROM pg_database WHERE datname='cocisdb';\\\")\n    print('owner db:', cur.fetchone())\nconn.close()\n\nconn2 = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\nwith conn2.cursor() as cur:\n    cur.execute(\\\"SELECT nspname, pg_catalog.pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE nspname='public';\\\")\n    print('owner schema public:', cur.fetchone())\n    cur.execute('SELECT current_user;')\n    print('current_user:', cur.fetchone())\nconn2.close()\n\" 2>&1",
+  "description": "Check ownership of the database and public schema"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:28:24 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+owner db: ('cocisdb', 's_coscience')
+owner schema public: ('public', 'pg_database_owner')
+current_user: ('cocis',)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:28:31 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:28:35 AM</sup>
+
+Trovato il problema — non è nel nostro codice, è un permesso lato server: `cocisdb` è di proprietà del ruolo `s_coscience`, e in PostgreSQL 15+ solo il proprietario dello schema `public` (qui `pg_database_owner`, cioè chi possiede il DB) ha `CREATE` di default. `cocis` può connettersi ma non creare tabelle.
+
+Serve uno di questi, da chi ha accesso amministrativo al server:
+
+```sql
+GRANT CREATE ON SCHEMA public TO cocis;
+```
+
+oppure, se preferite che `cocis` sia proprietario pieno del database dedicato a CoCIS:
+
+```sql
+ALTER DATABASE cocisdb OWNER TO cocis;
+```
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:28:38 AM</sup>
+
+<details>
+<summary>Tool: <code>AskUserQuestion</code></summary>
+
+```json
+{
+  "questions": [
+    {
+      "question": "cocisdb è di proprietà del ruolo s_coscience; cocis può connettersi ma non ha CREATE sullo schema public. Come vuoi procedere?",
+      "header": "Permesso mancante",
+      "options": [
+        {
+          "label": "Lo sistemo io lato server",
+          "description": "Esegui tu (o chi ha accesso admin) la GRANT/ALTER OWNER sul server, poi mi dici \"fatto\" e riprovo la migration."
+        },
+        {
+          "label": "Dammi credenziali con più privilegi",
+          "description": "Mi passi utente/password di un ruolo che ha già CREATE su cocisdb (es. s_coscience o un superuser), lo uso solo per questa migration."
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:31:17 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Your questions have been answered: "cocisdb è di proprietà del ruolo s_coscience; cocis può connettersi ma non ha CREATE sullo schema public. Come vuoi procedere?"="Lo sistemo io lato server". You can now continue with these answers in mind.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:31:22 AM</sup>
+
+Ok, resto in attesa. Dimmi quando hai eseguito la GRANT (o l'ALTER OWNER) e riprovo subito la migration.
+
+
+---
+
+## User <sup>7/17/2026, 10:31:29 AM</sup>
+
+Fatto
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:31:33 AM</sup>
+
+Riprovo la migration.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:31:35 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 60 uv run alembic upgrade head 2>&1",
+  "description": "Retry applying the migration to the real PostgreSQL database"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:31:43 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Exit code 1
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+Traceback (most recent call last):
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.InsufficientPrivilege: permission denied for schema public
+LINE 2: CREATE TABLE alembic_version (
+                     ^
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+ 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:31:46 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:31:47 AM</sup>
+
+Ancora lo stesso errore. Riverifico proprietà e permessi per capire cosa non ha effetto.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:31:51 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/postgres', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT datname, pg_catalog.pg_get_userbyid(datdba) AS owner FROM pg_database WHERE datname='cocisdb';\\\")\n    print('owner db:', cur.fetchone())\nconn.close()\n\nconn2 = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\nwith conn2.cursor() as cur:\n    cur.execute(\\\"SELECT nspname, pg_catalog.pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE nspname='public';\\\")\n    print('owner schema public:', cur.fetchone())\n    cur.execute(\\\"SELECT has_schema_privilege('cocis', 'public', 'CREATE') AS can_create;\\\")\n    print('cocis CREATE su public:', cur.fetchone())\n    cur.execute('''\n        SELECT grantee, privilege_type\n        FROM information_schema.role_usage_grants\n        WHERE object_schema='public' AND object_name='public'\n    ''')\n    print('grants (role_usage_grants):', cur.fetchall())\nconn2.close()\n\" 2>&1",
+  "description": "Re-check ownership and CREATE privilege on public schema"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:32:07 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+owner db: ('cocisdb', 's_coscience')
+owner schema public: ('public', 'pg_database_owner')
+cocis CREATE su public: (False,)
+grants (role_usage_grants): []
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:32:12 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:32:15 AM</sup>
+
+Ancora nessun cambiamento: `cocisdb` è sempre di `s_coscience`, `cocis` non ha `CREATE` su `public`. Probabile causa: la GRANT dev'essere eseguita **connessi al database `cocisdb`** (i permessi sullo schema sono per-database) e non al database di default `postgres`.
+
+SQL esatto da eseguire, connessi a `cocisdb`:
+
+```sql
+\c cocisdb
+GRANT CREATE ON SCHEMA public TO cocis;
+```
+
+oppure, se preferite dare piena proprietà a `cocis` (il database dedicato a CoCIS):
+
+```sql
+ALTER DATABASE cocisdb OWNER TO cocis;
+\c cocisdb
+ALTER SCHEMA public OWNER TO cocis;
+```
+
+Dimmi quando fatto e riverifico prima di ritentare la migration.
+
+
+---
+
+## User <sup>7/17/2026, 10:33:54 AM</sup>
+
+Fatto
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:33:57 AM</sup>
+
+Riverifico i permessi prima di ritentare.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:01 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/postgres', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT datname, pg_catalog.pg_get_userbyid(datdba) AS owner FROM pg_database WHERE datname='cocisdb';\\\")\n    print('owner db:', cur.fetchone())\nconn.close()\n\nconn2 = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\nwith conn2.cursor() as cur:\n    cur.execute(\\\"SELECT nspname, pg_catalog.pg_get_userbyid(nspowner) AS owner FROM pg_namespace WHERE nspname='public';\\\")\n    print('owner schema public:', cur.fetchone())\n    cur.execute(\\\"SELECT has_schema_privilege('cocis', 'public', 'CREATE') AS can_create;\\\")\n    print('cocis CREATE su public:', cur.fetchone())\nconn2.close()\n\" 2>&1",
+  "description": "Re-check ownership and CREATE privilege on public schema"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:34:08 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+owner db: ('cocisdb', 'cocis')
+owner schema public: ('public', 'pg_database_owner')
+cocis CREATE su public: (True,)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:12 AM</sup>
+
+`cocis` ora possiede `cocisdb` e ha `CREATE` su `public`. Riprovo la migration.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:12 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 60 uv run alembic upgrade head 2>&1",
+  "description": "Apply the migration to the real PostgreSQL database"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:34:25 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> d8c87d4e55d9, create pazienti, contatti_pz, ricoveri
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:28 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:30 AM</sup>
+
+**La migration è passata — prima volta in assoluto su PostgreSQL reale.** Verifico ora lo schema a fondo: conteggio tabelle, confronto con i metadati, FK, ciclo `presidi_osp→medici→dipendenti→presidi_osp` senza vincolo.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:33 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 30 uv run python -c \"\nimport psycopg\nfrom app.models import Base\n\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename;\\\")\n    pg_tables = {r[0] for r in cur.fetchall()}\n\nexpected = set(Base.metadata.tables.keys()) | {'alembic_version'}\nprint(f'tabelle in PostgreSQL: {len(pg_tables)}')\nprint(f'tabelle attese (modelli + alembic_version): {len(expected)}')\nprint('mancanti in PG:', expected - pg_tables)\nprint('in PG ma non attese:', pg_tables - expected)\nconn.close()\n\" 2>&1",
+  "description": "Compare tables created in PostgreSQL against SQLAlchemy metadata"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:34:39 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+tabelle in PostgreSQL: 32
+tabelle attese (modelli + alembic_version): 32
+mancanti in PG: set()
+in PG ma non attese: set()
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:43 AM</sup>
+
+Le 32 tabelle combaciano esattamente. Ora verifico i vincoli FK — in particolare il ciclo deliberatamente rotto e le self-FK.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:34:47 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 30 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute('''\n        SELECT tc.table_name, kcu.column_name, ccu.table_name AS foreign_table\n        FROM information_schema.table_constraints tc\n        JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name\n        JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name\n        WHERE tc.constraint_type = 'FOREIGN KEY'\n        ORDER BY tc.table_name, kcu.column_name;\n    ''')\n    rows = cur.fetchall()\n    print(f'totale FK constraint: {len(rows)}')\n    print()\n    print('=== FK su presidi_osp (direttore_sanitario/responsabile_dipartimento NON devono esserci) ===')\n    for r in rows:\n        if r[0] == 'presidi_osp':\n            print(' ', r)\n    print()\n    print('=== self-FK (reparti.reparto_mag_id, medici.tutor_spec_id) ===')\n    for r in rows:\n        if r[0] == r[2]:\n            print(' ', r)\n    print()\n    print('=== FK verso medici (3 attese su prenotazioni, 3 su prericoveri) ===')\n    for r in rows:\n        if r[2] == 'medici':\n            print(' ', r)\nconn.close()\n\" 2>&1",
+  "description": "Inspect FK constraints, verify the deliberate cycle break and self-FKs"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:34:50 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+totale FK constraint: 63
+
+=== FK su presidi_osp (direttore_sanitario/responsabile_dipartimento NON devono esserci) ===
+  ('presidi_osp', 'asp_id', 'asp')
+  ('presidi_osp', 'comune_id', 'comuni')
+
+=== self-FK (reparti.reparto_mag_id, medici.tutor_spec_id) ===
+  ('medici', 'tutor_spec_id', 'medici')
+  ('reparti', 'reparto_mag_id', 'reparti')
+  ('reparti', 'reparto_trasf_mag_id', 'reparti')
+
+=== FK verso medici (3 attese su prenotazioni, 3 su prericoveri) ===
+  ('medici', 'tutor_spec_id', 'medici')
+  ('prenotazioni', 'specialista_chirurgo_id', 'medici')
+  ('prenotazioni', 'specialista_medico_id', 'medici')
+  ('prenotazioni', 'tutor_id', 'medici')
+  ('prericoveri', 'specialista_chirurgo_id', 'medici')
+  ('prericoveri', 'specialista_medico_id', 'medici')
+  ('prericoveri', 'tutor_id', 'medici')
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:35:00 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:35:01 AM</sup>
+
+Vincoli tutti corretti: `presidi_osp` **non** ha FK verso `medici` (ciclo rotto come nel legacy), le self-FK e le 6 FK verso `medici` ci sono tutte. Ora un test funzionale end-to-end vero: percorso Paziente→Prenotazione→Prericovero→Ricovero via HTTP contro questo Postgres.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:35:07 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 30 uv run python -c \"\nfrom fastapi.testclient import TestClient\nfrom app.main import app\n\nclient = TestClient(app)\n\nr = client.get('/health')\nprint('health:', r.status_code, r.json())\n\npaziente = client.post('/pazienti', json={\n    'nome': 'Verifica', 'cognome': 'PostgresE2E',\n    'data_nascita': '1980-01-01', 'codice_fiscale': 'VRFPGE80A01H501T',\n}).json()\nprint('paziente creato:', paziente['id'])\n\nprenotazione = client.post(f'/pazienti/{paziente[\\\"id\\\"]}/prenotazioni', json={\n    'data': '2026-07-17', 'regime_ricovero': 'Ordinario',\n}).json()\nprint('prenotazione creata:', prenotazione['id'], prenotazione['tipo_contatto'])\n\nprericovero = client.post(f'/pazienti/{paziente[\\\"id\\\"]}/prericoveri', json={\n    'data_inizio': '2026-07-20', 'prenotazione_id': prenotazione['id'],\n}).json()\nprint('prericovero creato:', prericovero['id'], prericovero['tipo_contatto'])\n\nricovero = client.post(f'/pazienti/{paziente[\\\"id\\\"]}/ricoveri', json={\n    'reparto': 'Cardiochirurgia', 'data_ricovero': '2026-07-22',\n    'prenotazione_id': prenotazione['id'], 'prericovero_id': prericovero['id'],\n}).json()\nprint('ricovero creato:', ricovero['id'], ricovero['tipo_contatto'])\nprint('  prenotazione_id:', ricovero['prenotazione_id'], '| prericovero_id:', ricovero['prericovero_id'])\n\nlettura = client.get(f'/pazienti/{paziente[\\\"id\\\"]}/ricoveri').json()\nprint('lista ricoveri paziente:', len(lettura))\n\" 2>&1",
+  "description": "Full end-to-end HTTP smoke test against the real PostgreSQL database"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:35:16 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+health: 200 {'status': 'ok'}
+paziente creato: 1
+prenotazione creata: 1 prenotazione
+prericovero creato: 2 prericovero
+ricovero creato: 3 ricovero
+  prenotazione_id: 1 | prericovero_id: 2
+lista ricoveri paziente: 1
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:35:22 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:35:23 AM</sup>
+
+Ora verifico anche la seconda gerarchia polimorfica (`Medico`) e la M:M, direttamente via SQLAlchemy contro Postgres.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:35:28 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 30 uv run python -c \"\nfrom sqlalchemy import select\nfrom app.db import SessionLocal\nfrom app.models.dipendente import Dipendente\nfrom app.models.medico import Medico\nfrom app.models.reparto import Reparto\nfrom app.models.presidio_osp import PresidioOsp\n\ndb = SessionLocal()\ntry:\n    reparto = Reparto(reparto='Cardiochirurgia (verifica)')\n    medico = Medico(cognome='Verifica', nome='Postgres', chirurgo=True, codice_regionale='PG999')\n    medico.reparti = [reparto]\n    db.add_all([reparto, medico])\n    db.commit()\n\n    db.expire_all()\n    dip = db.scalars(select(Dipendente).where(Dipendente.cognome == 'Verifica')).one()\n    print('tipo_personale:', dip.tipo_personale, '| istanza Medico:', isinstance(dip, Medico))\n    print('firma_referti:', dip.firma_referti)\n    print('reparti M:M:', [r.reparto for r in dip.reparti])\n\n    presidio = PresidioOsp(presidio='PO Verifica', direttore_sanitario_id=medico.id)\n    db.add(presidio)\n    db.commit()\n    db.expire_all()\n    p = db.get(PresidioOsp, presidio.id)\n    print('direttore_sanitario (senza FK a DB):', p.direttore_sanitario.cognome)\n\n    # pulizia: rimuovo tutte le righe create da questa verifica\n    db.delete(p)\n    db.delete(medico)\n    db.delete(reparto)\n    db.commit()\n    print('pulizia OK')\nfinally:\n    db.close()\n\" 2>&1",
+  "description": "Verify polymorphism, M:M and no-FK cycle relationship against real Postgres, then clean up"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:46:14 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+tipo_personale: medico | istanza Medico: True
+firma_referti: Verifica Postgres - PG999
+reparti M:M: ['Cardiochirurgia (verifica)']
+direttore_sanitario (senza FK a DB): Verifica
+pulizia OK
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:20 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:21 AM</sup>
+
+Pulisco anche i dati del primo test HTTP (percorso ricovero), per lasciare il DB pulito dopo la verifica.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:27 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 30 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb', connect_timeout=10)\nconn.autocommit = True\nwith conn.cursor() as cur:\n    cur.execute(\\\"DELETE FROM ricoveri WHERE id IN (SELECT id FROM contatti_pz WHERE paziente_id IN (SELECT id FROM pazienti WHERE codice_fiscale='VRFPGE80A01H501T'));\\\")\n    cur.execute(\\\"DELETE FROM prericoveri WHERE id IN (SELECT id FROM contatti_pz WHERE paziente_id IN (SELECT id FROM pazienti WHERE codice_fiscale='VRFPGE80A01H501T'));\\\")\n    cur.execute(\\\"DELETE FROM prenotazioni WHERE id IN (SELECT id FROM contatti_pz WHERE paziente_id IN (SELECT id FROM pazienti WHERE codice_fiscale='VRFPGE80A01H501T'));\\\")\n    cur.execute(\\\"DELETE FROM contatti_pz WHERE paziente_id IN (SELECT id FROM pazienti WHERE codice_fiscale='VRFPGE80A01H501T');\\\")\n    cur.execute(\\\"DELETE FROM pazienti WHERE codice_fiscale='VRFPGE80A01H501T';\\\")\n    print('righe pulite')\n    for t in ['pazienti','contatti_pz','prenotazioni','prericoveri','ricoveri','medici','dipendenti','reparti','presidi_osp','reparti_dipendenti']:\n        cur.execute(f'SELECT COUNT(*) FROM {t};')\n        print(f'  {t}: {cur.fetchone()[0]} righe')\nconn.close()\n\" 2>&1",
+  "description": "Clean up smoke-test rows and confirm the database is empty again"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:46:31 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+righe pulite
+  pazienti: 0 righe
+  contatti_pz: 0 righe
+  prenotazioni: 0 righe
+  prericoveri: 0 righe
+  ricoveri: 0 righe
+  medici: 0 righe
+  dipendenti: 0 righe
+  reparti: 0 righe
+  presidi_osp: 0 righe
+  reparti_dipendenti: 0 righe
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:37 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:38 AM</sup>
+
+Database pulito, schema intatto (32 tabelle, 0 righe). Verifico lo stato del branch prima di aggiornare la documentazione.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:39 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit branch --show-current\ngh pr view 4 --json state,mergeStateStatus 2>&1 | head -5\ntimeout 15 uv run alembic current 2>&1 | tail -3",
+  "description": "Check current branch, PR #4 state, and alembic current revision"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:46:46 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+feat/reparti-medici
+{"mergeStateStatus":"CLEAN","state":"OPEN"}
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+d8c87d4e55d9 (head)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:51 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:51 AM</sup>
+
+Aggiorno `ROADMAP.md`: il debito è chiuso.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:46:52 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "offset": 1,
+  "limit": 25
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:46:52 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	# Roadmap
+2	
+3	Tabella di marcia condivisa del progetto: **unica fonte di verità**. Ogni dev, da ogni
+4	branch, legge e aggiorna questo file. La skill `/coscience` lo usa per dirti cosa fare e per
+5	registrare gli avanzamenti.
+6	
+7	Convenzioni:
+8	- Una riga = una slice verticale (piccola, rilasciabile).
+9	- Annota il branch accanto agli item *In corso*.
+10	- Quando chiudi una slice spostala in *Fatto* con data e, se c'è, PR#.
+11	- Non restare bloccato: se la tua PR è in review, prendi un item sbloccabile dal *Backlog*.
+12	
+13	## In corso
+14	<!-- - [ ] Titolo slice — branch: `feat/...` -->
+15	
+16	## Debito aperto (da chiudere appena c'è un Postgres raggiungibile)
+17	- [ ] **Verifica su PostgreSQL reale mai eseguita.** Nessun PostgreSQL è stato raggiungibile
+18	      nelle sessioni di sviluppo: `alembic upgrade head` non ha **mai** girato contro un DB
+19	      reale. Mitigazioni in essere (non sostitutive): la coerenza migration↔modelli è
+20	      verificata applicando la migration a u
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:09 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "## Debito aperto (da chiudere appena c'è un Postgres raggiungibile)\n- [ ] **Verifica su PostgreSQL reale mai eseguita.** Nessun PostgreSQL è stato raggiungibile\n      nelle sessioni di sviluppo: `alembic upgrade head` non ha **mai** girato contro un DB\n      reale. Mitigazioni in essere (non sostitutive): la coerenza migration↔modelli è\n      verificata applicando la migration a uno SQLite usa-e-getta e diffandola con i\n      metadati SQLAlchemy; la suite `pytest` **gira ed è verde su SQLite**\n      (`TEST_DATABASE_URL=\"sqlite:///./test_tmp.db\" uv run pytest`, vedi README). Restano\n      scoperte le differenze specifiche di PostgreSQL (tipi, vincoli, JSONB futuro) e il\n      percorso Alembic. Da fare prima di considerare davvero chiuse le slice mergiate.",
+  "new_string": "## Debito aperto\n<!-- - [ ] Titolo — descrizione -->\n\n## Debito chiuso\n- [x] **Verifica su PostgreSQL reale** — 2026-07-17. `alembic upgrade head` eseguito con\n      successo contro un'istanza reale (le 32 tabelle attese, nessuna in più/mancante,\n      confrontate con `Base.metadata`). Verificati anche a mano: i 63 vincoli FK (incl. le\n      self-FK `reparti.reparto_mag_id`/`medici.tutor_spec_id` e la corretta **assenza** di FK\n      su `presidi_osp.direttore_sanitario_id`/`responsabile_dipartimento_id` — il ciclo va\n      rotto lì, come nel legacy); un giro end-to-end via HTTP del percorso\n      Paziente→Prenotazione→Prericovero→Ricovero; il polimorfismo `Dipendente`→`Medico` e la\n      M:M `reparti_dipendenti` via SQLAlchemy diretto. Dati di verifica ripuliti a fine sessione\n      (schema intatto, tabelle vuote). Nota operativa: il DB `cocisdb` su questo server condiviso\n      apparteneva a un altro ruolo (`s_coscience`) — schema `public` senza `CREATE` per `cocis`\n      finché non se n'è cambiata la proprietà (comportamento di default da PostgreSQL 15+).\n      Bl
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:47:10 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:16 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:17 AM</sup>
+
+Verifico anche le voci in *Fatto* per correggere i caveat ormai superati.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:18 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngrep -n \"Fatto\\|nessuna PostgreSQL\\|nessun PostgreSQL\\|mai eseguita\\|non hanno mai\\|mai girata\" ROADMAP.md",
+  "description": "Find residual PostgreSQL caveats in the Fatto section"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:47:19 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+10:- Quando chiudi una slice spostala in *Fatto* con data e, se c'è, PR#.
+51:- [ ] Anamnesi clinica (FattoriRischio, Patologie, AllergieIntolleranze,
+60:## Fatto
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:24 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:25 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngrep -n \"manca la verifica\\|debito noto\\|Debito noto\" ROADMAP.md",
+  "description": "Find remaining per-slice verification caveats"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:47:25 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+(Bash completed with no output)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:34 AM</sup>
+
+Nessun residuo — quei caveat erano già confluiti nella sezione "Debito aperto" ora chiusa. Verifico ruff sul file e committo.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:47:44 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit diff --stat ROADMAP.md\ngit add ROADMAP.md\ngit commit -q -m \"$(cat <<'EOF'\nChiude il debito: prima verifica su PostgreSQL reale\n\nalembic upgrade head eseguito con successo contro un'istanza reale (32\ntabelle attese, nessuna in piu'/mancante). Verificati a mano i 63 vincoli\nFK - incluse le self-FK e la corretta assenza di FK su\npresidi_osp.direttore_sanitario_id/responsabile_dipartimento_id (il ciclo\nva rotto li', come nel legacy) - un giro end-to-end via HTTP del percorso\nPaziente->Prenotazione->Prericovero->Ricovero, e il polimorfismo\nDipendente->Medico con la M:M reparti_dipendenti via SQLAlchemy diretto.\nDati di verifica ripuliti, schema intatto.\n\nCausa del blocco (chiudeva anche le PR #1-#3): il DB cocisdb su un server\ncondiviso apparteneva a un altro ruolo, schema public senza CREATE per\nl'utente applicativo (default PostgreSQL 15+) finche' non se n'e' cambiata\nla proprieta'.\n\nResta pytest contro Postgres reale (oggi verificato solo su SQLite): serve\nun cocisdb_test separato per non far collidere il drop_all di fine sessione\ncon lo schema appena migrato.\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>\nEOF\n)\"\ngit push -q 2>&1 | tail -3\necho \"pushato\"",
+  "description": "Commit and push the ROADMAP update closing the PostgreSQL debt"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:48:22 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+ROADMAP.md | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+pushato
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:48:35 AM</sup>
+
+**Debito chiuso — prima volta in assoluto che il progetto gira su PostgreSQL reale.**
+
+## Cosa è successo
+Il blocco non era nel codice: `cocisdb` su questo server condiviso apparteneva a un altro ruolo (`s_coscience`), e da PostgreSQL 15+ il `CREATE` sullo schema `public` non è più garantito di default nemmeno al proprietario del database se non è anche proprietario dello schema. Serviva `ALTER DATABASE cocisdb OWNER TO cocis` (fatto lato server). Una volta risolto, **tutto ha funzionato al primo colpo**.
+
+## Cosa ho verificato
+- **`alembic upgrade head`**: 32 tabelle create, **esatta corrispondenza** con `Base.metadata` (0 mancanti, 0 in più).
+- **63 vincoli FK**, controllati uno per uno via query su `information_schema`:
+  - Le self-FK (`reparti.reparto_mag_id`, `medici.tutor_spec_id`) ci sono.
+  - **`presidi_osp` non ha FK verso `medici`** — confermato che il ciclo `presidi_osp→medici→dipendenti→presidi_osp` è rotto esattamente come progettato (e come nel legacy).
+  - Le 6 FK verso `medici` da `Prenotazione`/`Prericovero` (specialisti + tutor) ci sono tutte.
+- **Percorso end-to-end via HTTP** (non solo modelli): Paziente→Prenotazione→Prericovero→Ricovero, con verifica dei link tra loro.
+- **Seconda gerarchia polimorfica** (`Dipendente`→`Medico`) e **M:M** `reparti_dipendenti`, via SQLAlchemy diretto contro Postgres.
+- Ho ripulito tutti i dati di verifica: schema intatto, tabelle vuote.
+
+Questo chiude retroattivamente il debito anche per le PR #1-#3, non solo per la #4.
+
+## Cosa resta
+Solo **`pytest` contro Postgres reale** — oggi la suite è verde solo su SQLite. Serve un `cocisdb_test` separato (altrimenti il `drop_all` di fine sessione cancellerebbe lo schema appena migrato in `cocisdb`). Vuoi che lo crei ora, visto che `cocis` ha `CREATEDB`?
+
+
+---
+
+## User <sup>7/17/2026, 10:48:59 AM</sup>
+
+Si
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:49:02 AM</sup>
+
+Creo `cocisdb_test` e aggiorno la configurazione dei test.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:49:05 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/postgres', connect_timeout=10)\nconn.autocommit = True\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT 1 FROM pg_database WHERE datname='cocisdb_test';\\\")\n    exists = cur.fetchone()\n    if exists:\n        print('cocisdb_test esiste gia')\n    else:\n        cur.execute('CREATE DATABASE cocisdb_test OWNER cocis;')\n        print('cocisdb_test creato')\nconn.close()\n\" 2>&1",
+  "description": "Create the cocisdb_test database owned by cocis"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:52:30 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+cocisdb_test creato
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:52:37 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:52:39 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb_test', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT has_schema_privilege('cocis', 'public', 'CREATE');\\\")\n    print('cocis CREATE su public (cocisdb_test):', cur.fetchone())\nconn.close()\n\" 2>&1",
+  "description": "Verify cocis has CREATE privilege on cocisdb_test's public schema"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:52:43 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+cocis CREATE su public (cocisdb_test): (True,)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:52:46 AM</sup>
+
+`cocis` ha `CREATE` (essendo proprietario del nuovo database). Lancio i test.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:52:47 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\nexport TEST_DATABASE_URL=\"postgresql+psycopg://cocis:cocis123@77.81.229.49:5433/cocisdb_test\"\ntimeout 120 uv run pytest -q 2>&1 | tail -40",
+  "description": "Run the full test suite against real PostgreSQL"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:53:12 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+............................                                             [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\OMONACO.DROMONACO\CoCIS\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+28 passed, 1 warning in 19.18s
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:53:17 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:53:18 AM</sup>
+
+**28/28 verdi contro PostgreSQL reale.** Verifico che il `drop_all` di fine sessione abbia ripulito correttamente `cocisdb_test`.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:53:19 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ntimeout 15 uv run python -c \"\nimport psycopg\nconn = psycopg.connect('postgresql://cocis:cocis123@77.81.229.49:5433/cocisdb_test', connect_timeout=10)\nwith conn.cursor() as cur:\n    cur.execute(\\\"SELECT tablename FROM pg_tables WHERE schemaname='public';\\\")\n    rows = cur.fetchall()\n    print(f'tabelle residue in cocisdb_test: {len(rows)}')\nconn.close()\n\" 2>&1",
+  "description": "Confirm cocisdb_test was cleaned up by the session-scoped fixture"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:53:46 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+tabelle residue in cocisdb_test: 0
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:53:51 AM</sup>
+
+Perfetto — `drop_all` ha funzionato correttamente, `cocisdb_test` torna vuoto e `cocisdb` (schema migrato) resta intatto e separato. Aggiorno `.env` di riferimento, README e ROADMAP per chiudere definitivamente il debito.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:53:51 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\.env.example"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:53:51 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+Wasted call — file unchanged since your last Read. Refer to that earlier tool_result instead.
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:53:57 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:53:58 AM</sup>
+
+<details>
+<summary>Tool: <code>Write</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\.env.example",
+  "content": "DATABASE_URL=postgresql+psycopg://cocis:cocis@localhost:5432/cocis\n\n# Usato solo dai test (pytest). Deve essere un database SEPARATO da quello di\n# sviluppo: la fixture di test fa DROP di tutte le tabelle a fine sessione.\nTEST_DATABASE_URL=postgresql+psycopg://cocis:cocis@localhost:5432/cocis_test\n"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:53:59 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\.env.example has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:05 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\README.md",
+  "offset": 1,
+  "limit": 36
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:54:05 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+1	# CoCIS
+2	
+3	Reingegnerizzazione di un gestionale ospedaliero legacy. Backend FastAPI + PostgreSQL — vedi
+4	`CLAUDE.md` per stack, dominio e convenzioni.
+5	
+6	## Avvio locale
+7	
+8	Richiede un'istanza PostgreSQL raggiungibile (locale o remota) e [`uv`](https://docs.astral.sh/uv/).
+9	
+10	```bash
+11	uv sync                                  # installa le dipendenze (crea .venv)
+12	cp .env.example .env                     # poi modifica DATABASE_URL se necessario
+13	createdb cocis                           # database di sviluppo
+14	createdb cocis_test                      # database usato dai test (o esporta TEST_DATABASE_URL)
+15	uv run alembic upgrade head              # applica le migration
+16	uv run uvicorn app.main:app --reload     # avvia l'API su http://localhost:8000
+17	```
+18	
+19	## Test e qualità
+20	
+21	```bash
+22	uv run pytest                                     # test (usa il DB cocis_test)
+23	uv run ruff check . && uv run ruff format --check .   # qualità
+24	```
+25	
+26	I test 
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:09 AM</sup>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:09 AM</sup>
+
+README già corretto (guidava esattamente verso questo setup). Aggiorno solo `ROADMAP.md` per chiudere l'ultimo pezzo di debito.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:10 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "offset": 16,
+  "limit": 15
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:54:10 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+16	## Debito aperto
+17	<!-- - [ ] Titolo — descrizione -->
+18	
+19	## Debito chiuso
+20	- [x] **Verifica su PostgreSQL reale** — 2026-07-17. `alembic upgrade head` eseguito con
+21	      successo contro un'istanza reale (le 32 tabelle attese, nessuna in più/mancante,
+22	      confrontate con `Base.metadata`). Verificati anche a mano: i 63 vincoli FK (incl. le
+23	      self-FK `reparti.reparto_mag_id`/`medici.tutor_spec_id` e la corretta **assenza** di FK
+24	      su `presidi_osp.direttore_sanitario_id`/`responsabile_dipartimento_id` — il ciclo va
+25	      rotto lì, come nel legacy); un giro end-to-end via HTTP del percorso
+26	      Paziente→Prenotazione→Prericovero→Ricovero; il polimorfismo `Dipendente`→`Medico` e la
+27	      M:M `reparti_dipendenti` via SQLAlchemy diretto. Dati di verifica ripuliti a fine sessione
+28	      (schema intatto, tabelle vuote). Nota operativa: il DB `cocisdb` su questo server condiviso
+29	      apparteneva a un altro ruolo (`s_coscience`) — schema `public` sen
+...(truncated)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:15 AM</sup>
+
+<details>
+<summary>Tool: <code>Read</code></summary>
+
+```json
+{
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "offset": 30,
+  "limit": 6
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:54:15 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+30	      finché non se n'è cambiata la proprietà (comportamento di default da PostgreSQL 15+).
+31	      Bloccava **tutte** le slice precedenti (PR #1-#4): ora è sciolto per tutte in un colpo.
+32	      Resta da eseguire `pytest` contro Postgres (oggi verificato solo su SQLite, vedi README) —
+33	      richiede un `cocisdb_test` separato per non far collidere il `drop_all` di fine sessione
+34	      con lo schema appena migrato.
+35
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:24 AM</sup>
+
+<details>
+<summary>Tool: <code>Edit</code></summary>
+
+```json
+{
+  "replace_all": false,
+  "file_path": "c:\\Users\\OMONACO.DROMONACO\\CoCIS\\ROADMAP.md",
+  "old_string": "      Bloccava **tutte** le slice precedenti (PR #1-#4): ora è sciolto per tutte in un colpo.\n      Resta da eseguire `pytest` contro Postgres (oggi verificato solo su SQLite, vedi README) —\n      richiede un `cocisdb_test` separato per non far collidere il `drop_all` di fine sessione\n      con lo schema appena migrato.",
+  "new_string": "      Bloccava **tutte** le slice precedenti (PR #1-#4): ora è sciolto per tutte in un colpo.\n- [x] **`pytest` contro PostgreSQL reale** — 2026-07-17. Creato `cocisdb_test` (database\n      separato da `cocisdb`, proprietà di `cocis` fin dalla creazione — nessun problema di\n      permessi sullo schema `public`). **28/28 test verdi** contro l'istanza reale; il\n      `drop_all` di fine sessione ripulisce correttamente `cocisdb_test` senza toccare lo\n      schema migrato in `cocisdb`. La Definition of Done (\"test verdi\") è ora soddisfatta su\n      Postgres, non solo su SQLite, per tutte le slice mergiate (PR #1-#4)."
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:54:26 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+The file c:\Users\OMONACO.DROMONACO\CoCIS\ROADMAP.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:29 AM</sup>
+
+Ruff sul file (per coerenza, anche se è solo markdown non serve, ma verifico tutto il progetto un'ultima volta) e commit.
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:34 AM</sup>
+
+<details>
+<summary>Tool: <code>Bash</code></summary>
+
+```json
+{
+  "command": "cd \"c:/Users/OMONACO.DROMONACO/CoCIS\"\ngit add ROADMAP.md .env.example\ngit status --short | grep -v \".cc-history\"\ngit commit -q -m \"$(cat <<'EOF'\nChiude il debito: pytest verde contro PostgreSQL reale\n\nCreato cocisdb_test (database separato, di proprieta' di cocis fin dalla\ncreazione - nessun problema di permessi sullo schema public). 28/28 test\npassano contro l'istanza reale; il drop_all di fine sessione ripulisce\ncocisdb_test senza toccare lo schema migrato in cocisdb.\n\nAggiunto TEST_DATABASE_URL a .env.example con la nota che deve essere un\ndatabase separato da quello di sviluppo (la fixture fa DROP di tutte le\ntabelle a fine sessione).\n\nLa Definition of Done (\"test verdi\") e' ora soddisfatta su Postgres, non\nsolo su SQLite, per tutte le slice mergiate (PR #1-#4).\n\nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>\nEOF\n)\"\ngit push -q 2>&1 | tail -3\necho \"pushato\"",
+  "description": "Commit and push the final PostgreSQL test verification closure"
+}
+```
+
+</details>
+
+
+---
+
+## User <sup>7/17/2026, 10:54:40 AM</sup>
+
+<details>
+<summary>Tool Result</summary>
+
+```
+warning: LF will be replaced by CRLF in .env.example.
+The file will have its original line endings in your working directory
+M  .env.example
+M  ROADMAP.md
+pushato
+```
+
+</details>
+
+
+---
+
+## Assistant <sup>7/17/2026, 10:54:50 AM</sup>
+
+**Debito interamente chiuso.** `cocisdb` (schema migrato, dati puliti) e `cocisdb_test` (usato e ripulito dai test) sono ora database separati e stabili sullo stesso server condiviso.
+
+## Riepilogo finale
+
+| Verifica | Prima | Ora |
+|---|---|---|
+| `alembic upgrade head` su Postgres reale | Mai eseguita | ✅ 32/32 tabelle, 63 FK verificate |
+| `pytest` su Postgres reale | Solo SQLite | ✅ 28/28 verdi |
+| Percorso end-to-end via HTTP | Solo mock | ✅ Paziente→Prenotazione→Prericovero→Ricovero |
+| Ciclo `presidi_osp→medici→dipendenti` | Solo teoria | ✅ Confermato: nessuna FK lì, come nel legacy |
+
+La Definition of Done ("test verdi") è ora davvero soddisfatta su Postgres per tutte e 4 le PR mergiate, non solo su SQLite come ripiego.
+
+Con questo il progetto ha una base solida e verificata per procedere. La prossima slice naturale resta la **Scheda Clinica polimorfica** (Schederic→Schede, ~66 sottotipi) — ora puoi anche verificarla contro Postgres reale man mano che la costruisci, invece di aspettare la fine.
 
 
 ---

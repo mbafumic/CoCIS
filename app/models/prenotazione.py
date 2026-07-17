@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import TYPE_CHECKING, Literal
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.contatto_pz import ContattoPz
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from app.models.disciplina import Disciplina
     from app.models.disdetta_prenotazione import DisdettaPrenotazione
     from app.models.grado_urgenza import GradoUrgenza
+    from app.models.medico import Medico
     from app.models.medico_esterno import MedicoEsterno
     from app.models.modalita_accesso import ModalitaAccesso
     from app.models.prericovero import Prericovero
@@ -28,9 +29,6 @@ class Prenotazione(ContattoPz):
     `ricovero` e `prericovero` sono relationship inverse: nel legacy erano
     proprietà `[NonPersistent]` calcolate con una query, non colonne. Le FK reali
     stanno sui figli (Ricovero.prenotazione_id, Prericovero.prenotazione_id).
-
-    `specialista_medico_id`/`specialista_chirurgo_id`/`tutor_id` referenziano
-    `Medici`, non ancora modellato: sono FK-placeholder Integer (vedi Backlog).
     """
 
     __tablename__ = "prenotazioni"
@@ -62,10 +60,11 @@ class Prenotazione(ContattoPz):
         ForeignKey("medici_esterni.id"), default=None
     )
 
-    # FK-placeholder verso Medici (non ancora modellato)
-    specialista_medico_id: Mapped[int | None] = mapped_column(Integer, default=None)
-    specialista_chirurgo_id: Mapped[int | None] = mapped_column(Integer, default=None)
-    tutor_id: Mapped[int | None] = mapped_column(Integer, default=None)
+    specialista_medico_id: Mapped[int | None] = mapped_column(ForeignKey("medici.id"), default=None)
+    specialista_chirurgo_id: Mapped[int | None] = mapped_column(
+        ForeignKey("medici.id"), default=None
+    )
+    tutor_id: Mapped[int | None] = mapped_column(ForeignKey("medici.id"), default=None)
 
     note_amministrative: Mapped[str | None] = mapped_column(String(250), default=None)
     note_cliniche: Mapped[str | None] = mapped_column(String(255), default=None)
@@ -93,6 +92,11 @@ class Prenotazione(ContattoPz):
     diagnosi_ingresso: Mapped["Diagnosi | None"] = relationship()
     modalita_accesso: Mapped["ModalitaAccesso | None"] = relationship()
     medico_inviante: Mapped["MedicoEsterno | None"] = relationship()
+    specialista_medico: Mapped["Medico | None"] = relationship(foreign_keys=[specialista_medico_id])
+    specialista_chirurgo: Mapped["Medico | None"] = relationship(
+        foreign_keys=[specialista_chirurgo_id]
+    )
+    tutor: Mapped["Medico | None"] = relationship(foreign_keys=[tutor_id])
     # foreign_keys esplicite: i sottotipi condividono la PK con contatti_pz, quindi
     # senza indicazione SQLAlchemy trova più percorsi FK possibili.
     disdetta: Mapped["DisdettaPrenotazione | None"] = relationship(
