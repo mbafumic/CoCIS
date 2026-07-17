@@ -29,9 +29,12 @@ Convenzioni:
       apparteneva a un altro ruolo (`s_coscience`) — schema `public` senza `CREATE` per `cocis`
       finché non se n'è cambiata la proprietà (comportamento di default da PostgreSQL 15+).
       Bloccava **tutte** le slice precedenti (PR #1-#4): ora è sciolto per tutte in un colpo.
-      Resta da eseguire `pytest` contro Postgres (oggi verificato solo su SQLite, vedi README) —
-      richiede un `cocisdb_test` separato per non far collidere il `drop_all` di fine sessione
-      con lo schema appena migrato.
+- [x] **`pytest` contro PostgreSQL reale** — 2026-07-17. Creato `cocisdb_test` (database
+      separato da `cocisdb`, proprietà di `cocis` fin dalla creazione — nessun problema di
+      permessi sullo schema `public`). **28/28 test verdi** contro l'istanza reale; il
+      `drop_all` di fine sessione ripulisce correttamente `cocisdb_test` senza toccare lo
+      schema migrato in `cocisdb`. La Definition of Done ("test verdi") è ora soddisfatta su
+      Postgres, non solo su SQLite, per tutte le slice mergiate (PR #1-#4).
 
 ## Backlog
 - [ ] Modello Scheda Clinica polimorfica (Schederic→Schede, discriminatore + JSONB)
